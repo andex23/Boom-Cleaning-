@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./home.module.css";
+import brandStyles from "./homeBrand.module.css";
 
 const services = [
   ["01", "Deep cleaning", "Homes reset with considered room-by-room care.", "deep-cleaning", "/images/services/deep-cleaning.png"],
@@ -20,7 +21,10 @@ const steps = [
 export default function Home() {
   return <main className={styles.page}>
     <header className={styles.header}>
-      <Link href="/" className={styles.brand} aria-label="BOOM Cleaning home">BOOM<span>✦</span><small>Cleaning Services</small></Link>
+      <Link href="/" className={brandStyles.headerBrand} aria-label="BOOM Cleaning home">
+        <Image src="/images/boom-official-logo.jpg" width={64} height={64} alt="BOOM Cleaning Services official logo" priority />
+        <span className={brandStyles.wordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
+      </Link>
       <nav aria-label="Primary navigation"><Link href="/services">Services</Link><a href="#process">How it works</a><a href="#about">About</a></nav>
       <Link className={styles.headerCta} href="/quote">Book a service <span>→</span></Link>
     </header>
@@ -38,6 +42,6 @@ export default function Home() {
 
     <section className={styles.promise} id="about"><h2>Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>
 
-    <footer className={styles.footer}><div className={styles.brand}>BOOM<span>✦</span><small>Cleaning Services</small></div><p>Making homes and workspaces cleaner, healthier and better places to be.</p><div><Link href="/services">Services</Link><Link href="/quote">Book a service</Link><Link href="/admin">Staff operations</Link></div><small>Abuja, FCT, Nigeria · BOOM Cleaning Services</small></footer>
+    <footer className={styles.footer}><div className={brandStyles.footerBrand}><Image src="/images/boom-official-logo.jpg" width={96} height={96} alt="BOOM Cleaning Services official logo" /><span className={brandStyles.footerWordmark}><strong>BOOM</strong><small>Cleaning Services</small></span></div><p>Making homes and workspaces cleaner, healthier and better places to be.</p><div><Link href="/services">Services</Link><Link href="/quote">Book a service</Link><Link href="/admin">Staff operations</Link></div><small>Abuja, FCT, Nigeria · BOOM Cleaning Services</small></footer>
   </main>;
 }
