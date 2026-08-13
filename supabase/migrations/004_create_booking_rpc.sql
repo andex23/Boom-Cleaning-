@@ -171,7 +171,17 @@ begin
   insert into public.automation_outbox (event_type, aggregate_type, aggregate_id, payload, idempotency_key)
   values (
     'booking.requested', 'booking', booking_value.id,
-    jsonb_build_object('bookingId', booking_value.id, 'bookingNumber', booking_value.booking_number, 'leadId', lead_value),
+    jsonb_build_object(
+      'version', 1,
+      'bookingId', booking_value.id,
+      'bookingNumber', booking_value.booking_number,
+      'leadId', lead_value,
+      'customerId', customer_value,
+      'quoteId', quote_value,
+      'serviceId', service_value,
+      'scheduledStartAt', booking_value.scheduled_start_at,
+      'scheduledEndAt', booking_value.scheduled_end_at
+    ),
     request_key || ':booking.requested'
   );
 

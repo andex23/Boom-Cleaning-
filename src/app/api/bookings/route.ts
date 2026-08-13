@@ -89,5 +89,7 @@ export async function POST(request: Request) {
     console.error("Public booking RPC returned an invalid result");
     return publicError("Unable to create booking. Please try again.", 502);
   }
-  return NextResponse.json(publicBookingResponseSchema.parse({ booking: { id: `BOOM-${result.data.bookingNumber}`, createdAt: new Date().toISOString(), status: result.data.status, amount: booking.data.amount ?? 0 } }), { status: 201, headers: { "Cache-Control": "no-store" } });
+  const bookingReference = `BOOM-${result.data.bookingNumber}`;
+  const emailStatus = process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim() ? "queued" : "not_configured";
+  return NextResponse.json(publicBookingResponseSchema.parse({ booking: { id: bookingReference, createdAt: new Date().toISOString(), status: result.data.status, amount: booking.data.amount }, email: { status: emailStatus } }), { status: 201, headers: { "Cache-Control": "no-store" } });
 }

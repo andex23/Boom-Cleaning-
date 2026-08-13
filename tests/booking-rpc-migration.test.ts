@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const migration = readFileSync(resolve(process.cwd(), "supabase/migrations/004_create_booking_rpc.sql"), "utf8");
+const emailMigration = readFileSync(resolve(process.cwd(), "supabase/migrations/005_booking_confirmation_email.sql"), "utf8");
 
 describe("production booking RPC migration", () => {
   it("keeps schedule conflict protection in the database", () => {
@@ -24,5 +25,17 @@ describe("production booking RPC migration", () => {
     }
     expect(migration).toContain("idempotentReplay");
     expect(migration).toContain("booking.requested");
+    for (const key of ["customerId", "quoteId", "serviceId", "scheduledStartAt", "scheduledEndAt"]) {
+      expect(migration).toContain(`'${key}'`);
+    }
+  });
+
+  it("keeps email recipient data behind a service-role-only claim and completion contract", () => {
+    expect(emailMigration).toContain("public.email_deliveries");
+    expect(emailMigration).toContain("function public.claim_booking_confirmation_email(outbox_id_value uuid)");
+    expect(emailMigration).toContain("'recipientEmail', customer.email");
+    expect(emailMigration).toContain("function public.complete_booking_confirmation_email(");
+    expect(emailMigration).toContain("grant execute on function public.claim_booking_confirmation_email(uuid) to service_role");
+    expect(emailMigration).toContain("grant execute on function public.complete_booking_confirmation_email(uuid, boolean, text, text, text) to service_role");
   });
 });

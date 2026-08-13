@@ -26,6 +26,7 @@ export const publicBookingResponseSchema = z.object({
     status: z.enum(["PENDING", "CONFIRMED", "REVIEW_REQUIRED"]),
     amount: money.nullable().optional(),
   }),
+  email: z.object({ status: z.enum(["queued", "not_configured"]) }),
 });
 
 export type PublicBookingResponse = z.infer<typeof publicBookingResponseSchema>;

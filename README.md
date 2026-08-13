@@ -31,6 +31,12 @@ Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` before 
 
 The admin status card distinguishes missing credentials, a webhook-ready app and a fully credentialed Instagram account.
 
+## Booking confirmation email
+
+`supabase/migrations/005_booking_confirmation_email.sql` adds a service-role-only transactional outbox workflow for booking confirmations. The protected worker at `/api/internal/automation/email/dispatch` claims one booking event at a time, sends through Resend with a deterministic provider idempotency key, and marks it delivered or schedules an exponential-backoff retry.
+
+Set `RESEND_API_KEY` and `EMAIL_FROM` in Vercel before invoking the worker. `EMAIL_FROM` must use a domain verified in Resend. For Vercel Cron, set `CRON_SECRET` and configure the cron request to call this route; otherwise call it with `Authorization: Bearer <AUTOMATION_WORKER_SECRET>`. The route does no work until a provider key and sender are configured.
+
 ## Not included yet
 
 The current browser experience uses typed demonstration data. The Instagram webhook adapter is implemented, but the live BOOM account is not authorized and publishing/DM workflows are not active yet. No Paystack, WhatsApp, Facebook, OpenAI or n8n provider is connected. See `docs/architecture.md` and `docs/database.md`.
