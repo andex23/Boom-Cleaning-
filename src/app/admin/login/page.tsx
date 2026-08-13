@@ -1,7 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import styles from "./login.module.css";
+import "./login.brand.css";
 
 export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   if (await isAdminAuthenticated()) redirect("/admin");
@@ -9,7 +11,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
 
   return <main className={styles.page}>
     <section className={styles.panel}>
-      <Link href="/" className={styles.brand}>BOOM<span>✦</span><small>Cleaning Services</small></Link>
+      <Link href="/" className={styles.brand}><Image src="/images/boom-official-logo.jpg" width={52} height={52} alt="BOOM Cleaning Services official logo" priority /><span><strong>BOOM</strong><small>Cleaning Services</small></span></Link>
       <p className={styles.eyebrow}>SECURE OPERATIONS</p>
       <h1>Welcome back.</h1>
       <p className={styles.intro}>Sign in to manage bookings, customers, schedules and payments.</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import {
   adminAreas,
@@ -13,6 +14,7 @@ import {
   type BookingStatus,
 } from "@/data/admin-demo";
 import styles from "./AdminConsole.module.css";
+import "./AdminConsole.brand.css";
 import { BookingNotice } from "./BookingNotice";
 
 type IconName = "grid" | "calendar" | "users" | "briefcase" | "sparkles" | "card" | "message" | "chart" | "arrow" | "bell" | "more";
@@ -47,16 +49,16 @@ export default function AdminConsole() {
   const [activeArea, setActiveArea] = useState<AdminArea>("Overview");
   const [navOpen, setNavOpen] = useState(false);
 
-  return <div className={styles.appShell}>
+  return <div className={styles.appShell} data-admin-theme="boom">
     <aside className={`${styles.sidebar} ${navOpen ? styles.sidebarOpen : ""}`} aria-label="Operations navigation">
-      <div className={styles.brand}><span className={styles.brandMark}>B</span><span>BOOM<span>clean</span></span></div>
+      <div className={styles.brand}><Image src="/images/boom-official-logo.jpg" width={44} height={44} alt="BOOM Cleaning Services official logo" priority /><span><strong>BOOM</strong><small>Cleaning Services</small></span></div>
       <p className={styles.workspaceLabel}>OPERATIONS</p>
       <nav className={styles.navigation}>{adminAreas.map((area) => <button key={area} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setActiveArea(area); setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span>{area === "Leads" && <b>5</b>}</button>)}</nav>
       <div className={styles.sideFooter}><div className={styles.helpCard}><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>BOOM support is here</span></div><Icon name="arrow" size={15} /></div><div className={styles.user}><span className={styles.avatar}>AO</span><span><strong>Amaka Okafor</strong><small>Operations manager</small></span><Icon name="more" /></div></div>
     </aside>
     {navOpen && <button className={styles.backdrop} aria-label="Close navigation" onClick={() => setNavOpen(false)} />}
     <main className={styles.main}>
-      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><span className={styles.brandMark}>b</span></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {operationsSummary.date}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit">Sign out</button></form></div></header>
+      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {operationsSummary.date}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
       <section className={styles.intro}><div><p>{operationsSummary.greeting}</p><h1>{operationsSummary.headline}</h1></div><span className={styles.updated}>{operationsSummary.lastUpdated}</span></section>
       <BookingNotice />
       <section className={styles.kpiGrid} aria-label="Daily performance">{kpis.map((item) => <article key={item.label} className={styles.kpi}><div className={styles.kpiHead}><span>{item.label}</span><b className={styles[item.tone]}>{item.trend}</b></div><strong>{item.value}</strong><p>{item.note}</p></article>)}</section>
