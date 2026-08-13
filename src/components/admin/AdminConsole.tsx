@@ -16,6 +16,8 @@ import {
 import styles from "./AdminConsole.module.css";
 import "./AdminConsole.brand.css";
 import { BookingNotice } from "./BookingNotice";
+import type { InstagramConnectionStatus } from "@/features/instagram/config";
+import { InstagramStatus } from "./InstagramStatus";
 
 type IconName = "grid" | "calendar" | "users" | "briefcase" | "sparkles" | "card" | "message" | "chart" | "arrow" | "bell" | "more";
 
@@ -45,7 +47,7 @@ function statusClass(status: BookingStatus) {
   return status === "In progress" ? styles.inProgress : status === "Awaiting payment" ? styles.awaiting : styles.confirmed;
 }
 
-export default function AdminConsole() {
+export default function AdminConsole({ instagramStatus }: { instagramStatus: InstagramConnectionStatus }) {
   const [activeArea, setActiveArea] = useState<AdminArea>("Overview");
   const [navOpen, setNavOpen] = useState(false);
 
@@ -61,6 +63,7 @@ export default function AdminConsole() {
       <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {operationsSummary.date}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
       <section className={styles.intro}><div><p>{operationsSummary.greeting}</p><h1>{operationsSummary.headline}</h1></div><span className={styles.updated}>{operationsSummary.lastUpdated}</span></section>
       <BookingNotice />
+      <InstagramStatus status={instagramStatus} />
       <section className={styles.kpiGrid} aria-label="Daily performance">{kpis.map((item) => <article key={item.label} className={styles.kpi}><div className={styles.kpiHead}><span>{item.label}</span><b className={styles[item.tone]}>{item.trend}</b></div><strong>{item.value}</strong><p>{item.note}</p></article>)}</section>
       <section className={styles.contentGrid}>
         <article className={`${styles.card} ${styles.revenueCard}`}><div className={styles.cardHeading}><div><p className={styles.eyebrow}>THIS WEEK</p><h2>Revenue pulse</h2></div><button className={styles.quietButton}>This week <span>⌄</span></button></div><div className={styles.chartLegend}><strong>₦2.30m</strong><span><i /> 18.4% above last week</span></div><div className={styles.chart} aria-label="Revenue by day">{weeklyRevenue.map((bar) => <div key={bar.day} className={styles.chartColumn}><span className={bar.day === "Thu" ? styles.chartTip : styles.hiddenTip}>{bar.label}</span><i style={{ height: `${Math.max(18, (bar.value / 510) * 100)}%` }} className={bar.day === "Thu" ? styles.currentBar : ""} /><small>{bar.day}</small></div>)}</div></article>

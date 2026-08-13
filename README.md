@@ -9,6 +9,7 @@ A backend-led cleaning-services automation platform with a premium public journe
 - Password-protected staff console with daily KPIs, revenue pulse, schedule, attention queue, enquiries, operational navigation and immediate visibility of newly confirmed web bookings.
 - PostgreSQL schema for customers, leads, quotes, availability, bookings, payments, jobs, conversations, automation events, notes, activity and reviews.
 - RLS, idempotency constraints, foreign-key indexes and runtime validation.
+- Secure Instagram webhook foundation with Meta verification, signature validation, idempotent event ingestion and admin connection status.
 
 ## Local setup
 
@@ -21,6 +22,15 @@ A backend-led cleaning-services automation platform with a premium public journe
 
 Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` before merging.
 
+## Instagram automation setup
+
+1. Create or select the BOOM Meta app and connect the BOOM Instagram professional account.
+2. Add `INSTAGRAM_APP_SECRET`, `INSTAGRAM_WEBHOOK_VERIFY_TOKEN`, `INSTAGRAM_ACCOUNT_ID` and `INSTAGRAM_ACCESS_TOKEN` to the server environment. Never expose them with a `NEXT_PUBLIC_` prefix.
+3. In Meta, set the callback URL to `https://<your-domain>/api/integrations/instagram/webhook` and use the same verify token.
+4. Subscribe only to the Instagram webhook fields approved for the Meta app. Incoming events are stored in `automation_events` for later processing.
+
+The admin status card distinguishes missing credentials, a webhook-ready app and a fully credentialed Instagram account.
+
 ## Not included yet
 
-The current browser experience uses typed demonstration data. No Paystack, Meta, Instagram, WhatsApp, Facebook, OpenAI or n8n provider is connected yet; server-side provider boundaries remain intentionally clean. See `docs/architecture.md` and `docs/database.md`.
+The current browser experience uses typed demonstration data. The Instagram webhook adapter is implemented, but the live BOOM account is not authorized and publishing/DM workflows are not active yet. No Paystack, WhatsApp, Facebook, OpenAI or n8n provider is connected. See `docs/architecture.md` and `docs/database.md`.

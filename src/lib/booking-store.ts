@@ -12,7 +12,7 @@ export type StoredBooking = {
   date: string;
   time: string;
   amount: number | null;
-  status: "CONFIRMED" | "REVIEW_REQUIRED";
+  status: "PENDING" | "CONFIRMED" | "REVIEW_REQUIRED";
 };
 
 export function readStoredBookings(): StoredBooking[] {

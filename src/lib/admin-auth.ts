@@ -1,23 +1,14 @@
 import "server-only";
 
-import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { createExpiringAdminSessionToken, isValidExpiringAdminSessionToken } from "./admin-session";
 
 export const ADMIN_SESSION_COOKIE = "boom_admin_session";
-export const ADMIN_SESSION_MAX_AGE = 60 * 60 * 12;
-
-function digest(value: string) {
-  return createHash("sha256").update(value).digest();
-}
+export { ADMIN_SESSION_MAX_AGE } from "./admin-session";
 
 function safeEqual(left: string, right: string) {
-  return timingSafeEqual(digest(left), digest(right));
-}
-
-function sessionToken() {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret) return null;
-  return createHmac("sha256", secret).update("boom-admin-session-v1").digest("hex");
+  return timingSafeEqual(createHash("sha256").update(left).digest(), createHash("sha256").update(right).digest());
 }
 
 export function validateAdminPassword(password: string) {
@@ -26,13 +17,30 @@ export function validateAdminPassword(password: string) {
 }
 
 export function createAdminSessionToken() {
-  const token = sessionToken();
-  if (!token) throw new Error("ADMIN_SESSION_SECRET is not configured");
-  return token;
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (!secret) throw new Error("ADMIN_SESSION_SECRET is not configured");
+  return createExpiringAdminSessionToken(secret);
+}
+
+export function isValidAdminSessionToken(token: string | undefined, now = Date.now()) {
+  return isValidExpiringAdminSessionToken(token, process.env.ADMIN_SESSION_SECRET, now);
+}
+
+export function isSameOriginRequest(request: Request) {
+  const requestOrigin = new URL(request.url).origin;
+  const origin = request.headers.get("origin");
+  if (origin) return origin === requestOrigin;
+
+  const referer = request.headers.get("referer");
+  if (!referer) return false;
+  try {
+    return new URL(referer).origin === requestOrigin;
+  } catch {
+    return false;
+  }
 }
 
 export async function isAdminAuthenticated() {
-  const expected = sessionToken();
   const actual = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
-  return Boolean(expected && actual && safeEqual(actual, expected));
+  return isValidAdminSessionToken(actual);
 }

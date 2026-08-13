@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
-import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE, createAdminSessionToken, validateAdminPassword } from "@/lib/admin-auth";
+import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE, createAdminSessionToken, isSameOriginRequest, validateAdminPassword } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return new NextResponse("Forbidden", { status: 403 });
+  }
+
   const formData = await request.formData();
   const password = formData.get("password");
 

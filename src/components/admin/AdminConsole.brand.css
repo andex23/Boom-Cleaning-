@@ -93,7 +93,30 @@
 [data-admin-theme="boom"] [class*="BookingNotice"] small { color: #9ee7f8 !important; }
 [data-admin-theme="boom"] [class*="BookingNotice"] p { color: #d7e8f8 !important; }
 
+[data-admin-theme="boom"] [class*="integrationCard"] {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid #dce5f0;
+  border-radius: 12px;
+  padding: 15px 18px;
+  margin-bottom: 18px;
+}
+[data-admin-theme="boom"] [class*="instagramMark"] { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(135deg,#7c3aed,#ec4899,#f59e0b); color: #fff; font-size: 11px; font-weight: 900; }
+[data-admin-theme="boom"] [class*="integrationCard"] > div { display: grid; gap: 3px; }
+[data-admin-theme="boom"] [class*="integrationCard"] h2 { font-family: Georgia,serif; font-size: 18px; font-weight: 500; margin: 0; }
+[data-admin-theme="boom"] [class*="integrationCard"] small { color: #71829d; font-size: 10px; }
+[data-admin-theme="boom"] [class*="integrationCard"] code { font-size: 9px; background: #edf3fa; color: #526b91; border-radius: 6px; padding: 7px 9px; }
+[data-admin-theme="boom"] [class*="integrationStatus"] { font-size: 9px; font-weight: 800; border-radius: 999px; padding: 6px 9px; }
+[data-admin-theme="boom"] [class*="connected"] { background: #def5fc; color: #0757a8; }
+[data-admin-theme="boom"] [class*="webhook_ready"] { background: #e3efff; color: #0c55b5; }
+[data-admin-theme="boom"] [class*="not_configured"] { background: #fff1db; color: #a66e18; }
+
 @media (max-width: 760px) {
+  [data-admin-theme="boom"] [class*="integrationCard"] { grid-template-columns: auto 1fr auto; padding: 13px; gap: 10px; }
+  [data-admin-theme="boom"] [class*="integrationCard"] code { display: none; }
   [data-admin-theme="boom"] aside { box-shadow: 20px 0 50px rgba(4,27,78,.28) !important; }
   [data-admin-theme="boom"] [class*="backdrop"] { background: rgba(4,25,71,.45) !important; }
   [data-admin-theme="boom"] [class*="menuButton"] { background: #e6f4fb !important; }

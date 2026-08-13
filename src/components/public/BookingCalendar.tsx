@@ -50,7 +50,7 @@ export function BookingCalendar({ selectedDate, selectedTime, onDateChange, onTi
     <div className={styles.calendarPanel}>
       <div className={styles.calendarHeader}><div><span>Choose a day</span><h3>{monthFormatter.format(currentMonth)}</h3></div><div className={navStyles.monthControls}><button type="button" aria-label="Previous month" disabled={monthOffset === 0} onClick={() => setMonthOffset((value) => Math.max(0, value - 1))}>←</button><button type="button" aria-label="Next month" disabled={monthOffset === 2} onClick={() => setMonthOffset((value) => Math.min(2, value + 1))}>→</button></div><div className={styles.legend}><i /> Available</div></div>
       <div className={styles.weekdays}>{weekdays.map((weekday) => <span key={weekday}>{weekday}</span>)}</div>
-      <div className={styles.calendarGrid}>{calendarDays.map((day) => <button type="button" key={day.iso} disabled={!day.available} aria-label={day.available ? `Select ${dateFormatter.format(day.date)}` : undefined} aria-pressed={selectedDate === day.iso} className={`${!day.inMonth ? styles.outside : ""} ${selectedDate === day.iso ? styles.selected : ""}`} onClick={() => { onDateChange(day.iso); onTimeChange(""); }}><span>{day.date.getDate()}</span>{day.available ? <small>{day.scarce ? "2 left" : "Open"}</small> : null}</button>)}</div>
+      <div className={styles.calendarGrid}>{calendarDays.map((day) => <button type="button" key={day.iso} disabled={!day.available} aria-label={day.available ? `Select ${dateFormatter.format(day.date)}` : undefined} aria-pressed={selectedDate === day.iso} className={`${!day.inMonth ? styles.outside : ""} ${selectedDate === day.iso ? styles.selected : ""}`} onClick={() => { onDateChange(day.iso); onTimeChange(""); }}><span>{day.date.getDate()}</span>{day.available ? <small>{day.scarce ? "Limited" : "Demo"}</small> : null}</button>)}</div>
     </div>
 
     <div className={styles.timePanel}>
@@ -58,9 +58,9 @@ export function BookingCalendar({ selectedDate, selectedTime, onDateChange, onTi
       <h3>{selected ? dateFormatter.format(selected.date) : "Select a date"}</h3>
       {selected ? <div className={styles.timeSlots}>{timeSlots.map((time, index) => {
         const unavailable = selected.date.getDate() % 3 === index;
-        return <button type="button" key={time} disabled={unavailable} aria-pressed={selectedTime === time} className={selectedTime === time ? styles.timeSelected : ""} onClick={() => onTimeChange(time)}><strong>{time}</strong><small>{unavailable ? "Booked" : index < 2 ? "Morning" : "Afternoon"}</small></button>;
+        return <button type="button" key={time} disabled={unavailable} aria-pressed={selectedTime === time} className={selectedTime === time ? styles.timeSelected : ""} onClick={() => onTimeChange(time)}><strong>{time}</strong><small>{unavailable ? "Unavailable" : index < 2 ? "Morning" : "Afternoon"}</small></button>;
       })}</div> : <p>Pick an available date to see appointment times.</p>}
-      <div className={styles.capacityNote}><span>✓</span><p><strong>Live booking hold</strong>Your selection is held while you finish this booking.</p></div>
+      <div className={styles.capacityNote}><span>i</span><p><strong>Demo availability</strong>Slots are illustrative and are not held while you complete this flow.</p></div>
     </div>
   </div>;
 }
