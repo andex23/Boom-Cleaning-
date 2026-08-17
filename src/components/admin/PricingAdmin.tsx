@@ -44,7 +44,8 @@ export function PricingAdmin() {
         const loaded = await response.json() as PricingAdminData;
         if (cancelled) return;
         setData(loaded);
-        setSelectedService((current) => current || loaded.services[0]?.slug || "");
+        // Default to a service that can be priced, so the worked example has something to show.
+        setSelectedService((current) => current || loaded.services.find((row) => !row.requiresReview)?.slug || loaded.services[0]?.slug || "");
       } catch (loadFailure) {
         if (!cancelled) setLoadError(adminErrorMessage(loadFailure, "We couldn’t load pricing. Refresh to try again."));
       }
