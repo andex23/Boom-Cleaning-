@@ -1,16 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { listBookableServices } from "@/features/services/public-catalog";
 import styles from "./home.module.css";
 import brandStyles from "./homeBrand.module.css";
-
-const services = [
-  ["01", "Deep cleaning", "Homes reset with considered room-by-room care.", "deep-cleaning", "/images/services/deep-cleaning.png"],
-  ["02", "Post-construction", "Fine dust, debris and finishing work handled properly.", "post-construction", "/images/services/post-construction.png"],
-  ["03", "Move-in cleaning", "A fresh, ready space before the first box arrives.", "move-in-move-out", "/images/services/move-in.png"],
-  ["04", "Upholstery", "Sofas, mattresses and soft furnishings revived.", "upholstery-care", "/images/services/upholstery.png"],
-  ["05", "Office cleaning", "Flexible care for productive Abuja workspaces.", "office-cleaning", "/images/services/office-cleaning.png"],
-  ["06", "Fumigation", "Practical pest control for homes and businesses.", "fumigation", "/images/services/fumigation.png"],
-] as const;
 
 const steps = [
   ["01", "Tell us what you need", "Choose a service and share a few details about your space."],
@@ -18,7 +10,10 @@ const steps = [
   ["03", "Relax while we handle it", "Your team arrives prepared and keeps you updated to completion."],
 ] as const;
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const services = (await listBookableServices()).slice(0, 6);
   return <main className={styles.page}>
     <header className={styles.header}>
       <Link href="/" className={brandStyles.headerBrand} aria-label="BOOM Cleaning home">
@@ -34,7 +29,7 @@ export default function Home() {
       <div className={styles.heroImage}><Image src="/images/boom-cleaning-hero-v2.png" alt="A BOOM cleaner in the brand's blue uniform caring for a contemporary Abuja living room" fill priority sizes="(max-width: 800px) 100vw, 52vw" /></div>
     </section>
 
-    <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><div className={styles.serviceList}>{services.map(([number, name, description, slug, image]) => <Link href={`/quote?service=${slug}`} className={styles.serviceRow} key={name} aria-label={`Book ${name}`}><div className={styles.serviceImage}><Image src={image} alt={`${name} by BOOM Cleaning Services`} fill sizes="(max-width: 850px) 100vw, 32vw" /></div><div className={styles.serviceDetails}><small>{number}</small><div><h3>{name}</h3><p>{description}</p></div><span className={styles.bookAction}>Book →</span></div></Link>)}</div></section>
+    <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><div className={styles.serviceList}>{services.map((service, index) => <Link href={`/quote?service=${service.slug}`} className={styles.serviceRow} key={service.id} aria-label={`Book ${service.name}`}><div className={styles.serviceImage}><Image src={service.image} alt={`${service.name} by BOOM Cleaning Services`} fill sizes="(max-width: 850px) 100vw, 32vw" /></div><div className={styles.serviceDetails}><small>{String(index + 1).padStart(2, "0")}</small><div><h3>{service.name}</h3><p>{service.tagline}</p></div><span className={styles.bookAction}>Book →</span></div></Link>)}</div></section>
 
     <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
 

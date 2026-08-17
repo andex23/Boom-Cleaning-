@@ -4,9 +4,10 @@ A backend-led cleaning-services automation platform with a premium public journe
 
 ## Included now
 
-- Public marketing page and complete service catalogue.
-- Five-step quote-to-booking journey with service selection, property details, a custom availability calendar, appointment slots, contact capture, deterministic estimates/manual-review routing, booking confirmation and a durable browser booking reference.
-- Password-protected staff console with daily KPIs, revenue pulse, schedule, attention queue, enquiries, operational navigation and immediate visibility of newly confirmed web bookings.
+- Public marketing page and complete service catalogue, both read from the database.
+- Five-step quote-to-booking journey with service selection, a property description built from counted spaces, a custom availability calendar, appointment slots, contact capture, server-calculated estimates with an itemised breakdown, manual-review routing, booking confirmation and a durable browser booking reference.
+- Space-based pricing: a property is a property type (multiplier plus minimum floor) and a set of counted spaces — bedrooms and bathrooms, but also boys' quarters, gazebo, terrace, external staircase and pool area. Per-unit prices vary by service. See `docs/architecture.md`.
+- Password-protected staff console with daily KPIs, revenue pulse, schedule, attention queue, enquiries, operational navigation, immediate visibility of newly confirmed web bookings, a pricing editor and a per-booking price breakdown.
 - PostgreSQL schema for customers, leads, quotes, availability, bookings, payments, jobs, conversations, automation events, notes, activity and reviews.
 - RLS, idempotency constraints, foreign-key indexes and runtime validation.
 - Secure Instagram webhook foundation with Meta verification, signature validation, idempotent event ingestion and admin connection status.
@@ -37,6 +38,17 @@ The admin status card distinguishes missing credentials, a webhook-ready app and
 
 Set `RESEND_API_KEY` and `EMAIL_FROM` in Vercel before invoking the worker. `EMAIL_FROM` must use a domain verified in Resend. For Vercel Cron, set `CRON_SECRET` and configure the cron request to call this route; otherwise call it with `Authorization: Bearer <AUTOMATION_WORKER_SECRET>`. The route does no work until a provider key and sender are configured.
 
+## Changing prices
+
+Sign in to `/admin` and open **Services** to edit service base prices and minimums, property
+type multipliers and floors, per-space unit prices and travel surcharges. Changes take effect
+on new quotes; quotes already created keep the line items they were built with.
+
+Leaving a space unpriced for a service is a deliberate control, not an omission — that scope
+is routed to manual review instead of being cleaned for free. Use it for anything you would
+rather look at before committing to a number.
+
 ## Not included yet
 
-The current browser experience uses typed demonstration data. The Instagram webhook adapter is implemented, but the live BOOM account is not authorized and publishing/DM workflows are not active yet. No Paystack, WhatsApp, Facebook, OpenAI or n8n provider is connected. See `docs/architecture.md` and `docs/database.md`.
+The staff console's KPIs, schedule and enquiry lists still use typed demonstration data; the
+pricing editor and booking breakdown read live data. The Instagram webhook adapter is implemented, but the live BOOM account is not authorized and publishing/DM workflows are not active yet. No Paystack, WhatsApp, Facebook, OpenAI or n8n provider is connected. See `docs/architecture.md` and `docs/database.md`.

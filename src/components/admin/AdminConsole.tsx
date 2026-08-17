@@ -2,20 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import {
-  adminAreas,
-  attentionItems,
-  kpis,
-  operationsSummary,
-  recentEnquiries,
-  todaySchedule,
-  weeklyRevenue,
-  type AdminArea,
-  type BookingStatus,
-} from "@/data/admin-demo";
+import { adminAreas, type AdminArea } from "@/data/admin-demo";
 import styles from "./AdminConsole.module.css";
 import "./AdminConsole.brand.css";
-import { BookingNotice } from "./BookingNotice";
+import { BookingBreakdowns } from "./BookingBreakdowns";
+import { PricingAdmin } from "./PricingAdmin";
+import { OperationsOverview } from "./OperationsOverview";
 import type { InstagramConnectionStatus } from "@/features/instagram/config";
 import { InstagramStatus } from "./InstagramStatus";
 
@@ -39,12 +31,23 @@ function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
   return <svg {...common}>{paths[name]}</svg>;
 }
 
-function areaIcon(area: AdminArea): IconName {
-  return ({ Overview: "grid", Bookings: "calendar", Leads: "users", Customers: "users", Jobs: "briefcase", Services: "sparkles", Payments: "card", Messages: "message", Reports: "chart" } as const)[area];
+/** The page heading should describe the area you are actually looking at. */
+function areaHeadline(area: AdminArea) {
+  return ({
+    Overview: "Here’s how BOOM is moving today.",
+    Bookings: "Every booking, and how its price was reached.",
+    Services: "What customers pay.",
+    Leads: "People who asked about BOOM.",
+    Customers: "The people BOOM cleans for.",
+    Jobs: "Work on the ground.",
+    Payments: "Money in and out.",
+    Messages: "Conversations with customers.",
+    Reports: "How the business is performing.",
+  } as const)[area];
 }
 
-function statusClass(status: BookingStatus) {
-  return status === "In progress" ? styles.inProgress : status === "Awaiting payment" ? styles.awaiting : styles.confirmed;
+function areaIcon(area: AdminArea): IconName {
+  return ({ Overview: "grid", Bookings: "calendar", Leads: "users", Customers: "users", Jobs: "briefcase", Services: "sparkles", Payments: "card", Messages: "message", Reports: "chart" } as const)[area];
 }
 
 export default function AdminConsole({ instagramStatus }: { instagramStatus: InstagramConnectionStatus }) {
@@ -55,24 +58,16 @@ export default function AdminConsole({ instagramStatus }: { instagramStatus: Ins
     <aside className={`${styles.sidebar} ${navOpen ? styles.sidebarOpen : ""}`} aria-label="Operations navigation">
       <div className={styles.brand}><Image src="/images/boom-official-logo.jpg" width={44} height={44} alt="BOOM Cleaning Services official logo" priority /><span><strong>BOOM</strong><small>Cleaning Services</small></span></div>
       <p className={styles.workspaceLabel}>OPERATIONS</p>
-      <nav className={styles.navigation}>{adminAreas.map((area) => <button key={area} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setActiveArea(area); setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span>{area === "Leads" && <b>5</b>}</button>)}</nav>
-      <div className={styles.sideFooter}><div className={styles.helpCard}><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>BOOM support is here</span></div><Icon name="arrow" size={15} /></div><div className={styles.user}><span className={styles.avatar}>AO</span><span><strong>Amaka Okafor</strong><small>Operations manager</small></span><Icon name="more" /></div></div>
+      <nav className={styles.navigation}>{adminAreas.map((area) => <button key={area} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setActiveArea(area); setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span></button>)}</nav>
+      <div className={styles.sideFooter}><div className={styles.helpCard}><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>BOOM support is here</span></div><Icon name="arrow" size={15} /></div><div className={styles.user}><span className={styles.avatar}>B</span><span><strong>BOOM admin</strong><small>Signed in</small></span><Icon name="more" /></div></div>
     </aside>
     {navOpen && <button className={styles.backdrop} aria-label="Close navigation" onClick={() => setNavOpen(false)} />}
     <main className={styles.main}>
-      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {operationsSummary.date}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
-      <section className={styles.intro}><div><p>{operationsSummary.greeting}</p><h1>{operationsSummary.headline}</h1></div><span className={styles.updated}>{operationsSummary.lastUpdated}</span></section>
-      <BookingNotice />
-      <InstagramStatus status={instagramStatus} />
-      <section className={styles.kpiGrid} aria-label="Daily performance">{kpis.map((item) => <article key={item.label} className={styles.kpi}><div className={styles.kpiHead}><span>{item.label}</span><b className={styles[item.tone]}>{item.trend}</b></div><strong>{item.value}</strong><p>{item.note}</p></article>)}</section>
-      <section className={styles.contentGrid}>
-        <article className={`${styles.card} ${styles.revenueCard}`}><div className={styles.cardHeading}><div><p className={styles.eyebrow}>THIS WEEK</p><h2>Revenue pulse</h2></div><button className={styles.quietButton}>This week <span>⌄</span></button></div><div className={styles.chartLegend}><strong>₦2.30m</strong><span><i /> 18.4% above last week</span></div><div className={styles.chart} aria-label="Revenue by day">{weeklyRevenue.map((bar) => <div key={bar.day} className={styles.chartColumn}><span className={bar.day === "Thu" ? styles.chartTip : styles.hiddenTip}>{bar.label}</span><i style={{ height: `${Math.max(18, (bar.value / 510) * 100)}%` }} className={bar.day === "Thu" ? styles.currentBar : ""} /><small>{bar.day}</small></div>)}</div></article>
-        <article className={`${styles.card} ${styles.attentionCard}`}><div className={styles.cardHeading}><div><p className={styles.eyebrow}>DO NEXT</p><h2>Needs attention <b>3</b></h2></div><button className={styles.moreButton} aria-label="More attention options"><Icon name="more" /></button></div><div className={styles.attentionList}>{attentionItems.map((item) => <div className={styles.attentionRow} key={item.id}><span className={`${styles.attentionIcon} ${styles[item.kind.toLowerCase()]}`}>{item.kind === "Payment" ? "₦" : item.kind === "Reply" ? "↗" : "✦"}</span><div><strong>{item.title}</strong><small>{item.detail}</small><button>{item.action} <Icon name="arrow" size={13} /></button></div></div>)}</div></article>
-      </section>
-      <section className={styles.lowerGrid}>
-        <article className={styles.card}><div className={styles.cardHeading}><div><p className={styles.eyebrow}>THURSDAY, 13 AUG</p><h2>Today’s schedule <span>{todaySchedule.length} of 8</span></h2></div><button className={styles.textButton}>View calendar <Icon name="arrow" size={14} /></button></div><div className={styles.scheduleList}>{todaySchedule.map((booking) => <div className={styles.scheduleRow} key={booking.id}><time>{booking.time}</time><span className={styles.customerAvatar}>{booking.initials}</span><div className={styles.bookingDetails}><strong>{booking.customer}</strong><span>{booking.service} <i /> {booking.address}</span></div><span className={styles.team}>{booking.team}</span><span className={`${styles.status} ${statusClass(booking.status)}`}>{booking.status}</span><button className={styles.rowMore} aria-label={`Options for ${booking.customer}`}><Icon name="more" /></button></div>)}</div></article>
-        <article className={styles.card}><div className={styles.cardHeading}><div><p className={styles.eyebrow}>INBOX</p><h2>Recent enquiries <b>12</b></h2></div><button className={styles.textButton}>View all <Icon name="arrow" size={14} /></button></div><div className={styles.enquiryList}>{recentEnquiries.map((lead) => <div className={styles.enquiryRow} key={lead.id}><span className={styles.leadAvatar}>{lead.initials}</span><div><strong>{lead.customer}</strong><span>{lead.service}</span><small>{lead.source} · {lead.received}</small></div><span className={styles.leadValue}>{lead.value}</span></div>)}</div></article>
-      </section>
+      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
+      <section className={styles.intro}><div><p>BOOM operations</p><h1>{areaHeadline(activeArea)}</h1></div></section>
+      {activeArea === "Services" ? <PricingAdmin /> : activeArea === "Bookings" ? <BookingBreakdowns /> : (
+        <OperationsOverview><InstagramStatus status={instagramStatus} /></OperationsOverview>
+      )}
     </main>
   </div>;
 }

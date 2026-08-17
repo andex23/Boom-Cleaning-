@@ -4,12 +4,19 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { createExpiringAdminSessionToken, isValidExpiringAdminSessionToken } from "./admin-session";
 
-export const ADMIN_SESSION_COOKIE = "boom_admin_session";
-export { ADMIN_SESSION_MAX_AGE } from "./admin-session";
+export {
+  ADMIN_SESSION_COOKIE_OPTIONS,
+  isAdminLoginRateLimited,
+  clearAdminLoginAttempts,
+  resetAdminLoginRateLimitForTests,
+} from "./admin-session";
 
 function safeEqual(left: string, right: string) {
   return timingSafeEqual(createHash("sha256").update(left).digest(), createHash("sha256").update(right).digest());
 }
+
+export const ADMIN_SESSION_COOKIE = "boom_admin_session";
+export { ADMIN_SESSION_MAX_AGE } from "./admin-session";
 
 export function validateAdminPassword(password: string) {
   const expected = process.env.ADMIN_PASSWORD;

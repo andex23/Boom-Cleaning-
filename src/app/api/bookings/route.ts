@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isSameOriginRequest } from "@/lib/admin-auth";
-import { createBookingRpcRequest, isPublicBookingRateLimited, MAX_PUBLIC_BOOKING_BODY_BYTES } from "@/lib/public-booking";
+import { createBookingRpcRequest, isPublicBookingRateLimited, readBoundedJson } from "@/lib/public-booking";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { publicBookingPayloadSchema, publicBookingResponseSchema } from "@/lib/validation/public-booking";
 
@@ -10,33 +10,13 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const idempotencyKeySchema = z.string().trim().regex(/^[A-Za-z0-9][A-Za-z0-9._:-]{15,199}$/);
-const rpcResultSchema = z.object({ bookingId: z.uuid(), bookingNumber: z.number().int().positive(), status: z.literal("PENDING") });
-
-async function readBoundedJson(request: Request): Promise<unknown> {
-  const contentLength = request.headers.get("content-length");
-  if (contentLength && Number(contentLength) > MAX_PUBLIC_BOOKING_BODY_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
-  const reader = request.body?.getReader();
-  if (!reader) throw new Error("INVALID_JSON");
-
-  const decoder = new TextDecoder();
-  let bytes = 0;
-  let text = "";
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    bytes += value.byteLength;
-    if (bytes > MAX_PUBLIC_BOOKING_BODY_BYTES) {
-      await reader.cancel();
-      throw new Error("PAYLOAD_TOO_LARGE");
-    }
-    text += decoder.decode(value, { stream: true });
-  }
-  try {
-    return JSON.parse(text + decoder.decode());
-  } catch {
-    throw new Error("INVALID_JSON");
-  }
-}
+const rpcResultSchema = z.object({
+  bookingId: z.uuid(),
+  bookingNumber: z.number().int().positive(),
+  status: z.literal("PENDING"),
+  total: z.coerce.number().finite().nonnegative(),
+  requiresReview: z.boolean(),
+});
 
 function publicError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status, headers: { "Cache-Control": "no-store" } });
@@ -51,36 +31,45 @@ export async function POST(request: Request) {
   try {
     body = await readBoundedJson(request);
   } catch (error) {
-    return publicError(error instanceof Error && error.message === "PAYLOAD_TOO_LARGE" ? "Request body is too large." : "Request body must be valid JSON.", error instanceof Error && error.message === "PAYLOAD_TOO_LARGE" ? 413 : 400);
+    const tooLarge = error instanceof Error && error.message === "PAYLOAD_TOO_LARGE";
+    return publicError(tooLarge ? "Request body is too large." : "Request body must be valid JSON.", tooLarge ? 413 : 400);
   }
 
   const booking = publicBookingPayloadSchema.safeParse(body);
-  if (!booking.success) return NextResponse.json({ error: "Invalid booking request.", issues: booking.error.flatten() }, { status: 422, headers: { "Cache-Control": "no-store" } });
+  if (!booking.success) return NextResponse.json({ error: "Invalid booking request.", issues: z.flattenError(booking.error) }, { status: 422, headers: { "Cache-Control": "no-store" } });
 
   const suppliedKey = request.headers.get("idempotency-key");
   const parsedKey = suppliedKey ? idempotencyKeySchema.safeParse(suppliedKey) : null;
   if (parsedKey && !parsedKey.success) return publicError("Invalid Idempotency-Key header.", 422);
   const idempotencyKey = parsedKey?.data ?? randomUUID();
 
-  const serviceClient = createServiceRoleClient();
-  const { data: service, error: serviceError } = await serviceClient.from("services").select("id").eq("slug", booking.data.serviceSlug).eq("is_active", true).maybeSingle();
-  if (serviceError) {
-    console.error("Public booking service lookup failed", { code: serviceError.code });
-    return publicError("Unable to create booking. Please try again.", 502);
-  }
-  if (!service) return publicError("The requested service is unavailable.", 422);
-
   let rpcPayload: ReturnType<typeof createBookingRpcRequest>;
   try {
-    rpcPayload = createBookingRpcRequest(booking.data, service.id, idempotencyKey);
+    rpcPayload = createBookingRpcRequest(booking.data, idempotencyKey);
   } catch {
     return publicError("Invalid booking date.", 422);
   }
+
+  // The service, property type, area and every amount are resolved and priced inside the
+  // RPC, so nothing about the total can be influenced from here or from the browser.
+  const serviceClient = createServiceRoleClient();
+
+  // Slot times are configurable data, so an arbitrary time is rejected here rather than
+  // being pinned by the payload schema.
+  const { data: slot, error: slotError } = await serviceClient
+    .from("booking_slots").select("start_time").eq("is_active", true);
+  if (slotError) {
+    console.error("Booking slot lookup failed", { code: slotError.code });
+    return publicError("Unable to create booking. Please try again.", 502);
+  }
+  const openSlots = (slot ?? []).map((row) => String(row.start_time).slice(0, 5));
+  if (!openSlots.includes(booking.data.time)) return publicError("That appointment time isn’t offered. Please choose one of the available times.", 422);
   const { data, error } = await serviceClient.rpc("create_booking_from_request", { request: rpcPayload });
   if (error) {
     console.error("Public booking RPC failed", { code: error.code });
     if (error.code === "23P01") return publicError("The requested time is no longer available.", 409);
-    if (error.code === "22023" || error.code === "23503") return publicError("Invalid booking request.", 422);
+    if (error.code === "23503") return publicError("The requested service, property type or area is unavailable.", 422);
+    if (error.code === "22023") return publicError("Invalid booking request.", 422);
     return publicError("Unable to create booking. Please try again.", 502);
   }
 
@@ -89,7 +78,21 @@ export async function POST(request: Request) {
     console.error("Public booking RPC returned an invalid result");
     return publicError("Unable to create booking. Please try again.", 502);
   }
+
   const bookingReference = `BOOM-${result.data.bookingNumber}`;
   const emailStatus = process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim() ? "queued" : "not_configured";
-  return NextResponse.json(publicBookingResponseSchema.parse({ booking: { id: bookingReference, createdAt: new Date().toISOString(), status: result.data.status, amount: booking.data.amount }, email: { status: emailStatus } }), { status: 201, headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json(
+    publicBookingResponseSchema.parse({
+      booking: {
+        id: bookingReference,
+        createdAt: new Date().toISOString(),
+        // A scope we could not price safely holds the slot but carries no agreed amount.
+        status: result.data.requiresReview ? "REVIEW_REQUIRED" : result.data.status,
+        amount: result.data.requiresReview ? null : result.data.total,
+        items: [],
+      },
+      email: { status: emailStatus },
+    }),
+    { status: 201, headers: { "Cache-Control": "no-store" } },
+  );
 }

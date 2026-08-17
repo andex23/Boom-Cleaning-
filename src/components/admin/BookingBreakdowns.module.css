@@ -1,0 +1,29 @@
+.list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.row{border:1px solid #e8ecf3;border-radius:10px;overflow:hidden}
+.summary{width:100%;display:grid;grid-template-columns:auto 1fr auto auto auto;align-items:center;gap:14px;padding:12px 14px;background:#fff;border:0;cursor:pointer;text-align:left;font:inherit}
+.summary:hover{background:#f7f9fc}
+.reference{font-size:11px;font-weight:800;color:#0c55b5;font-variant-numeric:tabular-nums;white-space:nowrap}
+.who strong{display:block;font-size:13px;font-weight:700;color:#08255f}
+.who small{display:block;margin-top:2px;font-size:11px;color:#6b7a90}
+.when{font-size:11px;color:#6b7a90;white-space:nowrap}
+.total{font-size:14px;font-weight:800;color:#08255f;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chevron,.chevronOpen{color:#9aa8ba;font-size:14px;transition:transform .18s ease}
+.chevronOpen{transform:rotate(180deg)}
+.detail{padding:4px 14px 14px;background:#fbfcfe;border-top:1px solid #eef1f6}
+.items{list-style:none;margin:0;padding:0;font-size:12px}
+.items li{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid #eef1f6;color:#3c5064}
+.items li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.itemsTotal{font-weight:800;color:#08255f!important;border-bottom:0!important;padding-top:10px!important;font-size:13px}
+@media (max-width:720px){.summary{grid-template-columns:1fr auto;row-gap:6px}.when{display:none}}
+.priceForm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6}
+.priceForm label{display:grid;gap:5px;font-size:11px;font-weight:700;color:#6b7a90}
+.priceForm label span{font-weight:400;color:#9aa8ba}
+.priceForm label:first-child{flex:0 0 auto}
+.priceForm label:nth-child(2){flex:1 1 220px}
+.priceForm input{border:1px solid #d4dbe6;border-radius:7px;padding:8px 10px;font-size:13px;color:#08255f;width:100%}
+.priceForm label:first-child input{width:150px;font-variant-numeric:tabular-nums}
+.priceForm input:focus{outline:2px solid #55d5f3;outline-offset:-1px;border-color:#0c55b5}
+.priceForm button{background:#0c55b5;color:#fff;border:0;border-radius:7px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.priceForm button:hover:not(:disabled){background:#08255f}
+.priceForm button:disabled{opacity:.45;cursor:not-allowed}
+.priceHint{margin:8px 0 0;font-size:11px;color:#8b9ab0;line-height:1.5}

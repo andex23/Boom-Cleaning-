@@ -11,3 +11,40 @@ describe("admin session security", () => {
     expect(isValidExpiringAdminSessionToken(token, secret, issuedAt + ADMIN_SESSION_MAX_AGE * 1000)).toBe(false);
   });
 });
+
+describe("admin session cookie scope", () => {
+  it("covers the console's own APIs, not just /admin pages", async () => {
+    const { ADMIN_SESSION_COOKIE_OPTIONS } = await import("../src/lib/admin-session");
+    // A cookie scoped to /admin is never sent to /api/admin/*, so every console request
+    // would be rejected as unauthenticated.
+    expect(ADMIN_SESSION_COOKIE_OPTIONS.path).toBe("/");
+    expect(ADMIN_SESSION_COOKIE_OPTIONS.httpOnly).toBe(true);
+    expect(ADMIN_SESSION_COOKIE_OPTIONS.sameSite).toBe("strict");
+  });
+});
+
+describe("admin login throttling", () => {
+  it("stops a password from being guessed indefinitely", async () => {
+    const { isAdminLoginRateLimited, clearAdminLoginAttempts, resetAdminLoginRateLimitForTests } = await import("../src/lib/admin-session");
+    resetAdminLoginRateLimitForTests();
+    const request = new Request("https://boom.example/api/admin/login", { headers: { "x-forwarded-for": "198.51.100.7" } });
+    for (let attempt = 0; attempt < 8; attempt += 1) expect(isAdminLoginRateLimited(request, 1_700_000_000_000)).toBe(false);
+    expect(isAdminLoginRateLimited(request, 1_700_000_000_000)).toBe(true);
+
+    // A correct password clears the counter so one bad day does not lock staff out.
+    clearAdminLoginAttempts(request);
+    expect(isAdminLoginRateLimited(request, 1_700_000_000_000)).toBe(false);
+    resetAdminLoginRateLimitForTests();
+  });
+
+  it("counts each client separately", async () => {
+    const { isAdminLoginRateLimited, resetAdminLoginRateLimitForTests } = await import("../src/lib/admin-session");
+    resetAdminLoginRateLimitForTests();
+    const attacker = new Request("https://boom.example/api/admin/login", { headers: { "x-forwarded-for": "198.51.100.8" } });
+    const staff = new Request("https://boom.example/api/admin/login", { headers: { "x-forwarded-for": "198.51.100.9" } });
+    for (let attempt = 0; attempt < 9; attempt += 1) isAdminLoginRateLimited(attacker, 1_700_000_000_000);
+    expect(isAdminLoginRateLimited(attacker, 1_700_000_000_000)).toBe(true);
+    expect(isAdminLoginRateLimited(staff, 1_700_000_000_000)).toBe(false);
+    resetAdminLoginRateLimitForTests();
+  });
+});

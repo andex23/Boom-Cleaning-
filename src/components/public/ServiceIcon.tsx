@@ -1,6 +1,6 @@
-import type { PublicService } from "@/data/public-demo";
+import type { ServiceIconName } from "@/data/service-presentation";
 
-export function ServiceIcon({ icon }: { icon: PublicService["icon"] }) {
+export function ServiceIcon({ icon }: { icon: ServiceIconName }) {
   const common = { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.65, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
   if (icon === "home") return <svg {...common}><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Z" /><path d="M9 21v-6h6v6" /></svg>;
   if (icon === "move") return <svg {...common}><path d="M4 8h16v13H4z" /><path d="M8 8V5h8v3M8 13h.01M12 13h.01M16 13h.01" /></svg>;

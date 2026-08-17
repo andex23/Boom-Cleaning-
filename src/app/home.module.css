@@ -28,3 +28,8 @@
 .footer>p{color:#c6d7ef}
 .footer>small{border-top-color:#34507e;color:#a9bddb}
 @media(max-width:850px){.process li{border-left:0;border-top-color:#3f5a91}.promise article{border-left:0;border-top-color:#77cce9}}
+/* Navigation and footer links were ~20px tall; give them a real touch target. */
+.header nav a,.headerCta{display:inline-flex;align-items:center;min-height:44px}
+.sectionIntro a{display:inline-flex;align-items:center;min-height:44px}
+.page a:focus-visible,.page button:focus-visible{outline:3px solid #55d5f3;outline-offset:3px}
+.footer a{display:inline-flex;align-items:center;min-height:44px}
