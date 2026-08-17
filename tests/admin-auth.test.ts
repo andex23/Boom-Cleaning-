@@ -48,3 +48,17 @@ describe("admin login throttling", () => {
     resetAdminLoginRateLimitForTests();
   });
 });
+
+describe("legacy admin cookie expiry", () => {
+  it("expires the old /admin-scoped session so it cannot shadow a new one", async () => {
+    const { legacyAdminCookieExpiry } = await import("../src/lib/admin-session");
+    // Emitted as a raw header because NextResponse.cookies keys by name alone: setting the
+    // same name twice replaces the first entry instead of sending both.
+    const header = legacyAdminCookieExpiry("boom_admin_session");
+    expect(header).toContain("boom_admin_session=");
+    expect(header).toContain("Path=/admin");
+    expect(header).toContain("Max-Age=0");
+    expect(header).toContain("HttpOnly");
+    expect(header).toContain("SameSite=Strict");
+  });
+});

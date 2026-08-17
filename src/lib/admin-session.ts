@@ -43,6 +43,28 @@ export const ADMIN_SESSION_COOKIE_OPTIONS = {
   path: "/",
 } as const;
 
+/**
+ * Sessions issued before the path was corrected still sit at `/admin`. A browser will send
+ * both cookies for `/admin` requests, and whichever the server reads first wins — so a
+ * stale one can shadow a freshly issued session and bounce staff back to the sign-in page
+ * forever. Every login and logout expires the old path explicitly.
+ */
+export const LEGACY_ADMIN_SESSION_COOKIE_OPTIONS = {
+  ...ADMIN_SESSION_COOKIE_OPTIONS,
+  path: "/admin",
+} as const;
+
+/**
+ * Built as a raw header on purpose. NextResponse.cookies keys by name alone, so setting the
+ * same cookie name twice replaces the first entry instead of emitting both headers — and
+ * expiring the old path is exactly the case that needs two.
+ */
+export function legacyAdminCookieExpiry(cookieName: string) {
+  const parts = [`${cookieName}=`, "Path=/admin", "Max-Age=0", "HttpOnly", "SameSite=Strict"];
+  if (process.env.NODE_ENV === "production") parts.push("Secure");
+  return parts.join("; ");
+}
+
 /** A bounded, per-instance brute-force guard on the password form. */
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_MAX_ATTEMPTS = 8;

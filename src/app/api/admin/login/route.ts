@@ -3,6 +3,7 @@ import {
   ADMIN_SESSION_COOKIE,
   ADMIN_SESSION_COOKIE_OPTIONS,
   ADMIN_SESSION_MAX_AGE,
+  legacyAdminCookieExpiry,
   clearAdminLoginAttempts,
   createAdminSessionToken,
   isAdminLoginRateLimited,
@@ -41,5 +42,7 @@ export async function POST(request: Request) {
     maxAge: ADMIN_SESSION_MAX_AGE,
     priority: "high",
   });
+  // Appended, not set: a session left at the old path would otherwise shadow this one.
+  response.headers.append("Set-Cookie", legacyAdminCookieExpiry(ADMIN_SESSION_COOKIE));
   return response;
 }

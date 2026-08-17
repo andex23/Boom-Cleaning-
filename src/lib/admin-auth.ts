@@ -6,6 +6,8 @@ import { createExpiringAdminSessionToken, isValidExpiringAdminSessionToken } fro
 
 export {
   ADMIN_SESSION_COOKIE_OPTIONS,
+  LEGACY_ADMIN_SESSION_COOKIE_OPTIONS,
+  legacyAdminCookieExpiry,
   isAdminLoginRateLimited,
   clearAdminLoginAttempts,
   resetAdminLoginRateLimitForTests,
