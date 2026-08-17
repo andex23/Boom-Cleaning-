@@ -8,6 +8,8 @@ import "./AdminConsole.brand.css";
 import { BookingBreakdowns } from "./BookingBreakdowns";
 import { PricingAdmin } from "./PricingAdmin";
 import { OperationsOverview } from "./OperationsOverview";
+import { LeadsPanel } from "./LeadsPanel";
+import { CustomersPanel } from "./CustomersPanel";
 import type { InstagramConnectionStatus } from "@/features/instagram/config";
 import { InstagramStatus } from "./InstagramStatus";
 
@@ -65,9 +67,11 @@ export default function AdminConsole({ instagramStatus }: { instagramStatus: Ins
     <main className={styles.main}>
       <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
       <section className={styles.intro}><div><p>BOOM operations</p><h1>{areaHeadline(activeArea)}</h1></div></section>
-      {activeArea === "Services" ? <PricingAdmin /> : activeArea === "Bookings" ? <BookingBreakdowns /> : (
-        <OperationsOverview><InstagramStatus status={instagramStatus} /></OperationsOverview>
-      )}
+      {activeArea === "Services" ? <PricingAdmin />
+        : activeArea === "Bookings" ? <BookingBreakdowns />
+        : activeArea === "Leads" ? <LeadsPanel />
+        : activeArea === "Customers" ? <CustomersPanel />
+        : <OperationsOverview><InstagramStatus status={instagramStatus} /></OperationsOverview>}
     </main>
   </div>;
 }

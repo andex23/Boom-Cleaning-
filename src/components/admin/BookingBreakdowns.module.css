@@ -27,3 +27,21 @@
 .priceForm button:hover:not(:disabled){background:#08255f}
 .priceForm button:disabled{opacity:.45;cursor:not-allowed}
 .priceHint{margin:8px 0 0;font-size:11px;color:#8b9ab0;line-height:1.5}
+.statusChip{display:inline-block;padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap;background:#eef1f6;color:#5a6d84}
+.statusChip[data-status="CONFIRMED"]{background:#e4f6ec;color:#0f7b4f}
+.statusChip[data-status="IN_PROGRESS"]{background:#e8f0ff;color:#0c55b5}
+.statusChip[data-status="COMPLETED"]{background:#e9eef5;color:#3c5064}
+.statusChip[data-status="CANCELLED"],.statusChip[data-status="NO_SHOW"]{background:#fdeeec;color:#b4232a}
+.lifecycle{display:grid;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6}
+.lifecycleLabel{margin:0 0 8px;font-size:11px;font-weight:800;letter-spacing:.04em;color:#6b7a90;text-transform:uppercase}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.actions input[type="datetime-local"]{border:1px solid #d4dbe6;border-radius:7px;padding:8px 10px;font-size:13px;color:#08255f}
+.actions input:focus-visible{outline:3px solid #55d5f3;outline-offset:-1px}
+.primary,.destructive{border:0;border-radius:7px;padding:9px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.primary{background:#0c55b5;color:#fff}
+.primary:hover:not(:disabled){background:#08255f}
+.destructive{background:#fff;color:#b4232a;border:1px solid #f0c4c0}
+.destructive:hover:not(:disabled){background:#fdeeec}
+.primary:disabled,.destructive:disabled{opacity:.45;cursor:not-allowed}
+.done{font-size:12px;color:#6b7a90}
+@media (max-width:720px){.summary{grid-template-columns:1fr auto}.actions{width:100%}.actions input,.primary,.destructive{flex:1 1 auto}}

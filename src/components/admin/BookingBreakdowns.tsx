@@ -7,6 +7,22 @@ import styles from "./PricingAdmin.module.css";
 import own from "./BookingBreakdowns.module.css";
 import { adminErrorMessage, adminFetch, SESSION_EXPIRED_MESSAGE } from "./adminFetch";
 
+const NEXT_STATUSES: Record<string, readonly string[]> = {
+  PENDING: ["CONFIRMED", "CANCELLED", "NO_SHOW"],
+  CONFIRMED: ["IN_PROGRESS", "CANCELLED", "NO_SHOW"],
+  IN_PROGRESS: ["COMPLETED", "CANCELLED"],
+  COMPLETED: [], CANCELLED: [], NO_SHOW: [],
+};
+// Plain verbs, not enum names, so staff know what the button does.
+const ACTION_LABELS: Record<string, string> = {
+  CONFIRMED: "Confirm", IN_PROGRESS: "Start job", COMPLETED: "Mark complete",
+  CANCELLED: "Cancel", NO_SHOW: "No show",
+};
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: "Awaiting confirmation", CONFIRMED: "Confirmed", IN_PROGRESS: "In progress",
+  COMPLETED: "Completed", CANCELLED: "Cancelled", NO_SHOW: "No show",
+};
+
 const dateFormatter = new Intl.DateTimeFormat("en-NG", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" });
 
 /**
@@ -29,7 +45,37 @@ export function BookingBreakdowns() {
   const [priceDraft, setPriceDraft] = useState<Record<number, string>>({});
   const [noteDraft, setNoteDraft] = useState<Record<number, string>>({});
   const [savingFor, setSavingFor] = useState<number | null>(null);
+  const [moveDraft, setMoveDraft] = useState<Record<number, string>>({});
   const [saveError, setSaveError] = useState("");
+
+  const runAction = async (bookingNumber: number, payload: Record<string, unknown>, failure: string) => {
+    setSavingFor(bookingNumber);
+    setSaveError("");
+    try {
+      const response = await adminFetch("/api/admin/bookings", {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingNumber, ...payload }),
+      });
+      const body = await response.json().catch(() => null) as { error?: string; bookings?: BookingBreakdown[] } | null;
+      if (!response.ok) throw new Error(body?.error ?? failure);
+      if (body?.bookings) setBookings(body.bookings);
+      return true;
+    } catch (actionFailure) {
+      setSaveError(adminErrorMessage(actionFailure, actionFailure instanceof Error ? actionFailure.message : failure));
+      return false;
+    } finally {
+      setSavingFor(null);
+    }
+  };
+
+  const changeStatus = (bookingNumber: number, status: string) =>
+    runAction(bookingNumber, { action: "status", status }, "We couldn’t update that booking.");
+
+  const reschedule = (bookingNumber: number, localDateTime: string) => {
+    // datetime-local has no zone; BOOM works in Africa/Lagos.
+    if (!localDateTime) { setSaveError("Choose a new date and time."); return Promise.resolve(false); }
+    return runAction(bookingNumber, { action: "reschedule", scheduledStartAt: `${localDateTime}:00+01:00` }, "We couldn’t move that booking.");
+  };
 
   const savePrice = async (bookingNumber: number) => {
     const amount = Number(priceDraft[bookingNumber]);
@@ -84,6 +130,7 @@ export function BookingBreakdowns() {
           {booking.requiresReview
             ? <span className={styles.tagReview}>Needs pricing</span>
             : <span className={own.total}>{formatNaira(booking.total)}</span>}
+          <span className={own.statusChip} data-status={booking.status}>{STATUS_LABELS[booking.status] ?? booking.status}</span>
           <span aria-hidden="true" className={isOpen ? own.chevronOpen : own.chevron}>⌄</span>
         </button>
         {isOpen ? <div className={own.detail}>
@@ -107,6 +154,31 @@ export function BookingBreakdowns() {
             </button>
           </div>
           <p className={own.priceHint}>The difference is recorded as its own line, so the breakdown still adds up and the original calculation stays visible.</p>
+
+          <div className={own.lifecycle}>
+            <div>
+              <p className={own.lifecycleLabel}>Booking status{booking.crewName ? ` · ${booking.crewName}` : ""}</p>
+              <div className={own.actions}>
+                {(NEXT_STATUSES[booking.status] ?? []).length === 0
+                  ? <span className={own.done}>This booking is {(STATUS_LABELS[booking.status] ?? booking.status).toLowerCase()} — nothing left to do.</span>
+                  : NEXT_STATUSES[booking.status].map((next) => <button
+                      key={next} type="button" disabled={savingFor === booking.bookingNumber}
+                      className={next === "CANCELLED" || next === "NO_SHOW" ? own.destructive : own.primary}
+                      onClick={() => changeStatus(booking.bookingNumber, next)}
+                    >{ACTION_LABELS[next] ?? next}</button>)}
+              </div>
+            </div>
+
+            {["PENDING", "CONFIRMED"].includes(booking.status) ? <div>
+              <p className={own.lifecycleLabel}>Move to another time</p>
+              <div className={own.actions}>
+                <input type="datetime-local" value={moveDraft[booking.bookingNumber] ?? ""}
+                  onChange={(event) => setMoveDraft((current) => ({ ...current, [booking.bookingNumber]: event.target.value }))} />
+                <button type="button" disabled={savingFor === booking.bookingNumber || !moveDraft[booking.bookingNumber]}
+                  className={own.primary} onClick={() => reschedule(booking.bookingNumber, moveDraft[booking.bookingNumber] ?? "")}>Move booking</button>
+              </div>
+            </div> : null}
+          </div>
           {saveError && savingFor === null ? <p className={styles.error} role="alert">{saveError}</p> : null}
         </div> : null}
       </li>;

@@ -135,3 +135,53 @@ describe("manual booking pricing", () => {
     expect(manualPricing).toContain("grant execute on function public.set_booking_price(jsonb) to service_role");
   });
 });
+
+const crews = read("011_crews_and_booking_lifecycle.sql");
+
+describe("crews and capacity", () => {
+  it("replaces the business-wide schedule lock with a per-crew one", () => {
+    // The old constraint had no crew column, so one job blocked every other customer.
+    expect(crews).toContain("drop constraint if exists bookings_no_active_schedule_overlap");
+    expect(crews).toContain("add constraint bookings_no_crew_schedule_overlap");
+    expect(crews).toContain("crew_id with =");
+  });
+
+  it("assigns a free crew when a booking is made", () => {
+    expect(crews).toContain("function public.assign_free_crew(start_value timestamptz, end_value timestamptz)");
+    expect(crews).toContain("crew_value := public.assign_free_crew(start_value, end_value)");
+    expect(crews).toContain("crew_id, status, scheduled_start_at");
+  });
+
+  it("counts free crews rather than treating one booking as a full day", () => {
+    expect(crews).toContain("free_crews := crew_total - coalesce(busy_crews, 0)");
+    expect(crews).toContain("'crewsFree', greatest(free_crews, 0)");
+  });
+});
+
+describe("booking lifecycle", () => {
+  it("only permits sensible status transitions", () => {
+    expect(crews).toContain("function public.update_booking_status(request jsonb)");
+    expect(crews).toContain("when 'PENDING' then array['CONFIRMED', 'CANCELLED', 'NO_SHOW']");
+    expect(crews).toContain("when 'IN_PROGRESS' then array['COMPLETED', 'CANCELLED']");
+    expect(crews).toContain("cannot become");
+  });
+
+  it("writes the timestamps the table's checks require", () => {
+    expect(crews).toContain("cancelled_at = case when next_status = 'CANCELLED' then now()");
+    expect(crews).toContain("completed_at = case when next_status = 'COMPLETED' then now()");
+  });
+
+  it("reschedules onto a crew that is actually free", () => {
+    expect(crews).toContain("function public.reschedule_booking(request jsonb)");
+    expect(crews).toContain("No crew is free at that time");
+    // The variable must not shadow services.duration_minutes.
+    expect(crews).toContain("select s.duration_minutes into duration_value");
+  });
+
+  it("keeps every lifecycle function service-role only", () => {
+    for (const fn of ["update_booking_status(jsonb)", "reschedule_booking(jsonb)", "assign_free_crew(timestamptz, timestamptz)"]) {
+      expect(crews).toContain(`revoke all on function public.${fn} from public, anon, authenticated`);
+      expect(crews).toContain(`grant execute on function public.${fn} to service_role`);
+    }
+  });
+});

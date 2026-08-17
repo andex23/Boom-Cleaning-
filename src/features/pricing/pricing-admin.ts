@@ -136,6 +136,51 @@ export async function setBookingPrice(update: BookingPriceUpdate) {
   return data as { bookingNumber: number; previousTotal: number; total: number; delta: number; clearedReview: boolean };
 }
 
+export const BOOKING_STATUSES = ["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED", "CANCELLED", "NO_SHOW"] as const;
+
+export const bookingStatusSchema = z.object({
+  bookingNumber: z.number().int().positive(),
+  status: z.enum(BOOKING_STATUSES),
+  note: z.string().trim().max(240).optional(),
+});
+
+export const rescheduleSchema = z.object({
+  bookingNumber: z.number().int().positive(),
+  scheduledStartAt: z.string().datetime({ offset: true }),
+  crewId: z.uuid().optional(),
+});
+
+/** Only these moves make sense; the database enforces the same rules. */
+export const NEXT_STATUSES: Record<string, readonly string[]> = {
+  PENDING: ["CONFIRMED", "CANCELLED", "NO_SHOW"],
+  CONFIRMED: ["IN_PROGRESS", "CANCELLED", "NO_SHOW"],
+  IN_PROGRESS: ["COMPLETED", "CANCELLED"],
+  COMPLETED: [],
+  CANCELLED: [],
+  NO_SHOW: [],
+};
+
+export async function setBookingStatus(update: z.infer<typeof bookingStatusSchema>) {
+  const client = createServiceRoleClient();
+  const { data, error } = await client.rpc("update_booking_status", { request: update });
+  if (error) {
+    if (error.code === "22023" || error.code === "23503") throw new BookingPriceError(error.message);
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+export async function rescheduleBooking(update: z.infer<typeof rescheduleSchema>) {
+  const client = createServiceRoleClient();
+  const { data, error } = await client.rpc("reschedule_booking", { request: update });
+  if (error) {
+    if (error.code === "23P01") throw new BookingPriceError("No crew is free at that time.");
+    if (error.code === "22023" || error.code === "23503") throw new BookingPriceError(error.message);
+    throw new Error(error.message);
+  }
+  return data;
+}
+
 export type BookingBreakdown = {
   reference: string;
   bookingNumber: number;
@@ -144,6 +189,7 @@ export type BookingBreakdown = {
   propertyType: string | null;
   scheduledStartAt: string;
   status: string;
+  crewName: string | null;
   currency: string;
   total: number;
   requiresReview: boolean;
@@ -155,7 +201,7 @@ export async function loadRecentBookingBreakdowns(limit = 8): Promise<BookingBre
   const client = createServiceRoleClient();
   const { data, error } = await client
     .from("bookings")
-    .select("booking_number,status,scheduled_start_at,currency,total,customers(full_name),services(name),quotes(requires_review,property_types(name),quote_items(kind,label,amount,sort_order))")
+    .select("booking_number,status,scheduled_start_at,currency,total,customers(full_name),services(name),crews(name),quotes(requires_review,property_types(name),quote_items(kind,label,amount,sort_order))")
     .order("created_at", { ascending: false })
     .limit(Math.min(Math.max(limit, 1), 25));
   if (error) throw new Error(error.message);
@@ -164,6 +210,7 @@ export async function loadRecentBookingBreakdowns(limit = 8): Promise<BookingBre
     booking_number: number; status: string; scheduled_start_at: string; currency: string; total: number | string;
     customers: { full_name: string | null } | null;
     services: { name: string } | null;
+    crews: { name: string } | null;
     quotes: { requires_review: boolean; property_types: { name: string } | null; quote_items: { kind: string; label: string; amount: number | string; sort_order: number }[] } | null;
   };
 
@@ -175,6 +222,7 @@ export async function loadRecentBookingBreakdowns(limit = 8): Promise<BookingBre
     propertyType: row.quotes?.property_types?.name ?? null,
     scheduledStartAt: row.scheduled_start_at,
     status: row.status,
+    crewName: row.crews?.name ?? null,
     currency: row.currency,
     total: Number(row.total),
     requiresReview: row.quotes?.requires_review ?? false,

@@ -28,3 +28,13 @@
 .tagPriced{background:#e8f4ff;color:#0c55b5}
 .tagReview{background:#fff3e2;color:#96591b}
 @media (max-width:720px){.table{min-width:520px}.block{overflow-x:auto}}
+.percentField{display:inline-flex;align-items:center;gap:8px}
+.percentField small{color:#0c55b5;font-weight:800;font-size:12px;min-width:44px}
+.example{border:1px solid #cfe3f7;background:#f2f8fe;border-radius:11px;padding:18px 20px}
+.example h3{margin:0 0 4px;font-size:14px;font-weight:800;color:#08255f}
+.example>p{margin:0 0 12px;font-size:12px;color:#5a6d84}
+.example ul{list-style:none;margin:0;padding:0;font-size:13px}
+.example li{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px solid #e2edf8;color:#3c5064}
+.example li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.exampleTotal{font-weight:800;color:#08255f!important;border-bottom:0!important;padding-top:10px!important;font-size:15px}
+.example small{display:block;margin-top:10px;font-size:11px;color:#7c8ba1}
