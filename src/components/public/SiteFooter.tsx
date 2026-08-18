@@ -8,7 +8,7 @@ export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <div className={brandStyles.footerBrand}>
-        <BrandLogo size={96} />
+        <BrandLogo size={96} tone="onDark" />
         <span className={brandStyles.footerWordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
       </div>
       <p>Making homes and workspaces cleaner, healthier and better places to be.</p>

@@ -54,7 +54,7 @@ function areaIcon(area: AdminArea): IconName {
   return ({ Overview: "grid", Bookings: "calendar", Leads: "users", Customers: "users", Jobs: "briefcase", Services: "sparkles", Payments: "card", Messages: "message", Reports: "chart" } as const)[area];
 }
 
-export default function AdminConsole({ instagramStatus, logoSrc }: { instagramStatus: InstagramConnectionStatus; logoSrc: string }) {
+export default function AdminConsole({ instagramStatus, logoSrc, logoLightSrc }: { instagramStatus: InstagramConnectionStatus; logoSrc: string; logoLightSrc: string }) {
   const [activeArea, setActiveArea] = useState<AdminArea>("Overview");
   const [navOpen, setNavOpen] = useState(false);
 
@@ -67,7 +67,7 @@ export default function AdminConsole({ instagramStatus, logoSrc }: { instagramSt
     </aside>
     {navOpen && <button className={styles.backdrop} aria-label="Close navigation" onClick={() => setNavOpen(false)} />}
     <main className={styles.main}>
-      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src={logoSrc} width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><Link className={styles.newBooking} href="/quote" target="_blank" rel="noreferrer">+ New booking</Link><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
+      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src={logoLightSrc} width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><Link className={styles.newBooking} href="/quote" target="_blank" rel="noreferrer">+ New booking</Link><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
       <section className={styles.intro}><div><p>BOOM operations</p><h1>{areaHeadline(activeArea)}</h1></div></section>
       {activeArea === "Services" ? <PricingAdmin />
         : activeArea === "Bookings" ? <BookingBreakdowns />

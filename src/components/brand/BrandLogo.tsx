@@ -7,23 +7,37 @@ import Image from "next/image";
 /**
  * One definition of the logo for the whole site.
  *
- * Files are tried best-first, so replacing the mark is a matter of dropping a file into
- * public/images and nothing else: an SVG wins if present, then a transparent PNG, and the
- * original photograph is only the last resort.
+ * The mark is a single flat colour, so it needs two versions: cyan reads at 7.3:1 on the
+ * navy panels but only 2.07:1 on the warm off-white, where navy reads at 14.2:1. Callers
+ * say which ground the logo is sitting on rather than picking a file.
+ *
+ * Files are tried best-first within each tone, so replacing the mark means dropping a file
+ * into public/images and nothing else.
  */
-const CANDIDATES = [
-  "/images/boom-logo.svg",
-  "/images/boom-logo.png",
-  "/images/boom-logo.webp",
-  "/images/boom-official-logo.png",
-  "/images/boom-official-logo.jpg",
-];
+const CANDIDATES = {
+  onLight: [
+    "/images/boom-logo-dark.svg",
+    "/images/boom-logo-dark.png",
+    "/images/boom-logo.svg",
+    "/images/boom-logo.png",
+    "/images/boom-official-logo.jpg",
+  ],
+  onDark: [
+    "/images/boom-logo.svg",
+    "/images/boom-logo.png",
+    "/images/boom-logo-dark.png",
+    "/images/boom-official-logo.jpg",
+  ],
+} as const;
 
-export function resolveLogoSrc() {
-  for (const candidate of CANDIDATES) {
+export type LogoTone = keyof typeof CANDIDATES;
+
+export function resolveLogoSrc(tone: LogoTone = "onLight") {
+  const options = CANDIDATES[tone];
+  for (const candidate of options) {
     if (existsSync(path.join(process.cwd(), "public", candidate))) return candidate;
   }
-  return CANDIDATES[CANDIDATES.length - 1];
+  return options[options.length - 1];
 }
 
 /**
@@ -47,8 +61,13 @@ function pngAspect(publicPath: string): number | null {
   }
 }
 
-export function BrandLogo({ size = 64, priority = false, className }: { size?: number; priority?: boolean; className?: string }) {
-  const src = resolveLogoSrc();
+export function BrandLogo({
+  size = 64,
+  tone = "onLight",
+  priority = false,
+  className,
+}: { size?: number; tone?: LogoTone; priority?: boolean; className?: string }) {
+  const src = resolveLogoSrc(tone);
   const isVector = src.endsWith(".svg");
   const aspect = isVector ? 1.9 : pngAspect(src) ?? 1;
   return (
