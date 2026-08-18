@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { adminAreas, type AdminArea } from "@/data/admin-demo";
 import styles from "./AdminConsole.module.css";
@@ -10,6 +11,7 @@ import { PricingAdmin } from "./PricingAdmin";
 import { OperationsOverview } from "./OperationsOverview";
 import { LeadsPanel } from "./LeadsPanel";
 import { CustomersPanel } from "./CustomersPanel";
+import { ComingSoonPanel } from "./ComingSoonPanel";
 import type { InstagramConnectionStatus } from "@/features/instagram/config";
 import { InstagramStatus } from "./InstagramStatus";
 
@@ -61,17 +63,18 @@ export default function AdminConsole({ instagramStatus }: { instagramStatus: Ins
       <div className={styles.brand}><Image src="/images/boom-official-logo.jpg" width={44} height={44} alt="BOOM Cleaning Services official logo" priority /><span><strong>BOOM</strong><small>Cleaning Services</small></span></div>
       <p className={styles.workspaceLabel}>OPERATIONS</p>
       <nav className={styles.navigation}>{adminAreas.map((area) => <button key={area} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setActiveArea(area); setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span></button>)}</nav>
-      <div className={styles.sideFooter}><div className={styles.helpCard}><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>BOOM support is here</span></div><Icon name="arrow" size={15} /></div><div className={styles.user}><span className={styles.avatar}>B</span><span><strong>BOOM admin</strong><small>Signed in</small></span><Icon name="more" /></div></div>
+      <div className={styles.sideFooter}><a className={styles.helpCard} href="tel:+2348000000000"><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>Call BOOM support</span></div><Icon name="arrow" size={15} /></a><div className={styles.user}><span className={styles.avatar}>B</span><span><strong>BOOM admin</strong><small>Signed in</small></span><Icon name="more" /></div></div>
     </aside>
     {navOpen && <button className={styles.backdrop} aria-label="Close navigation" onClick={() => setNavOpen(false)} />}
     <main className={styles.main}>
-      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><button className={styles.iconButton} aria-label="Notifications"><Icon name="bell" /><i /></button><button className={styles.newBooking}>+ New booking</button><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
+      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label="Open navigation" className={styles.menuButton} onClick={() => setNavOpen(true)}><span /><span /><span /></button><Image src="/images/boom-official-logo.jpg" width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}><span className={styles.pulse} /> Abuja operations <span className={styles.dot} /> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><Link className={styles.newBooking} href="/quote" target="_blank" rel="noreferrer">+ New booking</Link><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
       <section className={styles.intro}><div><p>BOOM operations</p><h1>{areaHeadline(activeArea)}</h1></div></section>
       {activeArea === "Services" ? <PricingAdmin />
         : activeArea === "Bookings" ? <BookingBreakdowns />
         : activeArea === "Leads" ? <LeadsPanel />
         : activeArea === "Customers" ? <CustomersPanel />
-        : <OperationsOverview><InstagramStatus status={instagramStatus} /></OperationsOverview>}
+        : activeArea === "Overview" ? <OperationsOverview><InstagramStatus status={instagramStatus} /></OperationsOverview>
+        : <ComingSoonPanel area={activeArea} />}
     </main>
   </div>;
 }
