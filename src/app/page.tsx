@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { listBookableServices } from "@/features/services/public-catalog";
-import { loadPublishedReviews } from "@/features/reviews/published-reviews";
+import { loadTestimonials, testimonialSourceLabel } from "@/features/reviews/testimonials";
 import { ServiceCarousel } from "@/components/public/ServiceCarousel";
+import { SiteNav } from "@/components/public/SiteNav";
 import styles from "./home.module.css";
 import brandStyles from "./homeBrand.module.css";
 
@@ -15,9 +16,9 @@ const steps = [
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [services, reviews] = await Promise.all([
+  const [services, testimonials] = await Promise.all([
     listBookableServices().then((all) => all.slice(0, 6)),
-    loadPublishedReviews(),
+    loadTestimonials(),
   ]);
   return <main className={styles.page}>
     <header className={styles.header}>
@@ -25,7 +26,7 @@ export default async function Home() {
         <Image src="/images/boom-official-logo.jpg" width={64} height={64} alt="BOOM Cleaning Services official logo" priority />
         <span className={brandStyles.wordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
       </Link>
-      <nav aria-label="Primary navigation"><Link href="/services">Services</Link><a href="#process">How it works</a><a href="#about">About</a></nav>
+      <SiteNav />
       <Link className={styles.headerCta} href="/quote">Book a service <span>→</span></Link>
     </header>
 
@@ -68,15 +69,14 @@ export default async function Home() {
 
     <section className={styles.promise} id="about"><h2>Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>
 
-    {reviews.length > 0 ? <section className={styles.reviews} aria-labelledby="reviews-heading">
+    {testimonials.length > 0 ? <section className={styles.reviews} aria-labelledby="reviews-heading">
       <div className={styles.sectionIntro}>
         <p className={styles.eyebrow}>What customers say</p>
         <h2 id="reviews-heading">In their words.</h2>
       </div>
-      <ul className={styles.reviewGrid}>{reviews.map((review) => <li key={review.id} className={styles.reviewCard}>
-        <div className={styles.stars} aria-label={`${review.rating} out of 5`}>{"★".repeat(review.rating)}<span>{"★".repeat(5 - review.rating)}</span></div>
-        <blockquote>{review.comment}</blockquote>
-        <footer>{review.author}{review.service ? ` · ${review.service}` : ""}</footer>
+      <ul className={styles.reviewGrid}>{testimonials.map((testimonial) => <li key={testimonial.id} className={styles.reviewCard}>
+        <blockquote>&ldquo;{testimonial.quote}&rdquo;</blockquote>
+        <footer>{testimonial.author}<span>{testimonialSourceLabel(testimonial.source)}</span></footer>
       </li>)}</ul>
     </section> : null}
 
