@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { listBookableServices } from "@/features/services/public-catalog";
 import { loadPublishedReviews } from "@/features/reviews/published-reviews";
+import { ServiceCarousel } from "@/components/public/ServiceCarousel";
 import styles from "./home.module.css";
 import brandStyles from "./homeBrand.module.css";
 
@@ -33,7 +34,7 @@ export default async function Home() {
       <div className={styles.heroImage}><Image src="/images/boom-cleaning-hero-v2.png" alt="A BOOM cleaner in the brand's blue uniform caring for a contemporary Abuja living room" fill priority sizes="(max-width: 800px) 100vw, 52vw" /></div>
     </section>
 
-    <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><div className={styles.serviceList}>{services.map((service, index) => <Link href={`/quote?service=${service.slug}`} className={styles.serviceRow} key={service.id} aria-label={`Book ${service.name}`}><div className={styles.serviceImage}><Image src={service.image} alt={`${service.name} by BOOM Cleaning Services`} fill sizes="(max-width: 850px) 100vw, 32vw" /></div><div className={styles.serviceDetails}><small>{String(index + 1).padStart(2, "0")}</small><div><h3>{service.name}</h3><p>{service.tagline}</p></div><span className={styles.bookAction}>Book →</span></div></Link>)}</div></section>
+    <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><ServiceCarousel services={services} /></section>
 
     <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
 
