@@ -133,3 +133,10 @@
 .reviewCard blockquote{font-size:15px;line-height:1.62;color:var(--ink);font-family:var(--font-display);font-style:italic}
 .reviewCard footer{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;font-size:12px;font-weight:700;color:var(--ink)}
 .reviewCard footer span{font-weight:400;color:var(--ink-faint)}
+
+@media(max-width:820px){
+  /* The header spreads its children apart, so with the nav hidden this button was left
+     stranded in the middle of the bar. The menu opens with a full-width booking button,
+     so nothing is lost by dropping it from the header on small screens. */
+  .headerCta{display:none}
+}
