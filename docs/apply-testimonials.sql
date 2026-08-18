@@ -33,13 +33,13 @@ create policy "admins manage testimonials" on public.testimonials for all to aut
 -- number and a customer's full legal name.
 --
 -- Instagram comments are credited by handle because they are already public. WhatsApp
--- messages are private conversations, so they are credited generically until each customer
+-- messages are private conversations, so they are shown as an anonymous user until each customer
 -- confirms they are happy to be named.
 insert into public.testimonials (quote, author_label, source, sort_order, published_at) values
   ('I don''t have any complaints, your team was amazing in their cognitive abilities, and everyone seemed happy doing their job. Everything turned out as well as I could have hoped, and I''m looking forward to working with you all again.',
-   'A BOOM customer', 'WHATSAPP', 10, now()),
+   'Anonymous user', 'WHATSAPP', 10, now()),
   ('Your cleaning detailing is something else. Just got home and I must say you''re doing an amazing job.',
-   'A BOOM customer', 'WHATSAPP', 20, now()),
+   'Anonymous user', 'WHATSAPP', 20, now()),
   ('Thank you for a great job. Your team are dedicated and hardworking. Please help me appreciate them again.',
    'Hauwa', 'INSTAGRAM', 30, now()),
   ('Thanks so much, you guys exceeded my expectations, job perfectly done.',
@@ -49,5 +49,5 @@ insert into public.testimonials (quote, author_label, source, sort_order, publis
   ('You sure know the meaning of sparkles.',
    '@unicontrols', 'INSTAGRAM', 60, now()),
   ('Your workers did an amazing job.',
-   'A BOOM customer', 'WHATSAPP', 70, now())
+   'Anonymous user', 'WHATSAPP', 70, now())
 on conflict do nothing;

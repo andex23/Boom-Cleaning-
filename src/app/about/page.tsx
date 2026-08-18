@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { listBookableServices } from "@/features/services/public-catalog";
 import { loadTestimonials } from "@/features/reviews/testimonials";
-import { SiteNav } from "@/components/public/SiteNav";
+import { loadTeamPhotos } from "@/features/team/team-photos";
+import { TestimonialSlider } from "@/components/public/TestimonialSlider";
+import { SiteHeader } from "@/components/public/SiteHeader";
+import { SiteFooter } from "@/components/public/SiteFooter";
 import styles from "../home.module.css";
-import brandStyles from "../homeBrand.module.css";
 import about from "./about.module.css";
 
 export const metadata = {
@@ -23,17 +25,10 @@ const KIT = [
 ];
 
 export default async function AboutPage() {
-  const [services, testimonials] = await Promise.all([listBookableServices(), loadTestimonials(3)]);
+  const [services, testimonials, team] = await Promise.all([listBookableServices(), loadTestimonials(), loadTeamPhotos()]);
 
   return <main className={styles.page}>
-    <header className={styles.header}>
-      <Link href="/" className={brandStyles.headerBrand} aria-label="BOOM Cleaning home">
-        <Image src="/images/boom-official-logo.jpg" width={64} height={64} alt="BOOM Cleaning Services official logo" priority />
-        <span className={brandStyles.wordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
-      </Link>
-      <SiteNav />
-      <Link className={styles.headerCta} href="/quote">Book a service <span>→</span></Link>
-    </header>
+    <SiteHeader priority />
 
     <section className={about.hero}>
       <p className={styles.eyebrow}>About us</p>
@@ -47,21 +42,45 @@ export default async function AboutPage() {
 
     <section className={about.pillars} aria-labelledby="how-heading">
       <h2 id="how-heading" className={about.sectionHeading}>How we work</h2>
-      <ul>
+      <ol className={about.steps}>
         <li>
-          <strong>We quote on the actual space</strong>
-          <p>Rooms, floors, outdoor areas and extras are counted and priced individually, so the figure you see is built from your property rather than a generic rate.</p>
+          <strong>You tell us about the space</strong>
+          <p>Rooms, floors, outdoor areas and extras are counted individually &mdash; bedrooms, living rooms, storeys, a BQ, a compound &mdash; so the quote is built from your property rather than a generic rate.</p>
         </li>
         <li>
-          <strong>A trained team, in uniform</strong>
-          <p>The same people, properly equipped and identifiable, turn up to do the work. Nobody is sent to a job they have not been trained for.</p>
+          <strong>You see the price before you book</strong>
+          <p>The figure is worked out and shown to you up front, itemised. Where a job genuinely needs looking at first, we say so and quote it by hand instead of guessing and revising later.</p>
         </li>
         <li>
-          <strong>We say what we cannot price</strong>
-          <p>Where a job needs looking at first, we tell you and quote it by hand instead of guessing and revising the number later.</p>
+          <strong>You choose a time that suits you</strong>
+          <p>Available slots come from our real working diary, Monday to Saturday. You only see times we can actually staff.</p>
         </li>
-      </ul>
+        <li>
+          <strong>A trained team arrives equipped</strong>
+          <p>The same people, in uniform and identifiable, with the machines the job needs. Nobody is sent to work they have not been trained for.</p>
+        </li>
+        <li>
+          <strong>We finish and check the work</strong>
+          <p>The job is reviewed against what you asked for before we leave, and we are reachable afterwards if anything is not right.</p>
+        </li>
+      </ol>
     </section>
+
+
+    {team.length > 0 ? <section className={about.team} aria-labelledby="team-heading">
+      <div className={about.teamIntro}>
+        <p className={styles.eyebrow}>Our people</p>
+        <h2 id="team-heading">The team behind the clean.</h2>
+        <p>Trained, uniformed and equipped. These are the people who turn up at your door.</p>
+      </div>
+      <ul className={about.teamGrid}>
+        {team.map((photo, index) => (
+          <li key={photo.src} className={index === 0 ? about.teamFeature : undefined}>
+            <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 820px) 92vw, 45vw" />
+          </li>
+        ))}
+      </ul>
+    </section> : null}
 
     <section className={about.kit} aria-labelledby="kit-heading">
       <div>
@@ -85,11 +104,9 @@ export default async function AboutPage() {
 
     {testimonials.length > 0 ? <section className={about.quotes} aria-labelledby="quotes-heading">
       <h2 id="quotes-heading" className={about.sectionHeading}>What customers tell us</h2>
-      <ul>{testimonials.map((testimonial) => <li key={testimonial.id}>
-        <blockquote>&ldquo;{testimonial.quote}&rdquo;</blockquote>
-        <cite>{testimonial.author}</cite>
-      </li>)}</ul>
+      <TestimonialSlider testimonials={testimonials} />
     </section> : null}
+
 
     <section className={about.cta}>
       <h2>Tell us about your space.</h2>
@@ -100,18 +117,6 @@ export default async function AboutPage() {
       </div>
     </section>
 
-    <footer className={styles.footer}>
-      <div className={brandStyles.footerBrand}>
-        <Image src="/images/boom-official-logo.jpg" width={96} height={96} alt="BOOM Cleaning Services official logo" />
-        <span className={brandStyles.footerWordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
-      </div>
-      <p>Making homes and workspaces cleaner, healthier and better places to be.</p>
-      <div>
-        <Link href="/services">Services</Link>
-        <Link href="/quote">Book a service</Link>
-        <Link href="/about">About us</Link>
-        <a href="tel:+2349029799205">0902 979 9205</a>
-      </div>
-    </footer>
+    <SiteFooter />
   </main>;
 }

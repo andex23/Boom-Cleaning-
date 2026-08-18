@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { listBookableServices } from "@/features/services/public-catalog";
-import { loadTestimonials, testimonialSourceLabel } from "@/features/reviews/testimonials";
+import { loadTestimonials } from "@/features/reviews/testimonials";
+import { TestimonialSlider } from "@/components/public/TestimonialSlider";
 import { ServiceCarousel } from "@/components/public/ServiceCarousel";
-import { SiteNav } from "@/components/public/SiteNav";
+import { SiteHeader } from "@/components/public/SiteHeader";
+import { SiteFooter } from "@/components/public/SiteFooter";
 import styles from "./home.module.css";
-import brandStyles from "./homeBrand.module.css";
 
 const steps = [
   ["01", "Tell us what you need", "Choose a service and share a few details about your space."],
@@ -21,14 +22,7 @@ export default async function Home() {
     loadTestimonials(),
   ]);
   return <main className={styles.page}>
-    <header className={styles.header}>
-      <Link href="/" className={brandStyles.headerBrand} aria-label="BOOM Cleaning home">
-        <Image src="/images/boom-official-logo.jpg" width={64} height={64} alt="BOOM Cleaning Services official logo" priority />
-        <span className={brandStyles.wordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
-      </Link>
-      <SiteNav />
-      <Link className={styles.headerCta} href="/quote">Book a service <span>→</span></Link>
-    </header>
+    <SiteHeader priority />
 
     <section className={styles.hero}>
       <div className={styles.heroCopy}><h1>A cleaner home,<br />without the <em>back-and-forth.</em></h1><p>Professional cleaning in Abuja, on your terms. Choose your service, select an available time, and confirm your booking in one simple flow.</p><div className={styles.heroActions}><Link href="/quote" className={styles.primary}>Book a service <span>→</span></Link><Link href="/services" className={styles.secondary}>Explore services</Link></div><p className={styles.location}>⌖ Proudly serving Abuja and surrounding areas</p></div>
@@ -74,12 +68,9 @@ export default async function Home() {
         <p className={styles.eyebrow}>What customers say</p>
         <h2 id="reviews-heading">In their words.</h2>
       </div>
-      <ul className={styles.reviewGrid}>{testimonials.map((testimonial) => <li key={testimonial.id} className={styles.reviewCard}>
-        <blockquote>&ldquo;{testimonial.quote}&rdquo;</blockquote>
-        <footer>{testimonial.author}<span>{testimonialSourceLabel(testimonial.source)}</span></footer>
-      </li>)}</ul>
+      <TestimonialSlider testimonials={testimonials} />
     </section> : null}
 
-    <footer className={styles.footer}><div className={brandStyles.footerBrand}><Image src="/images/boom-official-logo.jpg" width={96} height={96} alt="BOOM Cleaning Services official logo" /><span className={brandStyles.footerWordmark}><strong>BOOM</strong><small>Cleaning Services</small></span></div><p>Making homes and workspaces cleaner, healthier and better places to be.</p><div><Link href="/services">Services</Link><Link href="/quote">Book a service</Link><Link href="/admin">Staff operations</Link></div><small>Abuja, FCT, Nigeria · BOOM Cleaning Services</small></footer>
+    <SiteFooter />
   </main>;
 }

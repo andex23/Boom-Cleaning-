@@ -24,6 +24,8 @@
 
 @media(max-width:820px){
   .desktopNav{display:none}
-  .toggle{display:flex}
+  /* order:1 pushes the toggle past the header's other children so it is the last thing
+     on the right, rather than sitting between the logo and the booking button. */
+  .toggle{display:flex;order:1;margin-left:4px}
 }
 @media (prefers-reduced-motion: reduce){ .panel,.panelOpen{transition:none} }
