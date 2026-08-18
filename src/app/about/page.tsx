@@ -39,7 +39,7 @@ export default async function AboutPage() {
         surface wipe and a real clean is obvious the moment you walk in.
       </p>
       {team.length > 2 ? <div className={about.heroPhoto}>
-        <Image src={team[2].src} alt="The BOOM Cleaning Services team in Abuja" fill priority sizes="(max-width: 900px) 94vw, 1180px" />
+        <Image src="/images/team/05-team-four.webp" alt="The BOOM Cleaning Services team in Abuja" fill priority sizes="(max-width: 900px) 94vw, 1180px" />
       </div> : null}
     </section>
 
@@ -77,7 +77,7 @@ export default async function AboutPage() {
         <p>Trained, uniformed and equipped. These are the people who turn up at your door, and the same faces you will see next time.</p>
       </div>
       <div className={about.teamPhoto}>
-        <Image src={team[0].src} alt={team[0].alt} fill sizes="(max-width: 820px) 92vw, 52vw" />
+        <Image src="/images/team/04-team-portrait.webp" alt="BOOM cleaners ready for a job" fill sizes="(max-width: 820px) 92vw, 52vw" />
       </div>
     </section> : null}
 
@@ -92,7 +92,7 @@ export default async function AboutPage() {
       </div>
       <ul>{KIT.map((item) => <li key={item.name}><strong>{item.name}</strong><span>{item.use}</span></li>)}</ul>
       {team.length > 1 ? <div className={about.kitPhoto}>
-        <Image src={team[1].src} alt="BOOM cleaning equipment ready for a job" fill sizes="(max-width: 820px) 92vw, 34vw" />
+        <Image src="/images/team/02-team-equipment.webp" alt="BOOM cleaning equipment ready for a job" fill sizes="(max-width: 820px) 92vw, 34vw" />
       </div> : null}
     </section>
 

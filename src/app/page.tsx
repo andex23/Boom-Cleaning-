@@ -31,7 +31,19 @@ export default async function Home() {
 
     <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><ServiceCarousel services={services} /></section>
 
-    <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol><div className={styles.processImage}><Image src="/images/team/07-team-supplies.webp" alt="BOOM cleaners with their supplies" fill sizes="(max-width: 900px) 90vw, 26vw" /></div></section>
+    <section className={styles.teamBand} aria-labelledby="team-band-heading">
+      <div className={styles.teamBandPhoto}>
+        <Image src="/images/team/03-team-group.webp" alt="The BOOM Cleaning Services team in Abuja" fill sizes="(max-width: 900px) 92vw, 46vw" />
+      </div>
+      <div className={styles.teamBandCopy}>
+        <p className={styles.eyebrow}>Our people</p>
+        <h2 id="team-band-heading">Trained, uniformed,<br />and glad to be here.</h2>
+        <p>Every BOOM job is done by our own team &mdash; the same faces, in uniform, carrying the equipment the work actually needs. No sub-contracting, no strangers.</p>
+        <Link className={styles.secondary} href="/about">Meet the team <span aria-hidden="true">→</span></Link>
+      </div>
+    </section>
+
+    <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
 
     <section className={styles.quoteBand}><div><p>Book your clean</p><h2>Choose a service.<br />Pick a time.</h2></div><div><p>See the price, choose an available date and time, then confirm the appointment—all in one straightforward booking flow.</p><Link className={styles.primary} href="/quote">Start booking <span>→</span></Link></div></section>
 
@@ -45,7 +57,6 @@ export default async function Home() {
         {[["Mon", true], ["Tue", true], ["Wed", true], ["Thu", true], ["Fri", true], ["Sat", true], ["Sun", false]].map(([day, open]) =>
           <li key={String(day)} className={open ? styles.dayOpen : styles.dayClosed}><strong>{day}</strong><span>{open ? "8am – 6pm" : "Closed"}</span></li>)}
       </ul>
-      <div className={styles.availabilityImage}><Image src="/images/team/02-team-equipment.webp" alt="The BOOM team with their cleaning equipment" fill sizes="(max-width: 820px) 92vw, 44vw" /></div>
     </section>
 
     <section className={styles.offices} aria-labelledby="offices-heading">
