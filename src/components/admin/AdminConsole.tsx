@@ -63,7 +63,7 @@ export default function AdminConsole({ instagramStatus }: { instagramStatus: Ins
       <div className={styles.brand}><Image src="/images/boom-official-logo.jpg" width={44} height={44} alt="BOOM Cleaning Services official logo" priority /><span><strong>BOOM</strong><small>Cleaning Services</small></span></div>
       <p className={styles.workspaceLabel}>OPERATIONS</p>
       <nav className={styles.navigation}>{adminAreas.map((area) => <button key={area} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setActiveArea(area); setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span></button>)}</nav>
-      <div className={styles.sideFooter}><a className={styles.helpCard} href="tel:+2348000000000"><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>Call BOOM support</span></div><Icon name="arrow" size={15} /></a><div className={styles.user}><span className={styles.avatar}>B</span><span><strong>BOOM admin</strong><small>Signed in</small></span><Icon name="more" /></div></div>
+      <div className={styles.sideFooter}><a className={styles.helpCard} href="tel:+2349029799205"><span className={styles.helpIcon}>?</span><div><strong>Need a hand?</strong><span>Call BOOM support</span></div><Icon name="arrow" size={15} /></a><div className={styles.user}><span className={styles.avatar}>B</span><span><strong>BOOM admin</strong><small>Signed in</small></span><Icon name="more" /></div></div>
     </aside>
     {navOpen && <button className={styles.backdrop} aria-label="Close navigation" onClick={() => setNavOpen(false)} />}
     <main className={styles.main}>

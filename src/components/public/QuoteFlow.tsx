@@ -80,7 +80,9 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
   const quote = quoteState?.key === quoteKey ? quoteState.result : null;
   // Bedrooms get their own slider; every other space lives under the extras disclosure.
   const bedroomType = catalog?.spaceTypes.find((space) => space.slug === "bedroom") ?? null;
-  const otherSpaceTypes = catalog?.spaceTypes.filter((space) => space.slug !== "bedroom") ?? [];
+  const usesTiers = catalog?.usesBedroomTiers ?? false;
+  const otherSpaceTypes = usesTiers ? [] : (catalog?.spaceTypes.filter((space) => space.slug !== "bedroom") ?? []);
+  const tierPrice = usesTiers ? catalog?.bedroomTiers.find((tier) => tier.bedrooms === (spaceCounts["bedroom"] ?? 0))?.price ?? null : null;
   const extrasCount = otherSpaceTypes.reduce((total, space) => total + (spaceCounts[space.slug] ?? 0), 0);
 
   const canPrice = Boolean(catalog && form.propertyTypeSlug && form.areaSlug);
@@ -103,7 +105,8 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
         setCatalogState({ serviceSlug: form.serviceSlug, data: parsed.data });
         // Start from what the base price already covers, so the first number a customer
         // sees matches the "from" price they clicked.
-        setSpaceCounts(Object.fromEntries(parsed.data.spaceTypes.map((space) => [space.slug, space.includedCount])));
+        setSpaceCounts(Object.fromEntries(parsed.data.spaceTypes.map((space) =>
+          [space.slug, parsed.data.usesBedroomTiers && space.slug === "bedroom" ? 1 : space.includedCount])));
         setForm((current) => ({
           ...current,
           propertyTypeSlug: parsed.data.propertyTypes.some((type) => type.slug === current.propertyTypeSlug) ? current.propertyTypeSlug : parsed.data.propertyTypes[0]?.slug ?? "",
@@ -278,7 +281,7 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
         </ol>
       </div>
 
-      <p className={styles.successHelp}>Something not right? <a href="tel:+2348000000000">Call BOOM</a> and quote {booking.id}.</p>
+      <p className={styles.successHelp}>Something not right? <a href="tel:+2349029799205">Call BOOM</a> and quote {booking.id}.</p>
 
       <div className={bookingStyles.successActions}>
         <Link className={styles.primaryButton} href="/">Return home</Link>
@@ -290,7 +293,7 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
   const priceLabel = isPricing ? "Pricing…" : quote?.requiresReview ? "Scope review" : quote?.total !== null && quote?.total !== undefined ? formatNaira(quote.total) : "—";
 
   return <section className={styles.shell} aria-labelledby="quote-title">
-    <aside className={styles.aside}><Link href="/" className={styles.brand}>BOOM<span>°</span></Link><div className={styles.asideCopy}><p className={styles.eyebrow}>Quote and booking</p><h1 id="quote-title">Choose your clean. Book your time.</h1><p>Describe your space exactly as it is — every room, and the extras too — and see a transparent estimate before you book.</p></div><ol className={styles.steps}>{steps.map((label, index) => <li key={label} className={index === step ? styles.current : index < step ? styles.complete : ""}><span>{index < step ? "✓" : `0${index + 1}`}</span>{label}</li>)}</ol>{step > 0 ? <div className={styles.asideEstimate}><span>{quote?.requiresReview ? "Your quote" : "Estimated total"}</span><strong>{priceLabel}</strong>{quote?.requiresReview ? <small>A BOOM team member will confirm your price.</small> : quote?.depositAmount ? <small>{formatNaira(quote.depositAmount)} deposit on confirmation</small> : null}</div> : null}<p className={styles.support}>Need help? <a href="tel:+2348000000000">Speak to BOOM</a></p></aside>
+    <aside className={styles.aside}><Link href="/" className={styles.brand}>BOOM<span>°</span></Link><div className={styles.asideCopy}><p className={styles.eyebrow}>Quote and booking</p><h1 id="quote-title">Choose your clean. Book your time.</h1><p>Describe your space exactly as it is — every room, and the extras too — and see a transparent estimate before you book.</p></div><ol className={styles.steps}>{steps.map((label, index) => <li key={label} className={index === step ? styles.current : index < step ? styles.complete : ""}><span>{index < step ? "✓" : `0${index + 1}`}</span>{label}</li>)}</ol>{step > 0 ? <div className={styles.asideEstimate}><span>{quote?.requiresReview ? "Your quote" : "Estimated total"}</span><strong>{priceLabel}</strong>{quote?.requiresReview ? <small>A BOOM team member will confirm your price.</small> : quote?.depositAmount ? <small>{formatNaira(quote.depositAmount)} deposit on confirmation</small> : null}</div> : null}<p className={styles.support}>Need help? <a href="tel:+2349029799205">Speak to BOOM</a></p></aside>
 
     <form className={`${styles.form} ${step === 2 ? bookingStyles.calendarForm : ""}`} onSubmit={submit} noValidate aria-busy={isSubmitting}>
       <div className={styles.formTop}><div><p className={styles.mobileStep}>Step {step + 1} of {steps.length}</p><h2>{steps[step]}</h2></div><p className={styles.progress}>{Math.round(((step + 1) / steps.length) * 100)}%</p></div>
@@ -304,7 +307,7 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
 
           {bedroomType ? <label className={styles.rangeLabel}>
             <span className={styles.rangeTitle}>Bedrooms</span>
-            <strong>{spaceCounts[bedroomType.slug] ?? 0}</strong>
+            <strong>{spaceCounts[bedroomType.slug] ?? 0}{tierPrice !== null ? <em className={styles.tierPrice}>{formatNaira(tierPrice)}</em> : null}</strong>
             <input
               type="range" min={0} max={bedroomType.maxCount} step={1}
               value={spaceCounts[bedroomType.slug] ?? 0}
@@ -314,7 +317,7 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
             <span>0</span><span>{bedroomType.maxCount}</span>
           </label> : null}
 
-          <details className={styles.extras} open={extrasOpen} onToggle={(event) => setExtrasOpen((event.currentTarget as HTMLDetailsElement).open)}>
+          {otherSpaceTypes.length === 0 ? null : <details className={styles.extras} open={extrasOpen} onToggle={(event) => setExtrasOpen((event.currentTarget as HTMLDetailsElement).open)}>
             <summary>
               <span className={styles.extrasTitle}>Bathrooms, living areas and extras</span>
               <span className={styles.extrasMeta}>{extrasCount ? `${extrasCount} counted` : "None yet"}<i aria-hidden="true">⌄</i></span>
@@ -331,7 +334,7 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
                 </div>
               </li>;
             })}</ul>
-          </details>
+          </details>}
 
           {quoteFailed ? <div className={styles.errorPanel} role="alert"><p>We couldn’t work out a price for this just now. You can keep going and we’ll confirm your price by phone, or adjust a room count to try again.</p></div> : null}
           {quote?.requiresReview && quote.reviewReasons.length ? <div className={styles.reviewNotice}><strong>We’ll quote this one personally.</strong><ul>{quote.reviewReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul><p>You can still book a time — we’ll confirm the price before any payment.</p></div> : null}

@@ -57,6 +57,12 @@ export const pricingCatalogSchema = z.object({
   propertyTypes: z.array(propertyTypeOptionSchema),
   spaceTypes: z.array(spaceTypeOptionSchema),
   serviceAreas: z.array(serviceAreaOptionSchema),
+  /** True when bedroom count alone decides the price, from a published table. */
+  usesBedroomTiers: z.boolean().default(false),
+  /** Highest bedroom count in that table; above it we quote by hand. */
+  maxTierBedrooms: z.number().int().positive().nullable().default(null),
+  /** The published price for each bedroom count, so the form can show it up front. */
+  bedroomTiers: z.array(z.object({ bedrooms: z.number().int().min(0), price: money })).max(60).default([]),
 });
 
 export type PropertyTypeOption = z.infer<typeof propertyTypeOptionSchema>;

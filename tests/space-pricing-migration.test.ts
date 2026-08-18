@@ -185,3 +185,48 @@ describe("booking lifecycle", () => {
     }
   });
 });
+
+const priceList = read("012_real_price_list.sql");
+
+describe("published price list", () => {
+  it("stores the deep-cleaning figures exactly as published", () => {
+    // 1->2 bedrooms is +21,500 while every later step is +53,750, so no formula fits.
+    for (const price of ["86000", "107500", "161250", "215000", "268750", "322500"]) {
+      expect(priceList).toContain(price);
+    }
+    expect(priceList).toContain("create table if not exists public.service_bedroom_tiers");
+    expect(priceList).toContain("unique (service_id, bedrooms)");
+  });
+
+  it("sells the four packages as separate services", () => {
+    for (const slug of ["'deep-cleaning-upholstery'", "'deep-cleaning-fumigation'", "'deep-cleaning-upholstery-fumigation'"]) {
+      expect(priceList).toContain(slug);
+    }
+  });
+
+  it("does not add a property uplift to a published price", () => {
+    expect(priceList).toContain("uses_property_pricing boolean not null default true");
+    expect(priceList).toContain("if service_row.uses_property_pricing then");
+    expect(priceList).toContain("set requires_review = false, uses_property_pricing = false");
+  });
+
+  it("stops old per-room prices stacking on top of a tier price", () => {
+    // Leftover placeholder prices would otherwise be charged in addition to the tier.
+    expect(priceList).toContain("set is_active = false, updated_at = now()");
+    expect(priceList).toContain("continue when uses_tiers and space_slug = 'bedroom'");
+  });
+
+  it("quotes homes above the published table by hand", () => {
+    expect(priceList).toContain("We quote homes above %s bedrooms individually.");
+  });
+
+  it("prices post-construction per unit, including storeys and the compound", () => {
+    for (const pair of ["'bedroom',        50000", "'living-room',    60000", "'storey',         50000", "'compound-sweep', 20000", "'compound-wash',  70000", "'extra-room',     30000"]) {
+      expect(priceList).toContain(pair);
+    }
+  });
+
+  it("never quotes zero for an empty scope", () => {
+    expect(priceList).toContain("if not review_required and total_value <= 0 then");
+  });
+});

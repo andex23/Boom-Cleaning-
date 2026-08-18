@@ -125,3 +125,5 @@
   .stepper button{width:44px;height:44px;border-radius:var(--radius-sm)}
   .pills label{padding:12px 16px}
 }
+/* The published price for the chosen bedroom count, beside the slider value. */
+.tierPrice{display:block;margin-top:2px;font-style:normal;font-size:13px;font-weight:700;color:var(--accent)}

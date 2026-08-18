@@ -38,21 +38,28 @@ export async function loadPricingCatalog(client: SupabaseClient, serviceSlug: st
   if (service.error) throw new Error(service.error.message);
   if (!service.data) throw new UnknownPricingSelectionError("Unknown service");
 
-  const [propertyTypes, spaceTypes, serviceAreas, spacePrices] = await Promise.all([
+  const [propertyTypes, spaceTypes, serviceAreas, spacePrices, tiers] = await Promise.all([
     client.from("property_types").select("slug,name,description,requires_review").eq("is_active", true).order("sort_order"),
     client.from("space_types").select("id,slug,name,description,max_count,requires_review").eq("is_active", true).order("sort_order"),
     client.from("service_areas").select("slug,name,requires_review").eq("is_active", true).order("sort_order"),
     client.from("service_space_prices").select("space_type_id,unit_price,included_count").eq("service_id", service.data.id).eq("is_active", true),
+    client.from("service_bedroom_tiers").select("bedrooms,price").eq("service_id", service.data.id).order("bedrooms"),
   ]);
-  for (const result of [propertyTypes, spaceTypes, serviceAreas, spacePrices]) {
+  for (const result of [propertyTypes, spaceTypes, serviceAreas, spacePrices, tiers]) {
     if (result.error) throw new Error(result.error.message);
   }
 
   const priceBySpaceType = new Map((spacePrices.data as SpacePriceRow[]).map((row) => [row.space_type_id, row]));
+  const tierRows = (tiers.data as { bedrooms: number; price: number | string }[]).map((row) => ({ bedrooms: row.bedrooms, price: Number(row.price) }));
+  const usesBedroomTiers = tierRows.length > 0;
+
   return pricingCatalogSchema.parse({
+    usesBedroomTiers,
+    maxTierBedrooms: usesBedroomTiers ? Math.max(...tierRows.map((row) => row.bedrooms)) : null,
+    bedroomTiers: tierRows,
     propertyTypes: (propertyTypes.data as PropertyTypeRow[]).map((row) => ({ slug: row.slug, name: row.name, description: row.description, requiresReview: row.requires_review })),
     serviceAreas: (serviceAreas.data as ServiceAreaRow[]).map((row) => ({ slug: row.slug, name: row.name, requiresReview: row.requires_review })),
-    spaceTypes: (spaceTypes.data as SpaceTypeRow[]).map((row) => {
+    spaceTypes: (spaceTypes.data as SpaceTypeRow[]).filter((row) => !usesBedroomTiers || row.slug === "bedroom").map((row) => {
       const price = priceBySpaceType.get(row.id);
       return {
         slug: row.slug, name: row.name, description: row.description, maxCount: row.max_count,
