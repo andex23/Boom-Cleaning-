@@ -31,7 +31,7 @@ export default async function Home() {
 
     <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><ServiceCarousel services={services} /></section>
 
-    <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
+    <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol><div className={styles.processImage}><Image src="/images/team/07-team-supplies.webp" alt="BOOM cleaners with their supplies" fill sizes="(max-width: 900px) 90vw, 26vw" /></div></section>
 
     <section className={styles.quoteBand}><div><p>Book your clean</p><h2>Choose a service.<br />Pick a time.</h2></div><div><p>See the price, choose an available date and time, then confirm the appointment—all in one straightforward booking flow.</p><Link className={styles.primary} href="/quote">Start booking <span>→</span></Link></div></section>
 
@@ -45,6 +45,7 @@ export default async function Home() {
         {[["Mon", true], ["Tue", true], ["Wed", true], ["Thu", true], ["Fri", true], ["Sat", true], ["Sun", false]].map(([day, open]) =>
           <li key={String(day)} className={open ? styles.dayOpen : styles.dayClosed}><strong>{day}</strong><span>{open ? "8am – 6pm" : "Closed"}</span></li>)}
       </ul>
+      <div className={styles.availabilityImage}><Image src="/images/team/02-team-equipment.webp" alt="The BOOM team with their cleaning equipment" fill sizes="(max-width: 820px) 92vw, 44vw" /></div>
     </section>
 
     <section className={styles.offices} aria-labelledby="offices-heading">
@@ -59,6 +60,7 @@ export default async function Home() {
         <li><strong>A consistent team</strong><span>The same crew each visit, so standards hold.</span></li>
         <li><strong>Priced to your scope</strong><span>Quoted on the real space, not a generic rate card.</span></li>
       </ul>
+      <div className={styles.officesImage}><Image src="/images/team/06-team-onsite.webp" alt="A BOOM crew on site at an Abuja office building" fill sizes="(max-width: 820px) 92vw, 30vw" /></div>
     </section>
 
     <section className={styles.promise} id="about"><h2>Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>
