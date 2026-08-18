@@ -26,7 +26,7 @@ export default async function Home() {
 
     <section className={styles.hero}>
       <div className={styles.heroCopy}><h1>A cleaner home,<br />without the <em>back-and-forth.</em></h1><p>Professional cleaning in Abuja, on your terms. Choose your service, select an available time, and confirm your booking in one simple flow.</p><div className={styles.heroActions}><Link href="/quote" className={styles.primary}>Book a service <span>→</span></Link><Link href="/services" className={styles.secondary}>Explore services</Link></div><p className={styles.location}>⌖ Proudly serving Abuja and surrounding areas</p></div>
-      <div className={styles.heroImage}><Image src="/images/boom-cleaning-hero-v2.png" alt="A BOOM cleaner in the brand's blue uniform caring for a contemporary Abuja living room" fill priority sizes="(max-width: 800px) 100vw, 52vw" /></div>
+      <div className={styles.heroImage}><Image src="/images/team/01-team-wide.webp" alt="The BOOM Cleaning Services team in uniform with their equipment" fill priority sizes="(max-width: 800px) 100vw, 52vw" /></div>
     </section>
 
     <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><ServiceCarousel services={services} /></section>

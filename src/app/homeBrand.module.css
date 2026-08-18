@@ -1,1 +1,13 @@
 .headerBrand{display:flex;align-items:center;gap:11px;flex:0 0 auto;color:#08255f}.headerBrand>img{width:64px;height:64px;display:block;object-fit:cover;border-radius:13px;box-shadow:0 0 0 1px #afc4df;background:#fff}.wordmark,.footerWordmark{display:flex;flex-direction:column;line-height:.86}.wordmark strong,.footerWordmark strong{font-family:Arial,sans-serif;font-size:24px;font-weight:950;letter-spacing:-.07em}.wordmark small,.footerWordmark small{margin-top:7px;font-family:Arial,sans-serif;font-size:7px;font-weight:900;letter-spacing:.17em;text-transform:uppercase}.footerBrand{display:flex;align-items:center;gap:15px;color:#fff}.footerBrand>img{width:96px;height:96px;display:block;object-fit:cover;border-radius:16px;box-shadow:0 0 0 1px rgba(158,231,248,.5);background:#fff}.footerWordmark strong{font-size:29px}.footerWordmark small{color:#9ee7f8}@media(max-width:700px){.wordmark{display:none}}@media(max-width:520px){.headerBrand>img{width:50px;height:50px;border-radius:10px}.footerBrand>img{width:82px;height:82px}.footerWordmark strong{font-size:26px}}
+
+/* The real logo is a transparent wordmark, not a square avatar. The rules above crop it
+   with object-fit:cover and frame it in a white rounded tile, which was right for the old
+   photograph and wrong for this. The mark also spells out the company name, so the text
+   wordmark beside it is no longer needed. */
+.headerBrand>img{width:auto;height:50px;object-fit:contain;border-radius:0;box-shadow:none;background:none}
+.footerBrand>img{width:auto;height:68px;object-fit:contain;border-radius:0;box-shadow:none;background:none}
+.wordmark,.footerWordmark{display:none}
+@media(max-width:820px){
+  .headerBrand>img{height:40px}
+  .footerBrand>img{height:50px}
+}
