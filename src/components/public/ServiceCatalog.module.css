@@ -3,3 +3,18 @@
 .link{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:10px 0}
 .link:focus-visible{outline:3px solid #55d5f3;outline-offset:3px}
 .card:focus-within{outline:3px solid #55d5f3;outline-offset:3px}
+
+/* Separate rounded cards instead of a hard-ruled table grid. */
+.section{max-width:var(--page-max);padding:var(--section-y) var(--gutter);color:var(--ink)}
+.intro h1{letter-spacing:-.05em}
+.intro>p:last-child{color:var(--ink-soft);line-height:1.65}
+.grid{border:0;gap:16px}
+.card{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-raised);box-shadow:var(--shadow-sm);padding:26px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--line-strong)}
+.card h2{letter-spacing:-.02em}
+.card>div:nth-child(2) p{color:var(--ink-soft);line-height:1.6}
+.icon{margin-bottom:26px;color:var(--accent)}
+.meta{border-top:1px solid var(--line);color:var(--ink-muted)}
+.meta strong{color:var(--ink)}
+.link{color:var(--accent)}
+@media(max-width:760px){.section{padding-inline:22px}}

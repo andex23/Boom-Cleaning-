@@ -27,3 +27,43 @@ button, a { -webkit-tap-highlight-color: transparent; }
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   BOOM design tokens.
+   The palette stays navy + cyan so the logo still belongs. What changes is the
+   ground it sits on: a warm off-white rather than heavy cream, softer corners,
+   and a spacing scale generous enough to let the page breathe.
+   --------------------------------------------------------------------------- */
+:root {
+  --ink: #08255f;
+  --ink-deep: #071f5d;
+  --ink-soft: #3c5064;
+  --ink-muted: #6b7a90;
+  --ink-faint: #9aa8ba;
+
+  --accent: #0c55b5;
+  --accent-bright: #55d5f3;
+  --accent-wash: #e7f7fc;
+
+  --surface: #fdfcf8;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f2f5f3;
+  --line: #e6e9e4;
+  --line-strong: #d4dbd6;
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(8, 37, 95, .05);
+  --shadow: 0 6px 24px -8px rgba(8, 37, 95, .13);
+  --shadow-lg: 0 24px 60px -22px rgba(8, 37, 95, .26);
+
+  /* A consistent vertical rhythm for marketing sections. */
+  --section-y: clamp(64px, 9vw, 132px);
+  --gutter: clamp(20px, 5vw, 64px);
+  --page-max: 1180px;
+}
+
+body { background: var(--surface); }
