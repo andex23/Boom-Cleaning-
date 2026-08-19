@@ -67,7 +67,7 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
                 <strong>{service.name}</strong>
                 <span className={styles.tagline}>{service.tagline}</span>
                 <span className={styles.foot}>
-                  <em>{service.priceFrom ? `From ₦${service.priceFrom.toLocaleString("en-NG")}` : "Quoted for you"}</em>
+                  <em>{service.priceLabel}</em>
                   <span className={styles.go}>Book <span aria-hidden="true">→</span></span>
                 </span>
               </span>

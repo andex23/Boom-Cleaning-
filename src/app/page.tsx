@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Photo } from "@/components/public/Photo";
 import Link from "next/link";
 import { listBookableServices } from "@/features/services/public-catalog";
 import { loadTestimonials } from "@/features/reviews/testimonials";
@@ -26,15 +26,13 @@ export default async function Home() {
 
     <section className={styles.hero}>
       <div className={styles.heroCopy}><h1>A cleaner home,<br />without the <em>back-and-forth.</em></h1><p>Professional cleaning in Abuja, on your terms. Choose your service, select an available time, and confirm your booking in one simple flow.</p><div className={styles.heroActions}><Link href="/quote" className={styles.primary}>Book a service <span>→</span></Link><Link href="/services" className={styles.secondary}>Explore services</Link></div><p className={styles.location}>⌖ Proudly serving Abuja and surrounding areas</p></div>
-      <div className={styles.heroImage}><Image src="/images/team/01-team-wide.webp" alt="The BOOM Cleaning Services team in uniform with their equipment" fill priority sizes="(max-width: 800px) 100vw, 52vw" /></div>
+      <Photo className={styles.heroImage} src="/images/team/08-cleaner-portrait.webp" alt="A BOOM cleaner with a caddy of cleaning supplies" priority sizes="(max-width: 800px) 100vw, 52vw" />
     </section>
 
     <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2>Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><ServiceCarousel services={services} /></section>
 
     <section className={styles.teamBand} aria-labelledby="team-band-heading">
-      <div className={styles.teamBandPhoto}>
-        <Image src="/images/team/03-team-group.webp" alt="The BOOM Cleaning Services team in Abuja" fill sizes="(max-width: 900px) 92vw, 46vw" />
-      </div>
+      <Photo className={styles.teamBandPhoto} src="/images/team/03-team-group.webp" alt="The BOOM Cleaning Services team in Abuja" sizes="(max-width: 900px) 92vw, 46vw" />
       <div className={styles.teamBandCopy}>
         <p className={styles.eyebrow}>Our people</p>
         <h2 id="team-band-heading">Trained, uniformed,<br />and glad to be here.</h2>
@@ -71,7 +69,7 @@ export default async function Home() {
         <li><strong>A consistent team</strong><span>The same crew each visit, so standards hold.</span></li>
         <li><strong>Priced to your scope</strong><span>Quoted on the real space, not a generic rate card.</span></li>
       </ul>
-      <div className={styles.officesImage}><Image src="/images/team/06-team-onsite.webp" alt="A BOOM crew on site at an Abuja office building" fill sizes="(max-width: 820px) 92vw, 30vw" /></div>
+      <Photo className={styles.officesImage} src="/images/team/01-team-wide.webp" alt="The BOOM crew in uniform with their equipment" sizes="(max-width: 820px) 92vw, 1180px" minAspect={2} position="center 42%" />
     </section>
 
     <section className={styles.promise} id="about"><h2>Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>

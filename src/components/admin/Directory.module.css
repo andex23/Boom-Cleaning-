@@ -1,17 +1,17 @@
 .list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.row{display:grid;grid-template-columns:minmax(160px,1.3fr) minmax(160px,1.2fr) minmax(140px,1fr) auto;align-items:center;gap:16px;padding:13px 15px;border:1px solid #e8ecf3;border-radius:10px;background:#fff}
-.row:hover{background:#f8fafd}
-.who strong{display:block;font-size:14px;font-weight:700;color:#08255f}
-.who small{display:block;margin-top:2px;font-size:11px;color:#6b7a90}
-.contact{display:grid;gap:2px;font-size:12px;min-width:0}
+.row{display:grid;grid-template-columns:minmax(160px,1.3fr) minmax(160px,1.2fr) minmax(140px,1fr) auto;align-items:center;gap:16px;padding:13px 15px;border:1px solid #eef1f6;border-radius:10px;background:#ffffff}
+.row:hover{background:#ffffff}
+.who strong{display:block;font-size:13px;font-weight:700;color:#08255f}
+.who small{display:block;margin-top:2px;font-size:13px;color:#5a6d84}
+.contact{display:grid;gap:2px;font-size:13px;min-width:0}
 .contact a{color:#0c55b5;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .contact a:hover{text-decoration:underline}
 .dim{color:#9aa8ba}
-.meta{font-size:11px;color:#6b7a90}
-.value{font-size:14px;font-weight:800;color:#08255f;font-variant-numeric:tabular-nums;white-space:nowrap}
-.statusPicker select{border:1px solid #d4dbe6;border-radius:8px;padding:8px 10px;font-size:12px;color:#08255f;background:#fff;min-width:140px;cursor:pointer}
+.meta{font-size:13px;color:#5a6d84}
+.value{font-size:13px;font-weight:700;color:#08255f;font-variant-numeric:tabular-nums;white-space:nowrap}
+.statusPicker select{border:1px solid #cbdcf0;border-radius:8px;padding:8px 10px;font-size:13px;color:#08255f;background:#ffffff;min-width:140px;cursor:pointer}
 .statusPicker select:focus-visible{outline:3px solid #55d5f3;outline-offset:-1px}
 .statusPicker select:disabled{opacity:.6;cursor:progress}
-.search input{border:1px solid #d4dbe6;border-radius:8px;padding:9px 12px;font-size:13px;min-width:250px;color:#08255f}
+.search input{border:1px solid #cbdcf0;border-radius:8px;padding:9px 12px;font-size:13px;min-width:250px;color:#08255f}
 .search input:focus-visible{outline:3px solid #55d5f3;outline-offset:-1px}
 @media (max-width:820px){.row{grid-template-columns:1fr;gap:8px}.search input{min-width:0;width:100%}}

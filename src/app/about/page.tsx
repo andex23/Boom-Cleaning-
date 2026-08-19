@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Photo } from "@/components/public/Photo";
 import Link from "next/link";
 import { listBookableServices } from "@/features/services/public-catalog";
 import { loadTestimonials } from "@/features/reviews/testimonials";
@@ -38,9 +38,7 @@ export default async function AboutPage() {
         newly built properties &mdash; the kind of work where the difference between a
         surface wipe and a real clean is obvious the moment you walk in.
       </p>
-      {team.length > 2 ? <div className={about.heroPhoto}>
-        <Image src="/images/team/05-team-four.webp" alt="The BOOM Cleaning Services team in Abuja" fill priority sizes="(max-width: 900px) 94vw, 1180px" />
-      </div> : null}
+      {team.length > 2 ? <Photo className={about.heroPhoto} src="/images/team/07-team-supplies.webp" alt="The BOOM Cleaning Services team with their supplies in Abuja" priority sizes="(max-width: 900px) 94vw, 1180px" minAspect={1.4} /> : null}
     </section>
 
     <section className={about.pillars} aria-labelledby="how-heading">
@@ -76,9 +74,7 @@ export default async function AboutPage() {
         <h2 id="team-heading">The team behind the clean.</h2>
         <p>Trained, uniformed and equipped. These are the people who turn up at your door, and the same faces you will see next time.</p>
       </div>
-      <div className={about.teamPhoto}>
-        <Image src="/images/team/04-team-portrait.webp" alt="BOOM cleaners ready for a job" fill sizes="(max-width: 820px) 92vw, 52vw" />
-      </div>
+      <Photo className={about.teamPhoto} src="/images/team/05-team-four.webp" alt="Four of the BOOM cleaning team in uniform" sizes="(max-width: 820px) 92vw, 52vw" />
     </section> : null}
 
     <section className={about.kit} aria-labelledby="kit-heading">
@@ -91,9 +87,7 @@ export default async function AboutPage() {
         </p>
       </div>
       <ul>{KIT.map((item) => <li key={item.name}><strong>{item.name}</strong><span>{item.use}</span></li>)}</ul>
-      {team.length > 1 ? <div className={about.kitPhoto}>
-        <Image src="/images/team/02-team-equipment.webp" alt="BOOM cleaning equipment ready for a job" fill sizes="(max-width: 820px) 92vw, 34vw" />
-      </div> : null}
+      <Photo className={about.kitPhoto} src="/images/team/02-team-equipment.webp" alt="BOOM cleaning machines and equipment ready for a job" sizes="(max-width: 820px) 92vw, 30vw" />
     </section>
 
     <section className={about.services} aria-labelledby="services-heading">

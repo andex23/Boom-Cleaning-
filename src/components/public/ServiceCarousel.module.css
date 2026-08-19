@@ -3,7 +3,7 @@
    of the rail scrolling inside it. */
 .rail{position:relative;margin-top:34px;min-width:0;max-width:100%}
 .controls{position:absolute;top:-62px;right:0;display:flex;gap:8px}
-.controls button{width:44px;height:44px;border-radius:var(--radius-pill);border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--ink);font-size:16px;cursor:pointer;transition:border-color .18s ease,background .18s ease,opacity .18s ease}
+.controls button{width:44px;height:44px;border-radius:var(--radius-pill);border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--ink);font-size:15px;cursor:pointer;transition:border-color .18s ease,background .18s ease,opacity .18s ease}
 .controls button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
 .controls button:disabled{opacity:.32;cursor:not-allowed}
 .controls button:focus-visible{outline:3px solid var(--accent-bright);outline-offset:3px}
@@ -20,16 +20,16 @@
 
 .media{position:relative;display:block;aspect-ratio:4/3;background:var(--surface-sunken)}
 .media img{object-fit:cover}
-.index{position:absolute;top:12px;left:12px;background:rgba(8,37,95,.82);color:#fff;font-size:11px;font-weight:800;padding:5px 9px;border-radius:var(--radius-pill);backdrop-filter:blur(4px)}
+.index{position:absolute;top:12px;left:12px;background:rgba(8,37,95,.82);color:#ffffff;font-size:13px;font-weight:700;padding:5px 9px;border-radius:var(--radius-pill);backdrop-filter:blur(4px)}
 
 .body{display:flex;flex-direction:column;gap:6px;padding:17px 17px 19px;flex:1}
-.body strong{font-family:var(--font-display);font-weight:400;font-size:19px;letter-spacing:-.03em;color:var(--ink);line-height:1.15}
+.body strong{font-family:var(--font-display);font-weight:400;font-size:20px;letter-spacing:-.03em;color:var(--ink);line-height:1.15}
 .tagline{font-size:13px;line-height:1.55;color:var(--ink-soft)}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
-.foot em{font-style:normal;font-size:12px;font-weight:700;color:var(--ink-muted)}
-.go{font-size:13px;font-weight:800;color:var(--accent);white-space:nowrap}
+.foot em{font-style:normal;font-size:13px;font-weight:700;color:var(--ink)}
+.go{font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap}
 
-.hint{margin:12px 0 0;font-size:12px;color:var(--ink-faint)}
+.hint{margin:12px 0 0;font-size:13px;color:var(--ink-faint)}
 
 @media(max-width:700px){
   .controls{position:static;margin-bottom:14px}
@@ -37,3 +37,7 @@
   .hint{display:none}
 }
 @media (prefers-reduced-motion: reduce){ .track{scroll-behavior:auto} }
+
+/* On a touch screen the rail already swipes, so the arrows are redundant — and made static
+   they pushed a 60px empty block between the section copy and the first card. */
+@media (hover: none) and (pointer: coarse){ .controls{display:none} }

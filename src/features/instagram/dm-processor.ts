@@ -49,16 +49,30 @@ async function getOrCreateSession(supabase: SupabaseClient, externalThreadId: st
  */
 async function loadAgentCatalog(supabase: SupabaseClient): Promise<DmAgentCatalog> {
   const [services, propertyTypes, spaceTypes] = await Promise.all([
-    supabase.from("services").select("slug,name,base_price,requires_review").eq("is_active", true).order("sort_order"),
+    supabase.from("services").select("id,slug,name,base_price,requires_review").eq("is_active", true).order("sort_order"),
     supabase.from("property_types").select("slug,name").eq("is_active", true).order("sort_order"),
     supabase.from("space_types").select("slug,name").eq("is_active", true).order("sort_order"),
   ]);
   for (const result of [services, propertyTypes, spaceTypes]) {
     if (result.error) throw new Error(result.error.message);
   }
+  // Services priced from a bedroom table carry base_price 0, so quoting base_price alone
+  // told every deep-cleaning enquiry that a human had to price it. Read the table too.
+  const tiers = await supabase.from("service_bedroom_tiers").select("service_id,price");
+  const lowestTier = new Map<string, number>();
+  for (const row of (tiers.data ?? []) as { service_id: string; price: number | string }[]) {
+    const price = Number(row.price);
+    if (!Number.isFinite(price) || price <= 0) continue;
+    const current = lowestTier.get(row.service_id);
+    if (current === undefined || price < current) lowestTier.set(row.service_id, price);
+  }
+
   return {
-    services: (services.data as { slug: string; name: string; base_price: number | string; requires_review: boolean }[])
-      .map((row) => ({ slug: row.slug, name: row.name, priceFrom: row.requires_review || Number(row.base_price) <= 0 ? null : Number(row.base_price) })),
+    services: (services.data as { id: string; slug: string; name: string; base_price: number | string; requires_review: boolean }[])
+      .map((row) => {
+        const published = lowestTier.get(row.id) ?? (Number(row.base_price) > 0 ? Number(row.base_price) : null);
+        return { slug: row.slug, name: row.name, priceFrom: row.requires_review ? null : published };
+      }),
     propertyTypes: propertyTypes.data as { slug: string; name: string }[],
     spaceTypes: spaceTypes.data as { slug: string; name: string }[],
   };
