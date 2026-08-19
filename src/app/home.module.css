@@ -288,3 +288,8 @@
 @media(max-width:520px){
   .footerNav{grid-template-columns:1fr;row-gap:24px}
 }
+
+/* One photograph beside the steps, not one per step: three would crowd a band whose whole
+   job is to read as three short instructions. */
+.processPhoto{position:relative;overflow:hidden;border-radius:var(--radius);margin-top:28px;background:rgba(255,255,255,.08)}
+@media(max-width:900px){ .processPhoto{max-width:340px} }

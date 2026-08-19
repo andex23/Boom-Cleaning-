@@ -41,7 +41,7 @@ export default async function Home() {
       </div>
     </section>
 
-    <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
+    <section className={styles.process} id="process"><div><p>How it works</p><h2>Simple. Clear.<br />Built around you.</h2><Photo className={styles.processPhoto} src="/images/team/04-team-portrait.webp" alt="A BOOM cleaner arriving for a booked job" sizes="(max-width: 900px) 92vw, 26vw" /></div><ol>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
 
     <section className={styles.quoteBand}><div><p>Book your clean</p><h2>Choose a service.<br />Pick a time.</h2></div><div><p>See the price, choose an available date and time, then confirm the appointment—all in one straightforward booking flow.</p><Link className={styles.primary} href="/quote">Start booking <span>→</span></Link></div></section>
 
