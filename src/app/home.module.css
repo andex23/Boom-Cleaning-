@@ -285,8 +285,14 @@
   .footer{grid-template-columns:1fr;gap:36px;margin-inline:12px;padding:44px 22px 24px}
   .footerNav{gap:26px 20px}
 }
+/* Two columns on a phone rather than one long stack: three groups then read as
+   2 + 1 with "Talk to us" spanning the full width, which is the group a customer
+   is most often reaching for. */
 @media(max-width:520px){
-  .footerNav{grid-template-columns:1fr;row-gap:24px}
+  .footerNav{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:26px}
+  .footerNav>div:last-child{grid-column:1/-1}
+  .footerNav>div:last-child>*{display:inline-block;margin-right:18px}
+  .footerBase{justify-content:flex-start;gap:10px 20px}
 }
 
 /* One photograph beside the steps, not one per step: three would crowd a band whose whole
@@ -370,3 +376,31 @@
   .processPhoto{margin-inline:calc(-1 * 22px);border-radius:0}
   .officesImage{margin-inline:calc(-1 * 22px)}
 }
+
+/* ---------------------------------------------------------------------------
+   Photographic grounds.
+
+   A fourth role: the picture is the section's ground rather than an object
+   placed inside it. The scrim is doing real work — white text over an
+   unscreened photograph fails contrast the moment the picture has a light area
+   in it, and these are studio shots on a pale backdrop. The gradient is opaque
+   enough to hold AA everywhere and still let the shape of the room read.
+
+   alt="" on these images is deliberate: they carry atmosphere, not information,
+   and the sections are already titled.
+   --------------------------------------------------------------------------- */
+.offices,.promise{position:relative;isolation:isolate;overflow:hidden}
+.sectionBackdrop{position:absolute;inset:0;z-index:0;border-radius:inherit}
+.sectionBackdrop img{object-fit:cover}
+.offices::before,.promise::before{
+  content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;pointer-events:none;
+}
+/* Navy panel: deepen it so the picture reads as texture under the copy. */
+.offices::before{
+  background:linear-gradient(105deg, rgba(7,31,93,.96) 0%, rgba(7,31,93,.9) 46%, rgba(7,31,93,.82) 100%);
+}
+.promise::before{
+  background:linear-gradient(180deg, rgba(7,31,93,.93) 0%, rgba(7,31,93,.88) 40%, rgba(7,31,93,.95) 100%);
+}
+.offices > *:not(.sectionBackdrop),
+.promise > *:not(.sectionBackdrop){position:relative;z-index:2}

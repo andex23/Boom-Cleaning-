@@ -58,6 +58,7 @@ export default async function Home() {
     </section>
 
     <section className={styles.offices} aria-labelledby="offices-heading">
+      <Photo className={styles.sectionBackdrop} src="/images/team/01-team-wide.webp" alt="" sizes="100vw" fill position="50% 38%" />
       <div>
         <p className={styles.eyebrow}>For businesses</p>
         <h2 data-reveal="heading" id="offices-heading">Workspaces that stay ready.</h2>
@@ -69,10 +70,9 @@ export default async function Home() {
         <li><strong>A consistent team</strong><span>The same crew each visit, so standards hold.</span></li>
         <li><strong>Priced to your scope</strong><span>Quoted on the real space, not a generic rate card.</span></li>
       </ul>
-      <Photo data-reveal="photo" className={styles.officesImage} src="/images/team/01-team-wide.webp" alt="The BOOM crew in uniform with their equipment" sizes="(max-width: 820px) 92vw, 1180px" minAspect={2} position="center 42%" />
     </section>
 
-    <section className={styles.promise} id="about"><h2 data-reveal="heading">Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>
+    <section className={styles.promise} id="about"><Photo className={styles.sectionBackdrop} src="/images/team/06-team-onsite.webp" alt="" sizes="100vw" fill position="50% 30%" /><h2 data-reveal="heading">Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>
 
     {testimonials.length > 0 ? <section className={styles.reviews} aria-labelledby="reviews-heading">
       <div className={styles.sectionIntro}>
