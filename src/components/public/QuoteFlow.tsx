@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { formatNaira, formatNairaDelta, formatSlotTime } from "@/lib/format";
@@ -39,7 +41,7 @@ async function bookingErrorMessage(response: Response): Promise<string> {
   }
 }
 
-export function QuoteFlow({ services, initialService }: { services: PublicServiceView[]; initialService?: string }) {
+export function QuoteFlow({ services, initialService, logoSrc }: { services: PublicServiceView[]; initialService?: string; logoSrc: string }) {
   const [step, setStep] = useState(0);
   const [booking, setBooking] = useState<StoredBooking | null>(null);
   const [error, setError] = useState("");
@@ -293,7 +295,7 @@ export function QuoteFlow({ services, initialService }: { services: PublicServic
   const priceLabel = isPricing ? "Pricing…" : quote?.requiresReview ? "Scope review" : quote?.total !== null && quote?.total !== undefined ? formatNaira(quote.total) : "—";
 
   return <section className={styles.shell} aria-labelledby="quote-title">
-    <aside className={styles.aside}><Link href="/" className={styles.brand}>BOOM<span>°</span></Link><div className={styles.asideCopy}><p className={styles.eyebrow}>Quote and booking</p><h1 id="quote-title">Choose your clean. Book your time.</h1><p>Describe your space exactly as it is — every room, and the extras too — and see a transparent estimate before you book.</p></div><ol className={styles.steps}>{steps.map((label, index) => <li key={label} className={index === step ? styles.current : index < step ? styles.complete : ""}><span>{index < step ? "✓" : `0${index + 1}`}</span>{label}</li>)}</ol>{step > 0 ? <div className={styles.asideEstimate}><span>{quote?.requiresReview ? "Your quote" : "Estimated total"}</span><strong>{priceLabel}</strong>{quote?.requiresReview ? <small>A BOOM team member will confirm your price.</small> : quote?.depositAmount ? <small>{formatNaira(quote.depositAmount)} deposit on confirmation</small> : null}</div> : null}<p className={styles.support}>Need help? <a href="tel:+2349029799205">Speak to BOOM</a></p></aside>
+    <aside className={styles.aside}><Link href="/" className={styles.brand} aria-label="BOOM Cleaning Services home"><Image src={logoSrc} alt="BOOM Cleaning Services" width={132} height={44} priority /></Link><div className={styles.asideCopy}><p className={styles.eyebrow}>Quote and booking</p><h1 id="quote-title">Choose your clean. Book your time.</h1><p>Describe your space exactly as it is — every room, and the extras too — and see a transparent estimate before you book.</p></div><ol className={styles.steps}>{steps.map((label, index) => <li key={label} className={index === step ? styles.current : index < step ? styles.complete : ""}><span>{index < step ? "✓" : `0${index + 1}`}</span>{label}</li>)}</ol>{step > 0 ? <div className={styles.asideEstimate}><span>{quote?.requiresReview ? "Your quote" : "Estimated total"}</span><strong>{priceLabel}</strong>{quote?.requiresReview ? <small>A BOOM team member will confirm your price.</small> : quote?.depositAmount ? <small>{formatNaira(quote.depositAmount)} deposit on confirmation</small> : null}</div> : null}<p className={styles.support}>Need help? <a href="tel:+2349029799205">Speak to BOOM</a></p></aside>
 
     <form className={`${styles.form} ${step === 2 ? bookingStyles.calendarForm : ""}`} onSubmit={submit} noValidate aria-busy={isSubmitting}>
       <div className={styles.formTop}><div><p className={styles.mobileStep}>Step {step + 1} of {steps.length}</p><h2>{steps[step]}</h2></div><p className={styles.progress}>{Math.round(((step + 1) / steps.length) * 100)}%</p></div>

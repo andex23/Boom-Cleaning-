@@ -16,7 +16,6 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
     <section className={styles.panel}>
       <Link href="/" className={styles.brand}>
         <BrandLogo size={52} priority />
-        <span><strong>BOOM</strong><small>Cleaning Services</small></span>
       </Link>
       <p className={styles.eyebrow}>SECURE OPERATIONS</p>
       <h1>Welcome back.</h1>

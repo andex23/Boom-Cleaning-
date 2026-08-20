@@ -136,3 +136,8 @@
 /* The price is the fact a customer is looking for on this step; 11px made it the smallest
    text on the card, quieter than the service name it belongs to. */
 .serviceOption small{font-size:13px;font-weight:700;margin-top:6px}
+
+/* The aside now carries the real mark rather than a typed "BOOM°", so the wordmark type
+   rules no longer apply. The image keeps its own proportions. */
+.brand{display:inline-flex;align-items:center;min-height:44px}
+.brand img{width:auto;height:44px;object-fit:contain}
