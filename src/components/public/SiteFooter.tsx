@@ -5,9 +5,8 @@ import styles from "@/app/home.module.css";
 /**
  * One footer for every public page, for the same reason as the header.
  *
- * The links are grouped and headed rather than stacked in a single column: a customer
- * looking for a phone number should not have to read past "Staff operations" to find it.
- * Internal links live in the bottom bar, away from the customer-facing navigation.
+ * The links are grouped and headed rather than stacked in a single column so customers
+ * can reach services, company information and contact details quickly.
  */
 export function SiteFooter() {
   return (
@@ -22,14 +21,15 @@ export function SiteFooter() {
         <div>
           <h2>Services</h2>
           <Link href="/services">All services</Link>
+          <Link href="/pricing">Pricing</Link>
           <Link href="/quote?service=deep-cleaning">Deep cleaning</Link>
           <Link href="/quote?service=post-construction-cleaning">Post-construction</Link>
-          <Link href="/quote?service=office-cleaning">Office cleaning</Link>
         </div>
         <div>
           <h2>Company</h2>
           <Link href="/about">About us</Link>
           <Link href="/#how-it-works">How it works</Link>
+          <Link href="/faq">FAQs</Link>
           <Link href="/quote">Book a service</Link>
         </div>
         <div>
@@ -43,7 +43,6 @@ export function SiteFooter() {
 
       <div className={styles.footerBase}>
         <small>&copy; {new Date().getFullYear()} BOOM Cleaning Services</small>
-        <Link href="/admin" className={styles.footerStaff}>Staff operations</Link>
       </div>
     </footer>
   );

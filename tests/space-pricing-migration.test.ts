@@ -187,6 +187,7 @@ describe("booking lifecycle", () => {
 });
 
 const priceList = read("012_real_price_list.sql");
+const compoundWashRange = read("20260820144237_compound_wash_price_range.sql");
 
 describe("published price list", () => {
   it("stores the deep-cleaning figures exactly as published", () => {
@@ -224,6 +225,12 @@ describe("published price list", () => {
     for (const pair of ["'bedroom',        50000", "'living-room',    60000", "'storey',         50000", "'compound-sweep', 20000", "'compound-wash',  70000", "'extra-room',     30000"]) {
       expect(priceList).toContain(pair);
     }
+  });
+
+  it("does not freeze the bottom of the compound-washing range as a final price", () => {
+    expect(compoundWashRange).toContain("NGN 70,000 to NGN 100,000");
+    expect(compoundWashRange).toContain("requires_review = true");
+    expect(compoundWashRange).toContain("slug = 'compound-wash'");
   });
 
   it("never quotes zero for an empty scope", () => {

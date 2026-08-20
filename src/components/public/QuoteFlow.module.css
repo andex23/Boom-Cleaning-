@@ -93,6 +93,13 @@
 .extras>.help{margin:14px 17px 0}
 .extras .spaceList{margin:8px 17px 14px;border-top:1px solid #eef1f6}
 .rangeTitle{font-weight:700}
+.scopeQuestions{display:grid;gap:22px;padding:20px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-raised);box-shadow:var(--shadow-sm)}
+.scopeQuestions>div:first-child>strong{display:block;margin-bottom:6px;color:var(--ink);font-size:13px}
+.scopeQuestions .spaceList{margin:0}
+.scopeQuestions .spaceLabel{max-width:430px}
+.compoundChoice{display:grid;gap:12px;border:0;margin:0;padding:0}
+.compoundChoice legend{margin-bottom:2px!important}
+.compoundChoice .help{font-size:13px}
 
 /* --- Modernisation layer: warm ground, rounded surfaces, softer rules ------- */
 .shell{background:var(--surface);color:var(--ink)}
@@ -124,6 +131,7 @@
   /* Restated so the mobile sizes survive this layer. */
   .stepper button{width:44px;height:44px;border-radius:var(--radius-sm)}
   .pills label{padding:12px 16px}
+  .scopeQuestions{padding:17px}
 }
 /* The published price for the chosen bedroom count, beside the slider value. */
 .tierPrice{display:block;margin-top:2px;font-style:normal;font-size:13px;font-weight:700;color:var(--accent)}
@@ -141,3 +149,6 @@
    rules no longer apply. The image keeps its own proportions. */
 .brand{display:inline-flex;align-items:center;min-height:44px}
 .brand img{width:auto;height:44px;object-fit:contain}
+.form{position:relative}
+.bookingLoader{position:absolute;inset:18px;z-index:10;display:grid;place-content:center;justify-items:center;gap:14px;padding:28px;background:rgba(255,254,250,.94);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);backdrop-filter:blur(12px)}
+.bookingLoader>p{max-width:320px;margin:0;color:var(--ink-soft);font-size:13px;line-height:1.55;text-align:center}

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { resolveLogoSrc } from "@/components/brand/BrandLogo";
+import { SiteBootLoader } from "@/components/brand/SiteBootLoader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,17 +15,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BOOM Cleaning Services",
-  description: "Operations foundation for BOOM Cleaning Services.",
+  title: "BOOM Cleaning Services | Professional Cleaning in Abuja",
+  description: "Book trained, professional home and office cleaners in Abuja. Choose your service, see your price and request an available time online.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body>{children}</body>
+      <body>
+        <SiteBootLoader logoSrc={resolveLogoSrc("onLight")} />
+        {children}
+      </body>
     </html>
   );
 }

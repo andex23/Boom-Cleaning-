@@ -9,9 +9,9 @@ import { SiteFooter } from "@/components/public/SiteFooter";
 import styles from "./home.module.css";
 
 const steps = [
-  ["01", "Tell us what you need", "Choose a service and share a few details about your space."],
-  ["02", "Pick a time that works", "Select a preferred date. We confirm capacity before you pay."],
-  ["03", "Relax while we handle it", "Your team arrives prepared and keeps you updated to completion."],
+  ["01", "Choose your clean", "Tell us what needs attention and we’ll show the right service and price."],
+  ["02", "Choose your time", "Pick an available arrival window that works for your day."],
+  ["03", "Come home to clean", "A prepared BOOM team arrives, gets it done and keeps you updated."],
 ] as const;
 
 export const dynamic = "force-dynamic";
@@ -24,63 +24,83 @@ export default async function Home() {
   return <main className={styles.page}>
     <SiteHeader priority />
 
-    <section className={styles.hero}>
-      <div className={styles.heroCopy}><h1>A cleaner home,<br />without the <em>back-and-forth.</em></h1><p>Professional cleaning in Abuja, on your terms. Choose your service, select an available time, and confirm your booking in one simple flow.</p><div className={styles.heroActions}><Link href="/quote" className={styles.primary}>Book a service <span>→</span></Link><Link href="/services" className={styles.secondary}>Explore services</Link></div><p className={styles.location}>⌖ Proudly serving Abuja and surrounding areas</p></div>
-      <Photo data-reveal="photo" className={styles.heroImage} src="/images/team/08-cleaner-portrait.webp" alt="A BOOM cleaner with a caddy of cleaning supplies" priority sizes="(max-width: 800px) 100vw, 50vw" fill position="50% 32%" />
-    </section>
-
-    <section className={styles.services} id="services"><div className={styles.sectionIntro}><p>Our services</p><h2 data-reveal="heading">Every space.<br />Carefully cleaned.</h2><span>Choose the clean you need and go straight to available booking times.</span><Link href="/services">View all services →</Link></div><ServiceCarousel services={services} /></section>
-
-    <section className={styles.teamBand} aria-labelledby="team-band-heading">
-      <Photo data-reveal="photo" className={styles.teamBandPhoto} src="/images/team/03-team-group.webp" alt="The BOOM Cleaning Services team in Abuja" sizes="(max-width: 900px) 100vw, 46vw" fill position="50% 30%" />
-      <div className={styles.teamBandCopy}>
-        <p className={styles.eyebrow}>Our people</p>
-        <h2 data-reveal="heading" id="team-band-heading">Trained, uniformed,<br />and glad to be here.</h2>
-        <p>Every BOOM job is done by our own team &mdash; the same faces, in uniform, carrying the equipment the work actually needs. No sub-contracting, no strangers.</p>
-        <Link className={styles.secondary} href="/about">Meet the team <span aria-hidden="true">→</span></Link>
+    <section className={styles.hero} aria-labelledby="hero-heading" style={{ backgroundImage: "url('/images/team/02-team-equipment.webp')" }}>
+      <div className={styles.heroShade} />
+      <div className={styles.heroCopy}>
+        <h1 id="hero-heading">Your space.<br />Beautifully handled.</h1>
+        <p>Book a trained BOOM team for your home or workplace. Clear service choices, real availability and no endless back-and-forth.</p>
+        <div className={styles.heroActions}>
+          <Link href="/quote" className={styles.primary}>Book your clean <span aria-hidden="true">↗</span></Link>
+          <Link href="/services" className={styles.heroLink}>See what we clean <span aria-hidden="true">→</span></Link>
+        </div>
+      </div>
+      <div className={styles.heroMeta} aria-label="Service details">
+        <span>Mon–Sat</span><span>8am–6pm</span><span>Abuja, FCT</span>
       </div>
     </section>
 
-    <section className={styles.process} id="process"><div><p>How it works</p><h2 data-reveal="heading">Simple. Clear.<br />Built around you.</h2><Photo data-reveal="photo" className={styles.processPhoto} src="/images/team/04-team-portrait.webp" alt="A BOOM cleaner arriving for a booked job" sizes="(max-width: 900px) 92vw, 26vw" /></div><ol data-reveal-stagger>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
+    <section className={styles.intro} aria-labelledby="intro-heading">
+      <p className={styles.eyebrow}>A better way to book a clean</p>
+      <h2 data-reveal="heading" id="intro-heading">Less chasing.<br /><em>More living.</em></h2>
+      <p>BOOM brings trained people, the right equipment and a properly scoped service to your door. You choose what you need and when you need it; we handle the rest.</p>
+      <Link href="/about" className={styles.textLink}>Meet the people behind BOOM <span aria-hidden="true">→</span></Link>
+    </section>
 
-    <section className={styles.quoteBand}><div><p>Book your clean</p><h2 data-reveal="heading">Choose a service.<br />Pick a time.</h2></div><div><p>See the price, choose an available date and time, then confirm the appointment—all in one straightforward booking flow.</p><Link className={styles.primary} href="/quote">Start booking <span>→</span></Link></div></section>
-
-    <section className={styles.availability} aria-labelledby="availability-heading">
-      <div className={styles.availabilityCopy}>
-        <p className={styles.eyebrow}>When we work</p>
-        <h2 data-reveal="heading" id="availability-heading">Six days a week,<br />around your schedule.</h2>
-        <p>BOOM runs Monday to Saturday, 8am to 6pm. Choose the arrival window that suits you and we confirm before the day.</p>
+    <section className={styles.services} id="services" aria-labelledby="services-heading">
+      <div className={styles.sectionIntro}>
+        <div><p className={styles.eyebrow}>Choose your clean</p><h2 data-reveal="heading" id="services-heading">What can we<br />take off your list?</h2></div>
+        <div><p>From a full home reset to post-construction dust, choose the service that matches the job and go straight to booking.</p><Link href="/services" className={styles.textLink}>Explore every service <span aria-hidden="true">→</span></Link></div>
       </div>
-      <ul className={styles.availabilityGrid}>
-        {[["Mon", true], ["Tue", true], ["Wed", true], ["Thu", true], ["Fri", true], ["Sat", true], ["Sun", false]].map(([day, open]) =>
-          <li key={String(day)} className={open ? styles.dayOpen : styles.dayClosed}><strong>{day}</strong><span>{open ? "8am – 6pm" : "Closed"}</span></li>)}
+      <ServiceCarousel services={services} />
+    </section>
+
+    <section className={styles.process} id="how-it-works" aria-labelledby="process-heading">
+      <div className={styles.processLead}>
+        <p className={styles.eyebrow}>How booking works</p>
+        <h2 data-reveal="heading" id="process-heading">Three steps.<br />Zero guesswork.</h2>
+        <Link className={styles.darkButton} href="/quote">Start your booking <span aria-hidden="true">↗</span></Link>
+      </div>
+      <ol data-reveal-stagger>{steps.map(([number, title, body]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{body}</p></div></li>)}</ol>
+    </section>
+
+    <section className={styles.whyBoom} aria-labelledby="why-heading">
+      <div>
+        <p className={styles.eyebrow}>What BOOM brings</p>
+        <h2 data-reveal="heading" id="why-heading">A proper team. A proper clean.</h2>
+        <p>Every booking has a clear scope, an accountable crew and the equipment the work actually needs.</p>
+        <Link className={styles.secondary} href="/about#team">Meet the BOOM team <span aria-hidden="true">→</span></Link>
+      </div>
+      <ul data-reveal-stagger>
+        <li><strong>Trained and identifiable</strong><span>Uniformed BOOM staff assigned deliberately to each job.</span></li>
+        <li><strong>Equipped for the work</strong><span>Professional machines and supplies chosen for your space.</span></li>
+        <li><strong>Clear from start to finish</strong><span>Confirmed scope, helpful updates and a final check before we leave.</span></li>
       </ul>
     </section>
 
     <section className={styles.offices} aria-labelledby="offices-heading">
-      <Photo className={styles.sectionBackdrop} src="/images/team/01-team-wide.webp" alt="" sizes="100vw" fill position="50% 38%" />
-      <div>
-        <p className={styles.eyebrow}>For businesses</p>
-        <h2 data-reveal="heading" id="offices-heading">Workspaces that stay ready.</h2>
-        <p>Offices, shortlets and commercial spaces are quoted to your scope and cleaned outside your busy hours. Tell us the size and rhythm you need and we&rsquo;ll price it properly.</p>
-        <Link className={styles.secondary} href="/quote?service=office-cleaning">Get an office quote <span aria-hidden="true">→</span></Link>
+      <Photo className={styles.officesImage} src="/images/services/office-cleaning.webp" alt="A bright, professionally cleaned office" sizes="(max-width: 820px) 100vw, 46vw" fill position="50% 50%" />
+      <div className={styles.officesCopy}>
+        <p className={styles.eyebrow}>BOOM for business</p>
+        <h2 data-reveal="heading" id="offices-heading">A workplace ready for work.</h2>
+        <p>Offices, shortlets and commercial spaces are quoted to their real scope and cleaned around the hours that suit your team.</p>
+        <ul><li>Flexible scheduling</li><li>Consistent cleaning teams</li><li>Clear scope and pricing</li></ul>
+        <Link className={styles.lightButton} href="/quote?service=office-cleaning">Request an office quote <span aria-hidden="true">↗</span></Link>
       </div>
-      <ul className={styles.officeList} data-reveal-stagger>
-        <li><strong>Outside your hours</strong><span>Evenings and weekends so nobody works around us.</span></li>
-        <li><strong>A consistent team</strong><span>The same crew each visit, so standards hold.</span></li>
-        <li><strong>Priced to your scope</strong><span>Quoted on the real space, not a generic rate card.</span></li>
-      </ul>
     </section>
-
-    <section className={styles.promise} id="about"><Photo className={styles.sectionBackdrop} src="/images/team/06-team-onsite.webp" alt="" sizes="100vw" fill position="50% 30%" /><h2 data-reveal="heading">Care you can feel<br />after we leave.</h2><div><article><span>01</span><h3>Trusted professionals</h3><p>Every job is assigned deliberately, with clear service notes and accountability.</p></article><article><span>02</span><h3>Safe for your space</h3><p>We adapt our approach to the people, pets, materials and requirements in your home.</p></article><article><span>03</span><h3>On time, every time</h3><p>Confirmed schedules, helpful reminders and a team that knows what is expected.</p></article></div></section>
 
     {testimonials.length > 0 ? <section className={styles.reviews} aria-labelledby="reviews-heading">
       <div className={styles.sectionIntro}>
-        <p className={styles.eyebrow}>What customers say</p>
-        <h2 data-reveal="heading" id="reviews-heading">In their words.</h2>
+        <div><p className={styles.eyebrow}>Real customer notes</p><h2 data-reveal="heading" id="reviews-heading">The clean speaks<br />for itself.</h2></div>
+        <p>Feedback from people who have invited BOOM into their homes and workplaces.</p>
       </div>
       <TestimonialSlider testimonials={testimonials} />
     </section> : null}
+
+    <section className={styles.finalCta} aria-labelledby="final-cta-heading">
+      <Photo className={styles.finalImage} src="/images/services/deep-cleaning.webp" alt="A freshly cleaned, bright interior" sizes="100vw" fill position="50% 50%" />
+      <div className={styles.finalShade} />
+      <div><p className={styles.heroEyebrow}>Your next clean starts here</p><h2 id="final-cta-heading">Put clean<br />on the calendar.</h2><Link href="/quote" className={styles.primary}>Book your clean <span aria-hidden="true">↗</span></Link></div>
+    </section>
 
     <SiteFooter />
   </main>;

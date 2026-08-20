@@ -9,11 +9,17 @@ import brandStyles from "@/app/homeBrand.module.css";
  * inline-styled bar with a text wordmark, no navigation and no logo, so the site had three
  * different headers depending on where you landed.
  */
-export function SiteHeader({ priority = false }: { priority?: boolean }) {
+export function SiteHeader({
+  priority = false,
+  overlay = false,
+}: {
+  priority?: boolean;
+  overlay?: boolean;
+}) {
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${overlay ? styles.headerOverlay : ""}`}>
       <Link href="/" className={brandStyles.headerBrand} aria-label="BOOM Cleaning home">
-        <BrandLogo size={64} priority={priority} />
+        <BrandLogo size={64} tone={overlay ? "onDark" : "onLight"} priority={priority} />
         <span className={brandStyles.wordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
       </Link>
       <SiteNav />

@@ -10,7 +10,7 @@ const subscribeNever = () => () => {};
 const LINKS = [
   { href: "/services", label: "Services" },
   { href: "/about", label: "About us" },
-  { href: "/#process", label: "How it works" },
+  { href: "/#how-it-works", label: "How it works" },
 ];
 
 /**

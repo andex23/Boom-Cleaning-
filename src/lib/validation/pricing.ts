@@ -49,7 +49,17 @@ export type QuoteResult = z.infer<typeof quoteResultSchema>;
 export type QuoteItem = z.infer<typeof quoteItemSchema>;
 
 export const propertyTypeOptionSchema = z.object({ slug, name: z.string(), description: z.string().nullable(), requiresReview: z.boolean() });
-export const spaceTypeOptionSchema = z.object({ slug, name: z.string(), description: z.string().nullable(), maxCount: z.number().int().positive(), requiresReview: z.boolean(), unitPrice: money.nullable(), includedCount: z.number().int().min(0) });
+export const spaceTypeOptionSchema = z.object({
+  slug,
+  name: z.string(),
+  description: z.string().nullable(),
+  maxCount: z.number().int().positive(),
+  requiresReview: z.boolean(),
+  unitPrice: money.nullable(),
+  includedCount: z.number().int().min(0),
+  /** Quantity-priced extras, such as fumigation for one or two BQ rooms. */
+  priceTiers: z.array(z.object({ quantity: z.number().int().positive(), price: money })).max(40).default([]),
+});
 export const serviceAreaOptionSchema = z.object({ slug, name: z.string(), requiresReview: z.boolean() });
 
 /** Everything the quote form needs to render one service's property step. */

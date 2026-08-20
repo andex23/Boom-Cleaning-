@@ -56,12 +56,11 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
       ) : null}
 
       <ul className={styles.track} ref={trackRef} onScroll={measure} tabIndex={0} aria-label="Services, scroll for more">
-        {services.map((service, index) => (
+        {services.map((service) => (
           <li key={service.id} className={styles.slide}>
             <Link href={`/quote?service=${service.slug}`} className={styles.card} aria-label={`Book ${service.name}`}>
               <span className={styles.media}>
                 <Image src={service.image} alt="" fill sizes="(max-width: 700px) 80vw, 340px" />
-                <small className={styles.index}>{String(index + 1).padStart(2, "0")}</small>
               </span>
               <span className={styles.body}>
                 <strong>{service.name}</strong>

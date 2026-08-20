@@ -3,11 +3,12 @@
 :root {
   --font-ui: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --font-display: Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; background: #eef1f6; color: #08255f; font-family: var(--font-ui); }
+body { margin: 0; min-width: 320px; background: #fffefa; color: #08255f; font-family: var(--font-ui); }
 a { color: inherit; text-decoration: none; }
 button, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
@@ -49,7 +50,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   --accent-bright: #55d5f3;
   --accent-wash: #def5fc;
 
-  --surface: #ffffff;
+  --surface: #fffefa;
   --surface-raised: #ffffff;
   --surface-sunken: #eef1f6;
   --line: #e5eae6;

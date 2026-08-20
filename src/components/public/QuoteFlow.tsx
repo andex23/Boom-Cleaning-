@@ -7,10 +7,11 @@ import Link from "next/link";
 import { formatNaira, formatNairaDelta, formatSlotTime } from "@/lib/format";
 import type { PublicServiceView } from "@/features/services/public-catalog";
 import { saveStoredBooking, type StoredBooking } from "@/lib/booking-store";
-import { pricingCatalogSchema, quoteResultSchema, type PricingCatalog, type QuoteResult } from "@/lib/validation/pricing";
+import { pricingCatalogSchema, quoteResultSchema, type PricingCatalog, type QuoteResult, type SpaceTypeOption } from "@/lib/validation/pricing";
 import { publicBookingPayloadSchema, publicBookingResponseSchema } from "@/lib/validation/public-booking";
 import { BookingCalendar } from "./BookingCalendar";
 import { ServiceIcon } from "./ServiceIcon";
+import { BrandLoader } from "@/components/brand/BrandLoader";
 import styles from "./QuoteFlow.module.css";
 import bookingStyles from "./QuoteReview.module.css";
 
@@ -20,6 +21,27 @@ const dateFormatter = new Intl.DateTimeFormat("en-NG", { weekday: "long", day: "
 
 function displayDate(value: string) {
   return value ? dateFormatter.format(new Date(`${value}T12:00:00`)) : "Not selected";
+}
+
+const postConstructionQuestions: Record<string, string> = {
+  "living-room": "How many living rooms?",
+  storey: "How many storeys does the building have?",
+  "boys-quarters": "Does it have a BQ? If yes, how many rooms?",
+  "penthouse-area": "Does it have a penthouse?",
+  "extra-room": "Any extra rooms, such as a library, mini office or laundry room?",
+};
+
+function spacePriceText(space: SpaceTypeOption, count: number) {
+  if (space.slug === "compound-wash") return "₦70,000–₦100,000 for about 500sqm · confirmed after scope";
+  if (space.priceTiers.length) {
+    const selected = space.priceTiers.find((tier) => tier.quantity === count);
+    if (selected) return formatNaira(selected.price);
+    if (count > 0) return `Quoted individually above ${space.priceTiers.at(-1)?.quantity ?? 0}`;
+    return space.priceTiers.map((tier) => `${tier.quantity} room${tier.quantity === 1 ? "" : "s"} ${formatNaira(tier.price)}`).join(" · ");
+  }
+  if (space.requiresReview) return "Confirmed after scope review";
+  if (space.includedCount > 0 && count <= space.includedCount) return "Included";
+  return space.unitPrice ? `${formatNaira(space.unitPrice)} each` : "Confirmed after scope review";
 }
 
 /**
@@ -72,6 +94,7 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
     () => Object.entries(spaceCounts).filter(([, count]) => count > 0).map(([slug, count]) => ({ slug, count })),
     [spaceCounts],
   );
+  const hasScope = spaces.length > 0;
 
   // A catalogue loaded for a different service is stale, not current.
   const catalog = catalogState?.serviceSlug === form.serviceSlug ? catalogState.data : null;
@@ -80,12 +103,17 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
     [form.serviceSlug, form.propertyTypeSlug, form.areaSlug, spaces],
   );
   const quote = quoteState?.key === quoteKey ? quoteState.result : null;
-  // Bedrooms get their own slider; every other space lives under the extras disclosure.
+  // Bedrooms get their own slider. Quantity-tiered extras (for example fumigation BQ
+  // rooms) stay visible even when the main service price comes from a bedroom table.
   const bedroomType = catalog?.spaceTypes.find((space) => space.slug === "bedroom") ?? null;
   const usesTiers = catalog?.usesBedroomTiers ?? false;
-  const otherSpaceTypes = usesTiers ? [] : (catalog?.spaceTypes.filter((space) => space.slug !== "bedroom") ?? []);
+  const otherSpaceTypes = catalog?.spaceTypes.filter((space) => space.slug !== "bedroom") ?? [];
+  const isPostConstruction = form.serviceSlug === "post-construction-cleaning";
+  const compoundTypes = otherSpaceTypes.filter((space) => space.slug === "compound-sweep" || space.slug === "compound-wash");
+  const scopeSpaceTypes = otherSpaceTypes.filter((space) => space.slug !== "compound-sweep" && space.slug !== "compound-wash");
   const tierPrice = usesTiers ? catalog?.bedroomTiers.find((tier) => tier.bedrooms === (spaceCounts["bedroom"] ?? 0))?.price ?? null : null;
   const extrasCount = otherSpaceTypes.reduce((total, space) => total + (spaceCounts[space.slug] ?? 0), 0);
+  const compoundChoice = (spaceCounts["compound-wash"] ?? 0) > 0 ? "compound-wash" : (spaceCounts["compound-sweep"] ?? 0) > 0 ? "compound-sweep" : "none";
 
   const canPrice = Boolean(catalog && form.propertyTypeSlug && form.areaSlug);
   const quoteFailed = canPrice && quoteFailedKey === quoteKey;
@@ -149,12 +177,26 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
   }, [canPrice, quoteKey, form.serviceSlug, form.propertyTypeSlug, form.areaSlug, spaces]);
 
   const setSpaceCount = useCallback((slug: string, count: number, maxCount: number) => {
-    setSpaceCounts((current) => ({ ...current, [slug]: Math.max(0, Math.min(maxCount, count)) }));
+    setSpaceCounts((current) => {
+      const next = { ...current, [slug]: Math.max(0, Math.min(maxCount, count)) };
+      if (slug === "compound-sweep" && count > 0) next["compound-wash"] = 0;
+      if (slug === "compound-wash" && count > 0) next["compound-sweep"] = 0;
+      return next;
+    });
+  }, []);
+
+  const setCompoundChoice = useCallback((slug: "none" | "compound-sweep" | "compound-wash") => {
+    setSpaceCounts((current) => ({
+      ...current,
+      "compound-sweep": slug === "compound-sweep" ? 1 : 0,
+      "compound-wash": slug === "compound-wash" ? 1 : 0,
+    }));
   }, []);
 
   const validate = () => {
     if (step === 0 && !form.serviceSlug) return "Choose the service you need.";
     if (step === 1 && !form.propertyTypeSlug) return "Tell us what type of property this is.";
+    if (step === 1 && !hasScope) return "Add at least one room or area so we can price the service.";
     if (step === 2 && (!form.areaSlug || !form.address.trim() || !form.preferredDate || !form.timeSlot)) return "Choose your area, an available date and time, then add the service address.";
     if (step === 3 && (!form.name.trim() || !form.phone.trim() || !form.email.includes("@"))) return "Please enter your name, phone number and a valid email.";
     return "";
@@ -292,12 +334,16 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
     </section>;
   }
 
-  const priceLabel = isPricing ? "Pricing…" : quote?.requiresReview ? "Scope review" : quote?.total !== null && quote?.total !== undefined ? formatNaira(quote.total) : "—";
+  const priceLabel = !hasScope && step > 0 ? "Add your rooms" : isPricing ? "Pricing…" : quote?.requiresReview ? "Scope review" : quote?.total !== null && quote?.total !== undefined ? formatNaira(quote.total) : "—";
 
   return <section className={styles.shell} aria-labelledby="quote-title">
-    <aside className={styles.aside}><Link href="/" className={styles.brand} aria-label="BOOM Cleaning Services home"><Image src={logoSrc} alt="BOOM Cleaning Services" width={132} height={44} priority /></Link><div className={styles.asideCopy}><p className={styles.eyebrow}>Quote and booking</p><h1 id="quote-title">Choose your clean. Book your time.</h1><p>Describe your space exactly as it is — every room, and the extras too — and see a transparent estimate before you book.</p></div><ol className={styles.steps}>{steps.map((label, index) => <li key={label} className={index === step ? styles.current : index < step ? styles.complete : ""}><span>{index < step ? "✓" : `0${index + 1}`}</span>{label}</li>)}</ol>{step > 0 ? <div className={styles.asideEstimate}><span>{quote?.requiresReview ? "Your quote" : "Estimated total"}</span><strong>{priceLabel}</strong>{quote?.requiresReview ? <small>A BOOM team member will confirm your price.</small> : quote?.depositAmount ? <small>{formatNaira(quote.depositAmount)} deposit on confirmation</small> : null}</div> : null}<p className={styles.support}>Need help? <a href="tel:+2349029799205">Speak to BOOM</a></p></aside>
+    <aside className={styles.aside}><Link href="/" className={styles.brand} aria-label="BOOM Cleaning Services home"><Image src={logoSrc} alt="BOOM Cleaning Services" width={132} height={44} priority /></Link><div className={styles.asideCopy}><p className={styles.eyebrow}>Quote and booking</p><h1 id="quote-title">Choose your clean. Book your time.</h1><p>Describe your space exactly as it is — every room, and the extras too — and see a transparent estimate before you book.</p></div><ol className={styles.steps}>{steps.map((label, index) => <li key={label} className={index === step ? styles.current : index < step ? styles.complete : ""}><span>{index < step ? "✓" : `0${index + 1}`}</span>{label}</li>)}</ol>{step > 0 ? <div className={styles.asideEstimate}><span>{quote?.requiresReview && hasScope ? "Your quote" : "Estimated total"}</span><strong>{priceLabel}</strong>{quote?.requiresReview && hasScope ? <small>A BOOM team member will confirm your price.</small> : quote?.depositAmount ? <small>{formatNaira(quote.depositAmount)} deposit on confirmation</small> : null}</div> : null}<p className={styles.support}>Need help? <a href="tel:+2349029799205">Speak to BOOM</a></p></aside>
 
     <form className={`${styles.form} ${step === 2 ? bookingStyles.calendarForm : ""}`} onSubmit={submit} noValidate aria-busy={isSubmitting}>
+      {isSubmitting ? <div className={styles.bookingLoader}>
+        <BrandLoader logoSrc={logoSrc} label="Securing your booking" compact />
+        <p>Please keep this page open while BOOM confirms your request.</p>
+      </div> : null}
       <div className={styles.formTop}><div><p className={styles.mobileStep}>Step {step + 1} of {steps.length}</p><h2>{steps[step]}</h2></div><p className={styles.progress}>{Math.round(((step + 1) / steps.length) * 100)}%</p></div>
 
       {step === 0 ? <fieldset className={styles.options}><legend>What kind of care do you need?</legend><div className={styles.serviceGrid}>{services.map((item) => <label key={item.id} className={`${styles.serviceOption} ${form.serviceSlug === item.slug ? styles.selected : ""}`}><input type="radio" name="service" value={item.slug} checked={form.serviceSlug === item.slug} onChange={() => update("serviceSlug", item.slug)} /><span className={styles.optionIcon}><ServiceIcon icon={item.icon} /></span><span><strong>{item.name}</strong><small>{item.priceLabel}</small></span></label>)}</div></fieldset> : null}
@@ -308,7 +354,7 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
           <fieldset><legend>What type of property is it?</legend><div className={styles.pills}>{catalog.propertyTypes.map((type) => <label className={form.propertyTypeSlug === type.slug ? styles.activePill : ""} key={type.slug} title={type.description ?? undefined}><input type="radio" name="property" value={type.slug} checked={form.propertyTypeSlug === type.slug} onChange={() => update("propertyTypeSlug", type.slug)} />{type.name}</label>)}</div></fieldset>
 
           {bedroomType ? <label className={styles.rangeLabel}>
-            <span className={styles.rangeTitle}>Bedrooms</span>
+            <span className={styles.rangeTitle}>{isPostConstruction ? "How many bedrooms?" : "Bedrooms"}</span>
             <strong>{spaceCounts[bedroomType.slug] ?? 0}{tierPrice !== null ? <em className={styles.tierPrice}>{formatNaira(tierPrice)}</em> : null}</strong>
             <input
               type="range" min={0} max={bedroomType.maxCount} step={1}
@@ -319,16 +365,40 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
             <span>0</span><span>{bedroomType.maxCount}</span>
           </label> : null}
 
-          {otherSpaceTypes.length === 0 ? null : <details className={styles.extras} open={extrasOpen} onToggle={(event) => setExtrasOpen((event.currentTarget as HTMLDetailsElement).open)}>
+          {isPostConstruction && otherSpaceTypes.length ? <div className={styles.scopeQuestions}>
+            <div><strong>Complete the building scope</strong><p className={styles.help}>Use zero where an area does not apply. Your estimate updates as you answer.</p></div>
+            <ul className={styles.spaceList}>{scopeSpaceTypes.map((space) => {
+              const count = spaceCounts[space.slug] ?? 0;
+              return <li key={space.slug} className={count > 0 ? styles.spaceRowActive : styles.spaceRow}>
+                <div className={styles.spaceLabel}><strong>{postConstructionQuestions[space.slug] ?? space.name}</strong><small>{spacePriceText(space, count)}</small></div>
+                <div className={styles.stepper}>
+                  <button type="button" aria-label={`Remove one ${space.name}`} disabled={count === 0} onClick={() => setSpaceCount(space.slug, count - 1, space.maxCount)}>−</button>
+                  <output aria-live="off">{count}</output>
+                  <button type="button" aria-label={`Add one ${space.name}`} disabled={count >= space.maxCount} onClick={() => setSpaceCount(space.slug, count + 1, space.maxCount)}>+</button>
+                </div>
+              </li>;
+            })}</ul>
+            {compoundTypes.length ? <fieldset className={styles.compoundChoice}>
+              <legend>Do you want the compound washed or just swept?</legend>
+              <div className={styles.pills}>
+                <label className={compoundChoice === "none" ? styles.activePill : ""}><input type="radio" name="compound" checked={compoundChoice === "none"} onChange={() => setCompoundChoice("none")} />Neither</label>
+                {compoundTypes.map((space) => <label className={compoundChoice === space.slug ? styles.activePill : ""} key={space.slug} title={space.description ?? undefined}>
+                  <input type="radio" name="compound" checked={compoundChoice === space.slug} onChange={() => setCompoundChoice(space.slug as "compound-sweep" | "compound-wash")} />
+                  {space.slug === "compound-sweep" ? "Sweep · ₦20,000" : "Wash · ₦70,000–₦100,000"}
+                </label>)}
+              </div>
+              {compoundChoice === "compound-wash" ? <p className={styles.help}>The washing range is for a typical 500sqm property. BOOM will confirm the final amount from the condition and scope.</p> : null}
+            </fieldset> : null}
+          </div> : otherSpaceTypes.length === 0 ? null : <details className={styles.extras} open={extrasOpen} onToggle={(event) => setExtrasOpen((event.currentTarget as HTMLDetailsElement).open)}>
             <summary>
-              <span className={styles.extrasTitle}>Bathrooms, living areas and extras</span>
+              <span className={styles.extrasTitle}>{form.serviceSlug === "fumigation" ? "BQ rooms" : "Bathrooms, living areas and extras"}</span>
               <span className={styles.extrasMeta}>{extrasCount ? `${extrasCount} counted` : "None yet"}<i aria-hidden="true">⌄</i></span>
             </summary>
-            <p className={styles.help}>Count every other area you’d like cleaned, including outdoor spaces like a gazebo, BQ or terrace.</p>
+            <p className={styles.help}>{form.serviceSlug === "fumigation" ? "Add BQ rooms attached to the property." : "Count every other area you’d like cleaned, including outdoor spaces like a gazebo, BQ or terrace."}</p>
             <ul className={styles.spaceList}>{otherSpaceTypes.map((space) => {
               const count = spaceCounts[space.slug] ?? 0;
               return <li key={space.slug} className={count > 0 ? styles.spaceRowActive : styles.spaceRow}>
-                <div className={styles.spaceLabel}><strong>{space.name}</strong><small>{space.requiresReview ? "Quoted by our team" : space.includedCount > 0 && count <= space.includedCount ? "Included" : space.unitPrice ? `${formatNaira(space.unitPrice)} each` : "Quoted by our team"}</small></div>
+                <div className={styles.spaceLabel}><strong>{space.name}</strong><small>{spacePriceText(space, count)}</small></div>
                 <div className={styles.stepper}>
                   <button type="button" aria-label={`Remove one ${space.name}`} disabled={count === 0} onClick={() => setSpaceCount(space.slug, count - 1, space.maxCount)}>−</button>
                   <output aria-live="off">{count}</output>
@@ -339,7 +409,7 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
           </details>}
 
           {quoteFailed ? <div className={styles.errorPanel} role="alert"><p>We couldn’t work out a price for this just now. You can keep going and we’ll confirm your price by phone, or adjust a room count to try again.</p></div> : null}
-          {quote?.requiresReview && quote.reviewReasons.length ? <div className={styles.reviewNotice}><strong>We’ll quote this one personally.</strong><ul>{quote.reviewReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul><p>You can still book a time — we’ll confirm the price before any payment.</p></div> : null}
+          {hasScope && quote?.requiresReview && quote.reviewReasons.length ? <div className={styles.reviewNotice}><strong>We’ll quote this one personally.</strong><ul>{quote.reviewReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul><p>You can still book a time — we’ll confirm the price before any payment.</p></div> : null}
         </>}
         <label className={styles.textField}>Anything we should know?<textarea value={form.notes} onChange={(event) => update("notes", event.target.value)} placeholder="For example: pets, stair access, priority rooms…" rows={4} /></label>
       </div> : null}
