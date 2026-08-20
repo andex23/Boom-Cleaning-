@@ -38,12 +38,12 @@ export default async function AboutPage() {
         newly built properties &mdash; the kind of work where the difference between a
         surface wipe and a real clean is obvious the moment you walk in.
       </p>
-      {team.length > 2 ? <Photo className={about.heroPhoto} src="/images/team/07-team-supplies.webp" alt="The BOOM Cleaning Services team with their supplies in Abuja" priority sizes="(max-width: 900px) 94vw, 1180px" minAspect={1.4} /> : null}
+      {team.length > 2 ? <Photo data-reveal="photo" className={about.heroPhoto} src="/images/team/07-team-supplies.webp" alt="The BOOM Cleaning Services team with their supplies in Abuja" priority sizes="(max-width: 900px) 94vw, 1180px" minAspect={1.4} /> : null}
     </section>
 
     <section className={about.pillars} aria-labelledby="how-heading">
-      <h2 id="how-heading" className={about.sectionHeading}>How we work</h2>
-      <ol className={about.steps}>
+      <h2 data-reveal="heading" id="how-heading" className={about.sectionHeading}>How we work</h2>
+      <ol className={about.steps} data-reveal-stagger>
         <li>
           <strong>You tell us about the space</strong>
           <p>Rooms, floors, outdoor areas and extras are counted individually &mdash; bedrooms, living rooms, storeys, a BQ, a compound &mdash; so the quote is built from your property rather than a generic rate.</p>
@@ -71,27 +71,27 @@ export default async function AboutPage() {
     {team.length > 0 ? <section className={about.team} aria-labelledby="team-heading">
       <div className={about.teamIntro}>
         <p className={styles.eyebrow}>Our people</p>
-        <h2 id="team-heading">The team behind the clean.</h2>
+        <h2 data-reveal="heading" id="team-heading">The team behind the clean.</h2>
         <p>Trained, uniformed and equipped. These are the people who turn up at your door, and the same faces you will see next time.</p>
       </div>
-      <Photo className={about.teamPhoto} src="/images/team/05-team-four.webp" alt="Four of the BOOM cleaning team in uniform" sizes="(max-width: 820px) 92vw, 52vw" />
+      <Photo data-reveal="photo" className={about.teamPhoto} src="/images/team/05-team-four.webp" alt="Four of the BOOM cleaning team in uniform" sizes="(max-width: 820px) 92vw, 52vw" />
     </section> : null}
 
     <section className={about.kit} aria-labelledby="kit-heading">
       <div>
         <p className={styles.eyebrow}>Equipment</p>
-        <h2 id="kit-heading">The right machine for the job.</h2>
+        <h2 data-reveal="heading" id="kit-heading">The right machine for the job.</h2>
         <p className={about.kitLead}>
           Much of what separates a professional clean from a thorough tidy is equipment.
           These are the machines our teams carry to site.
         </p>
       </div>
       <ul>{KIT.map((item) => <li key={item.name}><strong>{item.name}</strong><span>{item.use}</span></li>)}</ul>
-      <Photo className={about.kitPhoto} src="/images/team/02-team-equipment.webp" alt="BOOM cleaning machines and equipment ready for a job" sizes="(max-width: 820px) 92vw, 30vw" />
+      <Photo data-reveal="photo" className={about.kitPhoto} src="/images/team/02-team-equipment.webp" alt="BOOM cleaning machines and equipment ready for a job" sizes="(max-width: 820px) 92vw, 30vw" />
     </section>
 
     <section className={about.services} aria-labelledby="services-heading">
-      <h2 id="services-heading" className={about.sectionHeading}>What we clean</h2>
+      <h2 data-reveal="heading" id="services-heading" className={about.sectionHeading}>What we clean</h2>
       <ul className={about.serviceChips}>
         {services.map((service) => <li key={service.id}><Link href={`/quote?service=${service.slug}`}>{service.name}</Link></li>)}
       </ul>
@@ -99,13 +99,13 @@ export default async function AboutPage() {
     </section>
 
     {testimonials.length > 0 ? <section className={about.quotes} aria-labelledby="quotes-heading">
-      <h2 id="quotes-heading" className={about.sectionHeading}>What customers tell us</h2>
+      <h2 data-reveal="heading" id="quotes-heading" className={about.sectionHeading}>What customers tell us</h2>
       <TestimonialSlider testimonials={testimonials} />
     </section> : null}
 
 
     <section className={about.cta}>
-      <h2>Tell us about your space.</h2>
+      <h2 data-reveal="heading">Tell us about your space.</h2>
       <p>Get a price in a few minutes, or call and talk it through with us.</p>
       <div className={about.ctaActions}>
         <Link className={styles.primary} href="/quote">Book a service <span aria-hidden="true">→</span></Link>

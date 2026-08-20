@@ -25,6 +25,8 @@ export function Photo({
   minAspect,
   maxAspect,
   position,
+  fill = false,
+  "data-reveal": reveal,
 }: {
   src: string;
   alt: string;
@@ -34,6 +36,14 @@ export function Photo({
   minAspect?: number;
   maxAspect?: number;
   position?: string;
+  /**
+   * The frame is sized by CSS — it fills a column or bleeds to the viewport — instead of
+   * taking the photograph's shape. A hero is the ground the page sits on, so it has to
+   * meet the edges it is given; the crop is chosen with `position` rather than avoided.
+   */
+  fill?: boolean;
+  /** Scroll-timeline hook; see the motion block in globals.css. */
+  "data-reveal"?: string;
 }) {
   const size = imageSize(src);
   const natural = size ? size.width / size.height : null;
@@ -44,7 +54,7 @@ export function Photo({
     : Math.min(Math.max(natural, minAspect ?? 0), maxAspect ?? Number.POSITIVE_INFINITY);
 
   return (
-    <div className={className} style={aspect ? { aspectRatio: String(aspect) } : undefined}>
+    <div className={className} data-reveal={reveal} style={!fill && aspect ? { aspectRatio: String(aspect) } : undefined}>
       <Image src={src} alt={alt} fill sizes={sizes} priority={priority} style={position ? { objectPosition: position } : undefined} />
     </div>
   );

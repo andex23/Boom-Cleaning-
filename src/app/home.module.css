@@ -293,3 +293,80 @@
    job is to read as three short instructions. */
 .processPhoto{position:relative;overflow:hidden;border-radius:var(--radius);margin-top:28px;background:rgba(255,255,255,.08)}
 @media(max-width:900px){ .processPhoto{max-width:340px} }
+
+/* ---------------------------------------------------------------------------
+   Photography: three roles, not one repeated box.
+
+   Every frame on the site was the same thing — a rounded rectangle inset in a
+   grid cell — which is why the page read as a template. Each photograph now has
+   a job, and the job decides the treatment:
+
+     ground  the hero. Meets the viewport edge, full height, type beside it.
+     anchor  bleeds off the opposite edge, so it answers the hero across the page.
+     flush   inside a coloured panel, sharing that panel's edge instead of
+             floating on top of it as a card on a card.
+
+   A frame only carries a corner radius on an edge where the shape actually ends.
+   --------------------------------------------------------------------------- */
+
+/* --- ground --------------------------------------------------------------- */
+.hero{
+  grid-template-columns:minmax(0,1fr) minmax(0,.92fr);
+  align-items:stretch;
+  gap:clamp(28px,4vw,64px);
+  max-width:none;
+  margin-inline:0;
+  padding:0 0 0 max(var(--gutter),calc((100vw - var(--page-max))/2 + var(--gutter)));
+  min-height:min(84vh,720px);
+}
+.heroCopy{align-self:center;padding-block:clamp(44px,6vw,88px);padding-right:clamp(12px,2vw,32px);max-width:34em}
+.heroImage{
+  position:relative;overflow:hidden;
+  min-height:min(84vh,720px);height:100%;
+  border-radius:var(--radius-lg) 0 0 var(--radius-lg);
+  box-shadow:none;
+}
+.heroImage img{object-fit:cover}
+
+/* --- anchor --------------------------------------------------------------- */
+.teamBand{
+  grid-template-columns:minmax(0,.92fr) minmax(0,1fr);
+  align-items:stretch;
+  max-width:none;margin-inline:0;
+  padding:0 max(var(--gutter),calc((100vw - var(--page-max))/2 + var(--gutter))) 0 0;
+  gap:clamp(28px,4vw,64px);
+}
+.teamBandPhoto{
+  position:relative;overflow:hidden;
+  min-height:min(70vh,600px);height:100%;
+  border-radius:0 var(--radius-lg) var(--radius-lg) 0;
+  border:0;
+}
+.teamBandCopy{align-self:center;padding-block:clamp(44px,6vw,80px)}
+
+/* --- flush ---------------------------------------------------------------- */
+/* Inside the navy panels the photograph is part of the panel, reaching its edge
+   and sharing its corner, rather than a rounded card sitting on a rounded card. */
+.officesImage{
+  grid-column:1/-1;
+  position:relative;overflow:hidden;
+  margin:clamp(28px,4vw,44px) calc(-1 * clamp(28px,4vw,68px)) calc(-1 * clamp(48px,6vw,84px));
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+}
+/* Reaches the panel's own left edge and bottom, taking that corner as its own —
+   a card floating inside a card is the thing we are removing, not repeating. */
+.processPhoto{
+  position:relative;overflow:hidden;
+  margin:28px clamp(24px,3vw,48px) calc(-1 * clamp(48px,6vw,84px)) calc(-1 * clamp(28px,4vw,68px));
+  border-radius:0 var(--radius) 0 var(--radius-lg);
+}
+
+@media(max-width:900px){
+  .hero,.teamBand{grid-template-columns:1fr;padding-inline:0;min-height:0;gap:0}
+  .heroCopy{padding:clamp(32px,7vw,56px) var(--gutter) clamp(24px,4vw,36px)}
+  .heroImage{min-height:0;aspect-ratio:4/3;height:auto;border-radius:0}
+  .teamBandPhoto{min-height:0;aspect-ratio:4/3;height:auto;border-radius:0;order:-1}
+  .teamBandCopy{padding:clamp(28px,6vw,44px) var(--gutter)}
+  .processPhoto{margin-inline:calc(-1 * 22px);border-radius:0}
+  .officesImage{margin-inline:calc(-1 * 22px)}
+}

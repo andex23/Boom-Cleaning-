@@ -71,3 +71,88 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 body { background: var(--surface); }
+
+/* ---------------------------------------------------------------------------
+   Scroll-driven motion.
+
+   Built on native scroll timelines (`animation-timeline: view()`), so there is
+   no JavaScript, no observer, and nothing to run on the main thread — the
+   compositor drives it against scroll position.
+
+   Everything is behind @supports and starts from the finished state, so a
+   browser without scroll timelines shows the page fully composed rather than
+   blank. The whole block is off under prefers-reduced-motion.
+
+   The register is a cleaning brand, not a game: things settle into place. No
+   bounce, no spin, nothing crossing the page.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+
+    /* Sections settle up as they enter, and are done well before centre. */
+    [data-reveal] {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 32%;
+    }
+    @keyframes reveal-rise {
+      from { opacity: 0; transform: translateY(26px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Photographs uncover rather than fade: a wipe that reads as something being
+       revealed clean, with the image easing out of a slight overscale. */
+    [data-reveal="photo"] {
+      animation: photo-uncover linear both;
+      animation-range: entry 0% cover 38%;
+    }
+    @keyframes photo-uncover {
+      from { opacity: .5; clip-path: inset(0 0 42% 0); transform: scale(1.05); }
+      to   { opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
+    }
+
+    /* Slow drift inside the frame across the whole scroll — depth without parallax
+       jitter, because the frame itself never moves. */
+    [data-reveal="photo"] img {
+      animation: photo-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes photo-drift {
+      from { transform: scale(1.08) translateY(-1.2%); }
+      to   { transform: scale(1.08) translateY(1.2%); }
+    }
+
+    /* Headings resolve letter by letter's worth of tracking — the line tightens
+       into place instead of sliding. */
+    [data-reveal="heading"] {
+      animation: heading-settle linear both;
+      animation-range: entry 8% cover 30%;
+    }
+    @keyframes heading-settle {
+      from { opacity: 0; letter-spacing: .04em; transform: translateY(14px); }
+      to   { opacity: 1; letter-spacing: inherit; transform: none; }
+    }
+
+    /* Numbered steps and cards arrive in sequence rather than as a block. */
+    [data-reveal-stagger] > * {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 2% cover 30%;
+    }
+    [data-reveal-stagger] > *:nth-child(2) { animation-range: entry 2% cover 36%; }
+    [data-reveal-stagger] > *:nth-child(3) { animation-range: entry 2% cover 42%; }
+    [data-reveal-stagger] > *:nth-child(4) { animation-range: entry 2% cover 48%; }
+
+    /* A hairline that draws itself along the section as it comes into view. */
+    [data-reveal="rule"] {
+      animation: rule-draw linear both;
+      animation-range: entry 10% cover 40%;
+      transform-origin: left center;
+    }
+    @keyframes rule-draw {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+  }
+}
