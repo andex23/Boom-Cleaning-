@@ -6,6 +6,8 @@ const read = (name: string) => readFileSync(resolve(process.cwd(), "supabase/mig
 const pricing = read("006_space_based_pricing.sql");
 const booking = read("007_booking_uses_server_pricing.sql");
 const referenceData = read("008_pricing_reference_data.sql");
+const twoADay = read("20260821103000_two_bookings_a_day.sql");
+const fullPayment = read("20260821104500_full_payment_reserves_a_booking.sql");
 
 describe("space-based pricing migration", () => {
   it("models a property as counted spaces inside a multiplied property type", () => {
@@ -235,5 +237,53 @@ describe("published price list", () => {
 
   it("never quotes zero for an empty scope", () => {
     expect(priceList).toContain("if not review_required and total_value <= 0 then");
+  });
+});
+
+describe("two bookings a day", () => {
+  it("offers exactly the two published start times", () => {
+    expect(twoADay).toContain("time '09:00', 'Morning', true, 10, 1");
+    expect(twoADay).toContain("time '14:00', 'Afternoon / Evening', true, 20, 1");
+    // Everything is stood down first, so 08:00, 10:30 and 15:30 cannot linger.
+    expect(twoADay).toContain("update public.booking_slots set is_active = false");
+  });
+
+  it("stops a long job from consuming slots the team still has free", () => {
+    // The overlap constraint is what made a second booking on the same day impossible:
+    // one crew, and an eight-hour morning job overlapping the afternoon slot.
+    expect(twoADay).toContain("drop constraint if exists bookings_no_crew_schedule_overlap");
+    expect(twoADay).not.toContain("free_crews := crew_total");
+  });
+
+  it("counts places in a slot instead of measuring crew overlap", () => {
+    expect(twoADay).toContain("b.slot_date = local_date");
+    expect(twoADay).toContain("b.slot_time = local_time");
+    expect(twoADay).toContain("if taken >= capacity then");
+  });
+
+  it("refuses an arrival time that is not a published slot", () => {
+    expect(twoADay).toContain("where bs.is_active and bs.start_time = local_time");
+    expect(twoADay).toContain("if not found then\n    return null;");
+  });
+
+  it("serialises two requests racing for the same free slot", () => {
+    expect(twoADay).toContain("pg_advisory_xact_lock");
+  });
+
+  it("keeps assign_free_crew's signature so its callers are untouched", () => {
+    expect(twoADay).toContain("function public.assign_free_crew(start_value timestamptz, end_value timestamptz)");
+  });
+
+  it("stores the slot on the row, because the local-time cast cannot be indexed", () => {
+    expect(twoADay).toContain("add column if not exists slot_date date");
+    expect(twoADay).toContain("add column if not exists slot_time time");
+    expect(twoADay).toContain("create trigger bookings_set_slot");
+  });
+});
+
+describe("full payment reserves a booking", () => {
+  it("asks for the whole amount rather than a share of it", () => {
+    expect(fullPayment).toContain("'depositAmount', total_value,");
+    expect(fullPayment).not.toContain("total_value * 0.3");
   });
 });
