@@ -9,5 +9,11 @@ export default async function QuotePage({ searchParams }: { searchParams: Promis
   const params = await searchParams;
   const service = typeof params.service === "string" ? params.service : undefined;
   const services = await listBookableServices();
-  return <QuoteFlow services={services} initialService={service} logoSrc={resolveLogoSrc("onDark")} />;
+  // Two grounds: the navy aside during the flow, the light page on confirmation.
+  return <QuoteFlow
+    services={services}
+    initialService={service}
+    logoSrc={resolveLogoSrc("onDark")}
+    logoSrcOnLight={resolveLogoSrc("onLight")}
+  />;
 }

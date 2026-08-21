@@ -43,15 +43,15 @@ export default function FaqPage() {
     <SiteHeader priority />
     <section className={faq.hero} aria-labelledby="faq-heading">
       <p className={shared.eyebrow}>Questions, answered</p>
-      <h1 id="faq-heading">Everything to know before BOOM arrives.</h1>
+      <h1 data-reveal="heading" id="faq-heading">Everything to know before BOOM arrives.</h1>
       <p>Clear answers about prices, coverage, preparation and the team entering your space.</p>
       <Link className={shared.primary} href="/quote">Book a service <span aria-hidden="true">↗</span></Link>
     </section>
 
     <section className={faq.questions} aria-label="Frequently asked questions">
       {groups.map((group) => <section className={faq.group} key={group.label}>
-        <div className={faq.groupTitle}><p>{group.label}</p><span>{String(group.questions.length).padStart(2, "0")}</span></div>
-        <div className={faq.list}>{group.questions.map(([question, answer], index) => <details key={question} open={index === 0}>
+        <div className={faq.groupTitle} data-reveal><p>{group.label}</p><span>{String(group.questions.length).padStart(2, "0")}</span></div>
+        <div className={faq.list} data-reveal-stagger>{group.questions.map(([question, answer]) => <details key={question}>
           <summary><span>{question}</span><i aria-hidden="true">+</i></summary>
           <p>{answer}</p>
         </details>)}</div>
@@ -59,8 +59,15 @@ export default function FaqPage() {
     </section>
 
     <section className={faq.contact}>
-      <div><p className={shared.eyebrow}>Still need an answer?</p><h2>Talk to the BOOM team.</h2></div>
-      <div><p>Send the property details and the question you need resolved. We will help you choose the right service before you book.</p><a href="https://wa.me/2349029799205" target="_blank" rel="noreferrer">Ask on WhatsApp <span aria-hidden="true">→</span></a></div>
+      <div><p className={shared.eyebrow}>Still need an answer?</p><h2 data-reveal="heading">Talk to the BOOM team.</h2></div>
+      <div>
+        <p>Send the property details and the question you need resolved. We will help you choose the right service before you book.</p>
+        {/* Instagram leads: it is where most customers actually reach BOOM. */}
+        <div className={faq.contactActions} data-reveal>
+          <a href="https://instagram.com/boomcleaningservices" target="_blank" rel="noreferrer">Message on Instagram <span aria-hidden="true">→</span></a>
+          <a className={faq.contactSecondary} href="https://wa.me/2349029799205" target="_blank" rel="noreferrer">Ask on WhatsApp <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
     </section>
     <SiteFooter />
   </main>;

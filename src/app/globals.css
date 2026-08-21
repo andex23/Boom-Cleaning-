@@ -90,64 +90,69 @@ body { background: var(--surface); }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
 
-    /* Sections settle up as they enter, and are done well before centre. */
-    [data-reveal] {
-      animation: reveal-rise linear both;
+    /* Longhands only, never the `animation` shorthand.
+       The shorthand resets animation-timeline to `auto`, and every variant below sets
+       its own animation-name. Written as `animation: x linear both` the timeline was
+       being reset after the base rule established it, leaving a 0s document-timeline
+       animation that jumped straight to its end state — the headings were declared
+       animated but never moved. Setting the longhand keeps the inherited view()
+       timeline intact. */
+    [data-reveal],
+    [data-reveal-stagger] > * {
+      animation-name: reveal-rise;
+      animation-fill-mode: both;
+      /* Eased rather than linear: motion resolves early in the range and settles,
+         instead of rigidly tracking the wheel the whole way down. */
+      animation-timing-function: ease-out;
       animation-timeline: view();
-      animation-range: entry 5% cover 32%;
+      animation-range: entry 4% cover 34%;
     }
     @keyframes reveal-rise {
-      from { opacity: 0; transform: translateY(26px); }
+      from { opacity: 0; transform: translate3d(0, 24px, 0); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Headings rise and resolve from a hair under full size. The previous version
+       animated letter-spacing, which is a layout property: every frame reflowed the
+       heading and everything below it. Transform and opacity stay on the compositor. */
+    [data-reveal="heading"] {
+      animation-name: heading-settle;
+      animation-range: entry 6% cover 32%;
+    }
+    @keyframes heading-settle {
+      from { opacity: 0; transform: translate3d(0, 18px, 0) scale(.985); }
       to   { opacity: 1; transform: none; }
     }
 
     /* Photographs uncover rather than fade: a wipe that reads as something being
-       revealed clean, with the image easing out of a slight overscale. */
+       revealed clean, easing out of a slight overscale. */
     [data-reveal="photo"] {
-      animation: photo-uncover linear both;
-      animation-range: entry 0% cover 38%;
+      animation-name: photo-uncover;
+      animation-range: entry 0% cover 40%;
     }
     @keyframes photo-uncover {
-      from { opacity: .5; clip-path: inset(0 0 42% 0); transform: scale(1.05); }
+      from { opacity: .55; clip-path: inset(0 0 38% 0); transform: scale(1.04); }
       to   { opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
     }
 
     /* Slow drift inside the frame across the whole scroll — depth without parallax
-       jitter, because the frame itself never moves. */
+       jitter, because the frame itself never moves. Linear here on purpose: this one
+       should track scroll exactly rather than settle. */
     [data-reveal="photo"] img {
-      animation: photo-drift linear both;
+      animation-name: photo-drift;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
       animation-timeline: view();
       animation-range: cover 0% cover 100%;
     }
     @keyframes photo-drift {
-      from { transform: scale(1.08) translateY(-1.2%); }
-      to   { transform: scale(1.08) translateY(1.2%); }
+      from { transform: scale(1.06) translate3d(0, -1.1%, 0); }
+      to   { transform: scale(1.06) translate3d(0, 1.1%, 0); }
     }
-
-    /* Headings resolve letter by letter's worth of tracking — the line tightens
-       into place instead of sliding. */
-    [data-reveal="heading"] {
-      animation: heading-settle linear both;
-      animation-range: entry 8% cover 30%;
-    }
-    @keyframes heading-settle {
-      from { opacity: 0; letter-spacing: .04em; transform: translateY(14px); }
-      to   { opacity: 1; letter-spacing: inherit; transform: none; }
-    }
-
-    /* Numbered steps and cards arrive in sequence rather than as a block. */
-    [data-reveal-stagger] > * {
-      animation: reveal-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 2% cover 30%;
-    }
-    [data-reveal-stagger] > *:nth-child(2) { animation-range: entry 2% cover 36%; }
-    [data-reveal-stagger] > *:nth-child(3) { animation-range: entry 2% cover 42%; }
-    [data-reveal-stagger] > *:nth-child(4) { animation-range: entry 2% cover 48%; }
 
     /* A hairline that draws itself along the section as it comes into view. */
     [data-reveal="rule"] {
-      animation: rule-draw linear both;
+      animation-name: rule-draw;
       animation-range: entry 10% cover 40%;
       transform-origin: left center;
     }
@@ -155,5 +160,11 @@ body { background: var(--surface); }
       from { transform: scaleX(0); }
       to   { transform: scaleX(1); }
     }
+
+    /* Numbered steps and cards arrive in sequence rather than as a block. */
+    [data-reveal-stagger] > *:nth-child(2) { animation-range: entry 4% cover 40%; }
+    [data-reveal-stagger] > *:nth-child(3) { animation-range: entry 4% cover 46%; }
+    [data-reveal-stagger] > *:nth-child(4) { animation-range: entry 4% cover 52%; }
+    [data-reveal-stagger] > *:nth-child(n+5) { animation-range: entry 4% cover 58%; }
   }
 }

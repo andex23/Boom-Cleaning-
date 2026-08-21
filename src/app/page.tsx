@@ -78,7 +78,7 @@ export default async function Home() {
     </section>
 
     <section className={styles.offices} aria-labelledby="offices-heading">
-      <Photo className={styles.officesImage} src="/images/services/office-cleaning.webp" alt="A bright, professionally cleaned office" sizes="(max-width: 820px) 100vw, 46vw" fill position="50% 50%" />
+      <Photo data-reveal="photo" className={styles.officesImage} src="/images/services/office-cleaning.webp" alt="A bright, professionally cleaned office" sizes="(max-width: 820px) 100vw, 46vw" fill position="50% 50%" />
       <div className={styles.officesCopy}>
         <p className={styles.eyebrow}>BOOM for business</p>
         <h2 data-reveal="heading" id="offices-heading">A workplace ready for work.</h2>
@@ -97,7 +97,7 @@ export default async function Home() {
     </section> : null}
 
     <section className={styles.finalCta} aria-labelledby="final-cta-heading">
-      <Photo className={styles.finalImage} src="/images/services/deep-cleaning.webp" alt="A freshly cleaned, bright interior" sizes="100vw" fill position="50% 50%" />
+      <Photo data-reveal="photo" className={styles.finalImage} src="/images/services/deep-cleaning.webp" alt="A freshly cleaned, bright interior" sizes="100vw" fill position="50% 50%" />
       <div className={styles.finalShade} />
       <div><p className={styles.heroEyebrow}>Your next clean starts here</p><h2 id="final-cta-heading">Put clean<br />on the calendar.</h2><Link href="/quote" className={styles.primary}>Book your clean <span aria-hidden="true">↗</span></Link></div>
     </section>

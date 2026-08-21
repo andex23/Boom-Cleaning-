@@ -32,7 +32,7 @@ export default function AboutPage() {
       <div className={about.heroShade} />
       <div className={about.heroCopy}>
         <p className={styles.eyebrow}>About BOOM</p>
-        <h1 id="about-heading">A cleaning company built to show up prepared.</h1>
+        <h1 data-reveal="heading" id="about-heading">A cleaning company built to show up prepared.</h1>
         <p>BOOM Cleaning Services serves homes, offices and newly completed spaces across Abuja. We built the company around a simple belief: professional cleaning should feel organised before anyone reaches your door.</p>
         <div className={about.heroActions}>
           <Link className={styles.primary} href="/quote">Book a service <span aria-hidden="true">↗</span></Link>
@@ -43,34 +43,34 @@ export default function AboutPage() {
 
     <section className={about.belief} aria-label="Our approach">
       <p>Our approach</p>
-      <h2>We do not treat every space like the same job.</h2>
+      <h2 data-reveal="heading">We do not treat every space like the same job.</h2>
       <p>A one-bedroom reset, an occupied family home and a post-construction property need different time, tools and attention. BOOM scopes the work properly, prices what is actually required and sends a team prepared for that brief.</p>
     </section>
 
     <section className={about.standards} aria-labelledby="standards-heading">
       <div className={about.sectionLead}>
         <p className={styles.eyebrow}>The BOOM standard</p>
-        <h2 id="standards-heading">Care you can see in the process.</h2>
+        <h2 data-reveal="heading" id="standards-heading">Care you can see in the process.</h2>
       </div>
-      <ol>{standards.map(([title, copy], index) => <li key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></li>)}</ol>
+      <ol data-reveal-stagger>{standards.map(([title, copy], index) => <li key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></li>)}</ol>
     </section>
 
     <section className={about.equipment} aria-labelledby="equipment-heading">
       <div className={about.equipmentIntro}>
         <p className={styles.eyebrow}>Professional equipment</p>
-        <h2 id="equipment-heading">The right machine changes the result.</h2>
+        <h2 data-reveal="heading" id="equipment-heading">The right machine changes the result.</h2>
         <p>A thorough clean is not just more effort. It is knowing which method and equipment suit the surface, the material and the condition of the space.</p>
       </div>
-      <ul>{equipment.map(([name, use]) => <li key={name}><strong>{name}</strong><span>{use}</span></li>)}</ul>
+      <ul data-reveal-stagger>{equipment.map(([name, use]) => <li key={name}><strong>{name}</strong><span>{use}</span></li>)}</ul>
     </section>
 
     <section className={about.people} id="team" aria-labelledby="people-heading">
       <div className={about.peopleIntro}>
         <p className={styles.eyebrow}>The people behind BOOM</p>
-        <h2 id="people-heading">The uniform matters because accountability matters.</h2>
+        <h2 data-reveal="heading" id="people-heading">The uniform matters because accountability matters.</h2>
         <p>The team entering your space represents BOOM from arrival to final check. They know the brief, carry the right setup and work to one company standard.</p>
       </div>
-      <div className={about.peopleGrid}>
+      <div className={about.peopleGrid} data-reveal-stagger>
         <figure>
           <Photo src="/images/team/05-team-four.webp" alt="Four BOOM cleaning professionals in uniform" sizes="(max-width: 700px) 100vw, 33vw" fill />
         </figure>
@@ -82,7 +82,7 @@ export default function AboutPage() {
 
     <section className={about.cta}>
       <p className={styles.eyebrow}>Ready when you are</p>
-      <h2>Tell us what needs cleaning.</h2>
+      <h2 data-reveal="heading">Tell us what needs cleaning.</h2>
       <p>Choose a service, describe your space and request a time in one clear flow.</p>
       <Link className={styles.primary} href="/quote">Start your booking <span aria-hidden="true">↗</span></Link>
     </section>

@@ -57,29 +57,29 @@ export default async function PricingPage() {
 
     <section className={pricing.hero} aria-labelledby="pricing-heading">
       <p className={shared.eyebrow}>Clear BOOM pricing</p>
-      <h1 id="pricing-heading">Straightforward prices for a properly scoped clean.</h1>
+      <h1 data-reveal="heading" id="pricing-heading">Straightforward prices for a properly scoped clean.</h1>
       <p>Choose a service to see its published rates, then tell us about your space for the confirmed total.</p>
-      <div className={pricing.heroActions}>
+      <div className={pricing.heroActions} data-reveal>
         <Link className={shared.primary} href="/quote">Build my quote <span aria-hidden="true">↗</span></Link>
       </div>
     </section>
 
     <section className={pricing.priceSection} id="price-list" aria-labelledby="home-prices-heading">
       <div className={pricing.sectionLead}>
-        <div><p className={shared.eyebrow}>Home packages</p><h2 id="home-prices-heading">Choose the clean you need.</h2></div>
+        <div><p className={shared.eyebrow}>Home packages</p><h2 data-reveal="heading" id="home-prices-heading">Choose the clean you need.</h2></div>
         <p>Open a package only when you want to compare its bedroom prices.</p>
       </div>
-      <div className={pricing.cardGrid}>{tiered.map((service) => <TierCard key={service.id} service={service} />)}</div>
+      <div className={pricing.cardGrid} data-reveal-stagger>{tiered.map((service) => <TierCard key={service.id} service={service} />)}</div>
     </section>
 
     {postConstruction ? <section className={pricing.construction} aria-labelledby="construction-heading">
       <div className={pricing.constructionCopy}>
         <p className={shared.eyebrow}>Post-construction cleaning</p>
-        <h2 id="construction-heading">Priced by the spaces in the building.</h2>
+        <h2 data-reveal="heading" id="construction-heading">Priced by the spaces in the building.</h2>
         <p>Tell us how many bedrooms, living rooms, storeys and extra areas are in the completed property. Your quote adds only the spaces you select.</p>
         <Link className={shared.primary} href="/quote?service=post-construction-cleaning">Build this quote <span aria-hidden="true">↗</span></Link>
       </div>
-      <div className={pricing.unitCard}>
+      <div className={pricing.unitCard} data-reveal>
         <div className={pricing.unitCardHead}><span>Space</span><span>Price</span></div>
         <ul>{postConstruction.spacePrices.map((space) => <li key={space.slug}>
           <span><strong>{space.name}</strong><small>{space.slug === "compound-wash" ? "Normal 500sqm compound; final amount confirmed by scope." : space.description}</small></span>

@@ -14,6 +14,18 @@ const LINKS = [
 ];
 
 /**
+ * The phone panel has room the header bar does not, so it carries the two pages the
+ * desktop nav deliberately leaves out. Without these, Pricing and FAQs are reachable
+ * only from the footer.
+ */
+const MOBILE_ONLY_LINKS = [
+  { href: "/pricing", label: "Pricing" },
+  { href: "/faq", label: "FAQs" },
+];
+
+const MOBILE_LINKS = [...LINKS, ...MOBILE_ONLY_LINKS];
+
+/**
  * The header navigation. Below the breakpoint the links collapse into a panel rather than
  * disappearing, which is what happened before: they were simply hidden on a phone and the
  * only way to reach them was the footer.
@@ -80,7 +92,7 @@ export function SiteNav() {
         {open ? <button className={styles.scrim} aria-label="Close menu" onClick={() => setOpen(false)} /> : null}
         <div id="site-menu" ref={panelRef} className={open ? styles.panelOpen : styles.panel} hidden={!open} aria-label="Site menu">
           <nav aria-label="Primary, mobile">
-            {LINKS.map((link) => (
+            {MOBILE_LINKS.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
                 {link.label}<span aria-hidden="true">→</span>
               </Link>

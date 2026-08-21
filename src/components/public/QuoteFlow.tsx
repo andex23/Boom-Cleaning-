@@ -63,7 +63,7 @@ async function bookingErrorMessage(response: Response): Promise<string> {
   }
 }
 
-export function QuoteFlow({ services, initialService, logoSrc }: { services: PublicServiceView[]; initialService?: string; logoSrc: string }) {
+export function QuoteFlow({ services, initialService, logoSrc, logoSrcOnLight }: { services: PublicServiceView[]; initialService?: string; logoSrc: string; logoSrcOnLight: string }) {
   const [step, setStep] = useState(0);
   const [booking, setBooking] = useState<StoredBooking | null>(null);
   const [error, setError] = useState("");
@@ -281,55 +281,62 @@ export function QuoteFlow({ services, initialService, logoSrc }: { services: Pub
   if (booking) {
     const inReview = booking.status === "REVIEW_REQUIRED";
     return <section className={styles.success} aria-live="polite">
-      <div className={styles.check}>✓</div>
-      <p className={styles.eyebrow}>{inReview ? "REQUEST RECEIVED" : "BOOKING RECEIVED"}</p>
-      <h1>{inReview ? "We’re preparing your quote." : "Your slot is reserved."}</h1>
-      <p className={styles.successLead}>{inReview
-        ? "Your time is held. Your space includes scope we price individually, so a BOOM team member will confirm the final amount before any payment."
-        : "We’ve received your booking and held your time. BOOM will confirm the details before your appointment."}</p>
+      <div className={styles.successInner}>
+        {/* The navy aside carried the brand through the flow and disappears here, so the
+            confirmation re-establishes it rather than landing the customer on a bare page. */}
+        <Link href="/" className={styles.successBrand} aria-label="BOOM Cleaning Services home">
+          <Image src={logoSrcOnLight} alt="BOOM Cleaning Services" width={132} height={44} priority />
+        </Link>
+        <div className={styles.check}>✓</div>
+        <p className={styles.eyebrow}>{inReview ? "REQUEST RECEIVED" : "BOOKING RECEIVED"}</p>
+        <h1>{inReview ? "We’re preparing your quote." : "Your slot is reserved."}</h1>
+        <p className={styles.successLead}>{inReview
+          ? "Your time is held. Your space includes scope we price individually, so a BOOM team member will confirm the final amount before any payment."
+          : "We’ve received your booking and held your time. BOOM will confirm the details before your appointment."}</p>
 
-      <div className={bookingStyles.confirmationCard}>
-        <div><span>Booking reference</span><strong>{booking.id}</strong></div>
-        <dl>
-          <div><dt>Service</dt><dd>{booking.service}</dd></div>
-          <div><dt>Date</dt><dd>{displayDate(booking.date)}</dd></div>
-          <div><dt>Arrival</dt><dd>{formatSlotTime(booking.time)}</dd></div>
-          <div><dt>Address</dt><dd>{booking.address}</dd></div>
-          <div><dt>Contact</dt><dd>{booking.customer} · {booking.phone}</dd></div>
-          <div><dt>Total</dt><dd>{booking.amount === null ? "To be confirmed" : formatNaira(booking.amount)}</dd></div>
-        </dl>
-      </div>
+        <div className={bookingStyles.confirmationCard}>
+          <div><span>Booking reference</span><strong>{booking.id}</strong></div>
+          <dl>
+            <div><dt>Service</dt><dd>{booking.service}</dd></div>
+            <div><dt>Date</dt><dd>{displayDate(booking.date)}</dd></div>
+            <div><dt>Arrival</dt><dd>{formatSlotTime(booking.time)}</dd></div>
+            <div><dt>Address</dt><dd>{booking.address}</dd></div>
+            <div><dt>Contact</dt><dd>{booking.customer} · {booking.phone}</dd></div>
+            <div><dt>Total</dt><dd>{booking.amount === null ? "To be confirmed" : formatNaira(booking.amount)}</dd></div>
+          </dl>
+        </div>
 
-      {confirmedQuote && !inReview && confirmedQuote.items.length ? <div className={styles.successBreakdown}>
-        <h2>How this price was worked out</h2>
-        <ul className={styles.breakdown}>
-          {confirmedQuote.items.map((item) => <li key={`${item.kind}-${item.sortOrder}`}>
-            <span>{item.label}</span>
-            <span>{item.kind === "PROPERTY_MULTIPLIER" ? formatNairaDelta(item.amount) : formatNaira(item.amount)}</span>
-          </li>)}
-          <li className={styles.breakdownTotal}><span>Total</span><span>{booking.amount === null ? "—" : formatNaira(booking.amount)}</span></li>
-        </ul>
-      </div> : null}
+        {confirmedQuote && !inReview && confirmedQuote.items.length ? <div className={styles.successBreakdown}>
+          <h2>How this price was worked out</h2>
+          <ul className={styles.breakdown}>
+            {confirmedQuote.items.map((item) => <li key={`${item.kind}-${item.sortOrder}`}>
+              <span>{item.label}</span>
+              <span>{item.kind === "PROPERTY_MULTIPLIER" ? formatNairaDelta(item.amount) : formatNaira(item.amount)}</span>
+            </li>)}
+            <li className={styles.breakdownTotal}><span>Total</span><span>{booking.amount === null ? "—" : formatNaira(booking.amount)}</span></li>
+          </ul>
+        </div> : null}
 
-      {inReview && confirmedQuote?.reviewReasons.length ? <div className={styles.reviewNotice}>
-        <strong>Why we’re quoting this personally</strong>
-        <ul>{confirmedQuote.reviewReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
-      </div> : null}
+        {inReview && confirmedQuote?.reviewReasons.length ? <div className={styles.reviewNotice}>
+          <strong>Why we’re quoting this personally</strong>
+          <ul>{confirmedQuote.reviewReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+        </div> : null}
 
-      <div className={styles.nextSteps}>
-        <h2>What happens next</h2>
-        <ol>
-          <li><strong>We confirm your scope</strong><span>{inReview ? "A team member reviews your space and prepares your price." : "We check the details and your arrival window."}</span></li>
-          <li><strong>You hear from us</strong><span>We’ll reach {booking.email} or {booking.phone}{inReview ? " with your final quote." : " to confirm."}</span></li>
-          <li><strong>Your team arrives</strong><span>{displayDate(booking.date)} at {formatSlotTime(booking.time)}.</span></li>
-        </ol>
-      </div>
+        <div className={styles.nextSteps}>
+          <h2>What happens next</h2>
+          <ol>
+            <li><strong>We confirm your scope</strong><span>{inReview ? "A team member reviews your space and prepares your price." : "We check the details and your arrival window."}</span></li>
+            <li><strong>You hear from us</strong><span>We’ll reach {booking.email} or {booking.phone}{inReview ? " with your final quote." : " to confirm."}</span></li>
+            <li><strong>Your team arrives</strong><span>{displayDate(booking.date)} at {formatSlotTime(booking.time)}.</span></li>
+          </ol>
+        </div>
 
-      <p className={styles.successHelp}>Something not right? <a href="tel:+2349029799205">Call BOOM</a> and quote {booking.id}.</p>
+        <p className={styles.successHelp}>Something not right? <a href="tel:+2349029799205">Call BOOM</a> and quote {booking.id}.</p>
 
-      <div className={bookingStyles.successActions}>
-        <Link className={styles.primaryButton} href="/">Return home</Link>
-        <button className={styles.secondaryButton} onClick={startNewBooking}>Book another service</button>
+        <div className={bookingStyles.successActions}>
+          <Link className={styles.primaryButton} href="/">Return home</Link>
+          <button className={styles.secondaryButton} onClick={startNewBooking}>Book another service</button>
+        </div>
       </div>
     </section>;
   }
