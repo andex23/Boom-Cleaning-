@@ -1,0 +1,42 @@
+/* min-width:0 is required: as a grid/flex child this defaults to min-width:auto, which
+   refuses to shrink below the content and makes the whole page scroll sideways instead
+   of the rail scrolling inside it. */
+.rail{position:relative;margin-top:46px;min-width:0;max-width:100%}
+.controls{position:absolute;top:-62px;right:0;display:flex;gap:8px}
+.controls button{width:44px;height:44px;border-radius:var(--radius-pill);border:1px solid rgba(8,37,95,.3);background:transparent;color:var(--ink);font-size:15px;cursor:pointer;transition:border-color .18s ease,background .18s ease,opacity .18s ease}
+.controls button:hover:not(:disabled){border-color:var(--ink);background:#ffffff}
+.controls button:disabled{opacity:.32;cursor:not-allowed}
+.controls button:focus-visible{outline:3px solid var(--accent-bright);outline-offset:3px}
+
+/* Native scrolling means this swipes on touch and works without JavaScript. */
+.track{display:flex;gap:6px;list-style:none;margin:0;padding:2px 2px 10px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.track:focus-visible{outline:3px solid var(--accent-bright);outline-offset:4px;border-radius:var(--radius)}
+.slide{flex:0 0 clamp(260px,31vw,368px);scroll-snap-align:start}
+
+.card{display:flex;flex-direction:column;height:100%;background:#ffffff;border:0;border-radius:0;overflow:hidden;box-shadow:none;transition:transform .22s ease}
+.card:hover{transform:translateY(-4px)}
+.card:focus-visible{outline:3px solid var(--accent-bright);outline-offset:3px}
+
+.media{position:relative;display:block;aspect-ratio:4/3;background:#cbeff7;overflow:hidden}
+.media img{object-fit:cover;transition:transform .5s ease}
+.card:hover .media img{transform:scale(1.025)}
+.body{display:flex;flex-direction:column;gap:8px;padding:20px 20px 22px;flex:1}
+.body strong{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.03em;color:var(--ink);line-height:1.15}
+.tagline{font-size:13px;line-height:1.55;color:var(--ink-soft)}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid rgba(8,37,95,.16)}
+.foot em{font-style:normal;font-size:13px;font-weight:700;color:var(--ink)}
+.go{font-size:13px;font-weight:700;color:#0c55b5;white-space:nowrap}
+
+.hint{margin:12px 0 0;font-size:13px;color:var(--ink-faint)}
+
+@media(max-width:700px){
+  .controls{position:static;margin-bottom:14px}
+  .slide{flex:0 0 84vw}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){ .track{scroll-behavior:auto} }
+
+/* On a touch screen the rail already swipes, so the arrows are redundant — and made static
+   they pushed a 60px empty block between the section copy and the first card. */
+@media (hover: none) and (pointer: coarse){ .controls{display:none} }

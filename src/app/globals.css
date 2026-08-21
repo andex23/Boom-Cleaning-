@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+:root {
+  --font-ui: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: #fffefa; color: #08255f; font-family: var(--font-ui); }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+::selection { background: #55d5f3; color: #10231e; }
+
+:focus-visible {
+  outline: 3px solid #55d5f3;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Visually hidden, still read by screen readers. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   BOOM design tokens.
+   The palette stays navy + cyan so the logo still belongs. What changes is the
+   ground it sits on: a warm off-white rather than heavy cream, softer corners,
+   and a spacing scale generous enough to let the page breathe.
+   --------------------------------------------------------------------------- */
+:root {
+  --ink: #08255f;
+  --ink-deep: #08255f;
+  --ink-soft: #3c5064;
+  /* Both quiet greys were below 4.5:1 on --surface (4.36:1 and 2.42:1). These are
+     the darkest-but-still-quiet pair that clears WCAG AA for body-size text. */
+  --ink-muted: #5a6d84;
+  /* 4.52:1 on --surface — the lightest grey that still clears AA at body size.
+     Do not lighten: #6b7a90 sits at 4.36:1 and fails. */
+  --ink-faint: #67758d;
+
+  --accent: #0c55b5;
+  --accent-bright: #55d5f3;
+  --accent-wash: #def5fc;
+
+  --surface: #fffefa;
+  --surface-raised: #ffffff;
+  --surface-sunken: #eef1f6;
+  --line: #e5eae6;
+  --line-strong: #d6dfd8;
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(8, 37, 95, .05);
+  --shadow: 0 6px 24px -8px rgba(8, 37, 95, .13);
+  --shadow-lg: 0 24px 60px -22px rgba(8, 37, 95, .26);
+
+  /* A consistent vertical rhythm for marketing sections. */
+  --section-y: clamp(64px, 9vw, 132px);
+  --gutter: clamp(20px, 5vw, 64px);
+  --page-max: 1180px;
+}
+
+body { background: var(--surface); }
+
+/* ---------------------------------------------------------------------------
+   Scroll-driven motion.
+
+   Built on native scroll timelines (`animation-timeline: view()`), so there is
+   no JavaScript, no observer, and nothing to run on the main thread — the
+   compositor drives it against scroll position.
+
+   Everything is behind @supports and starts from the finished state, so a
+   browser without scroll timelines shows the page fully composed rather than
+   blank. The whole block is off under prefers-reduced-motion.
+
+   The register is a cleaning brand, not a game: things settle into place. No
+   bounce, no spin, nothing crossing the page.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+
+    /* Longhands only, never the `animation` shorthand.
+       The shorthand resets animation-timeline to `auto`, and every variant below sets
+       its own animation-name. Written as `animation: x linear both` the timeline was
+       being reset after the base rule established it, leaving a 0s document-timeline
+       animation that jumped straight to its end state — the headings were declared
+       animated but never moved. Setting the longhand keeps the inherited view()
+       timeline intact. */
+    [data-reveal],
+    [data-reveal-stagger] > * {
+      animation-name: reveal-rise;
+      animation-fill-mode: both;
+      /* Eased rather than linear: motion resolves early in the range and settles,
+         instead of rigidly tracking the wheel the whole way down. */
+      animation-timing-function: ease-out;
+      animation-timeline: view();
+      animation-range: entry 4% cover 34%;
+    }
+    @keyframes reveal-rise {
+      from { opacity: 0; transform: translate3d(0, 24px, 0); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Headings rise and resolve from a hair under full size. The previous version
+       animated letter-spacing, which is a layout property: every frame reflowed the
+       heading and everything below it. Transform and opacity stay on the compositor. */
+    [data-reveal="heading"] {
+      animation-name: heading-settle;
+      animation-range: entry 6% cover 32%;
+    }
+    @keyframes heading-settle {
+      from { opacity: 0; transform: translate3d(0, 18px, 0) scale(.985); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Photographs uncover rather than fade: a wipe that reads as something being
+       revealed clean, easing out of a slight overscale. */
+    [data-reveal="photo"] {
+      animation-name: photo-uncover;
+      animation-range: entry 0% cover 40%;
+    }
+    @keyframes photo-uncover {
+      from { opacity: .55; clip-path: inset(0 0 38% 0); transform: scale(1.04); }
+      to   { opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
+    }
+
+    /* Slow drift inside the frame across the whole scroll — depth without parallax
+       jitter, because the frame itself never moves. Linear here on purpose: this one
+       should track scroll exactly rather than settle. */
+    [data-reveal="photo"] img {
+      animation-name: photo-drift;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes photo-drift {
+      from { transform: scale(1.06) translate3d(0, -1.1%, 0); }
+      to   { transform: scale(1.06) translate3d(0, 1.1%, 0); }
+    }
+
+    /* A hairline that draws itself along the section as it comes into view. */
+    [data-reveal="rule"] {
+      animation-name: rule-draw;
+      animation-range: entry 10% cover 40%;
+      transform-origin: left center;
+    }
+    @keyframes rule-draw {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    /* Numbered steps and cards arrive in sequence rather than as a block. */
+    [data-reveal-stagger] > *:nth-child(2) { animation-range: entry 4% cover 40%; }
+    [data-reveal-stagger] > *:nth-child(3) { animation-range: entry 4% cover 46%; }
+    [data-reveal-stagger] > *:nth-child(4) { animation-range: entry 4% cover 52%; }
+    [data-reveal-stagger] > *:nth-child(n+5) { animation-range: entry 4% cover 58%; }
+  }
+}
