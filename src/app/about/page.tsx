@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/public/SiteHeader";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import styles from "../home.module.css";
 import about from "./about.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 export const metadata = {
   title: "About BOOM Cleaning Services | Abuja",
@@ -35,8 +36,8 @@ export default function AboutPage() {
         <h1 data-reveal="heading" id="about-heading">A cleaning company built to show up prepared.</h1>
         <p>BOOM Cleaning Services serves homes, offices and newly completed spaces across Abuja. We built the company around a simple belief: professional cleaning should feel organised before anyone reaches your door.</p>
         <div className={about.heroActions}>
-          <Link className={styles.primary} href="/quote">Book a service <span aria-hidden="true">↗</span></Link>
-          <Link className={styles.secondary} href="#team">Meet the team <span aria-hidden="true">→</span></Link>
+          <Link className={styles.primary} href="/quote">Book a service <Arrow direction="up-right" /></Link>
+          <Link className={styles.secondary} href="#team">Meet the team <Arrow /></Link>
         </div>
       </div>
     </section>
@@ -84,7 +85,7 @@ export default function AboutPage() {
       <p className={styles.eyebrow}>Ready when you are</p>
       <h2 data-reveal="heading">Tell us what needs cleaning.</h2>
       <p>Choose a service, describe your space and request a time in one clear flow.</p>
-      <Link className={styles.primary} href="/quote">Start your booking <span aria-hidden="true">↗</span></Link>
+      <Link className={styles.primary} href="/quote">Start your booking <Arrow direction="up-right" /></Link>
     </section>
 
     <SiteFooter />

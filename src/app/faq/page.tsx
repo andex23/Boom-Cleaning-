@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/public/SiteFooter";
 import { SiteHeader } from "@/components/public/SiteHeader";
 import shared from "../home.module.css";
 import faq from "./faq.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 export const metadata = {
   title: "Cleaning FAQs | BOOM Cleaning Services Abuja",
@@ -45,7 +46,7 @@ export default function FaqPage() {
       <p className={shared.eyebrow}>Questions, answered</p>
       <h1 data-reveal="heading" id="faq-heading">Everything to know before BOOM arrives.</h1>
       <p>Clear answers about prices, coverage, preparation and the team entering your space.</p>
-      <Link className={shared.primary} href="/quote">Book a service <span aria-hidden="true">↗</span></Link>
+      <Link className={shared.primary} href="/quote">Book a service <Arrow direction="up-right" /></Link>
     </section>
 
     <section className={faq.questions} aria-label="Frequently asked questions">
@@ -64,8 +65,8 @@ export default function FaqPage() {
         <p>Send the property details and the question you need resolved. We will help you choose the right service before you book.</p>
         {/* Instagram leads: it is where most customers actually reach BOOM. */}
         <div className={faq.contactActions} data-reveal>
-          <a href="https://instagram.com/boomcleaningservices" target="_blank" rel="noreferrer">Message on Instagram <span aria-hidden="true">→</span></a>
-          <a className={faq.contactSecondary} href="https://wa.me/2349029799205" target="_blank" rel="noreferrer">Ask on WhatsApp <span aria-hidden="true">→</span></a>
+          <a href="https://instagram.com/boomcleaningservices" target="_blank" rel="noreferrer">Message on Instagram <Arrow /></a>
+          <a className={faq.contactSecondary} href="https://wa.me/2349029799205" target="_blank" rel="noreferrer">Ask on WhatsApp <Arrow /></a>
         </div>
       </div>
     </section>

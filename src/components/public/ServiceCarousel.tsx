@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PublicServiceView } from "@/features/services/public-catalog";
 import styles from "./ServiceCarousel.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 /**
  * A horizontal service rail. Built on native overflow scrolling with scroll snapping, so
@@ -50,8 +51,8 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
     <div className={styles.rail} role="region" aria-label="BOOM services" aria-roledescription="carousel">
       {overflows ? (
         <div className={styles.controls}>
-          <button type="button" onClick={() => page(-1)} disabled={atStart} aria-label="Previous services">←</button>
-          <button type="button" onClick={() => page(1)} disabled={atEnd} aria-label="More services">→</button>
+          <button type="button" onClick={() => page(-1)} disabled={atStart} aria-label="Previous services"><Arrow direction="left" /></button>
+          <button type="button" onClick={() => page(1)} disabled={atEnd} aria-label="More services"><Arrow /></button>
         </div>
       ) : null}
 
@@ -67,7 +68,7 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
                 <span className={styles.tagline}>{service.tagline}</span>
                 <span className={styles.foot}>
                   <em>{service.priceLabel}</em>
-                  <span className={styles.go}>Book <span aria-hidden="true">→</span></span>
+                  <span className={styles.go}>Book <Arrow /></span>
                 </span>
               </span>
             </Link>

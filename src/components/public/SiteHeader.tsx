@@ -3,6 +3,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { SiteNav } from "./SiteNav";
 import styles from "@/app/home.module.css";
 import brandStyles from "@/app/homeBrand.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 /**
  * One header for every public page. The services page previously carried its own
@@ -23,7 +24,7 @@ export function SiteHeader({
         <span className={brandStyles.wordmark}><strong>BOOM</strong><small>Cleaning Services</small></span>
       </Link>
       <SiteNav />
-      <Link className={styles.headerCta} href="/quote">Book a service <span>→</span></Link>
+      <Link className={styles.headerCta} href="/quote">Book a service <Arrow /></Link>
     </header>
   );
 }

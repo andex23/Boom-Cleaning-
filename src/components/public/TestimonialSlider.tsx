@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Testimonial } from "@/features/reviews/testimonials";
 import styles from "./TestimonialSlider.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 const SOURCE_LABELS: Record<Testimonial["source"], string> = {
   WHATSAPP: "via WhatsApp", INSTAGRAM: "via Instagram", GOOGLE: "via Google", EMAIL: "via email", OTHER: "",
@@ -51,8 +52,8 @@ export function TestimonialSlider({ testimonials }: { testimonials: Testimonial[
     <div className={styles.rail} role="region" aria-label="Customer testimonials" aria-roledescription="carousel">
       {overflows ? (
         <div className={styles.controls}>
-          <button type="button" onClick={() => page(-1)} disabled={atStart} aria-label="Previous testimonials">←</button>
-          <button type="button" onClick={() => page(1)} disabled={atEnd} aria-label="More testimonials">→</button>
+          <button type="button" onClick={() => page(-1)} disabled={atStart} aria-label="Previous testimonials"><Arrow direction="left" /></button>
+          <button type="button" onClick={() => page(1)} disabled={atEnd} aria-label="More testimonials"><Arrow /></button>
         </div>
       ) : null}
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import styles from "./SiteNav.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 const subscribeNever = () => () => {};
 
@@ -94,7 +95,7 @@ export function SiteNav() {
           <nav aria-label="Primary, mobile">
             {MOBILE_LINKS.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
-                {link.label}<span aria-hidden="true">→</span>
+                {link.label}<Arrow />
               </Link>
             ))}
           </nav>

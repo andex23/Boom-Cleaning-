@@ -14,6 +14,7 @@ import { ServiceIcon } from "./ServiceIcon";
 import { BrandLoader } from "@/components/brand/BrandLoader";
 import styles from "./QuoteFlow.module.css";
 import bookingStyles from "./QuoteReview.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 type FormState = { serviceSlug: string; propertyTypeSlug: string; areaSlug: string; address: string; preferredDate: string; timeSlot: string; name: string; phone: string; email: string; notes: string };
 const steps = ["Service", "Your space", "Book a time", "Contact", "Review"];
@@ -439,7 +440,7 @@ export function QuoteFlow({ services, initialService, logoSrc, logoSrcOnLight }:
       </div> : null}
 
       {error ? <p className={styles.error} role="alert">{error}</p> : null}
-      <div className={styles.controls}>{step > 0 ? <button type="button" className={styles.back} disabled={isSubmitting} onClick={() => { setError(""); goToStep(Math.max(0, step - 1)); }}>Back</button> : null}<button type={step === steps.length - 1 ? "submit" : "button"} className={styles.primaryButton} disabled={isSubmitting} onClick={step === steps.length - 1 ? undefined : next}>{step === steps.length - 1 ? (isSubmitting ? "Sending booking…" : "Send booking request") : step === 1 ? "Choose a time" : "Continue"} <span aria-hidden="true">→</span></button></div>
+      <div className={styles.controls}>{step > 0 ? <button type="button" className={styles.back} disabled={isSubmitting} onClick={() => { setError(""); goToStep(Math.max(0, step - 1)); }}>Back</button> : null}<button type={step === steps.length - 1 ? "submit" : "button"} className={styles.primaryButton} disabled={isSubmitting} onClick={step === steps.length - 1 ? undefined : next}>{step === steps.length - 1 ? (isSubmitting ? "Sending booking…" : "Send booking request") : step === 1 ? "Choose a time" : "Continue"} <Arrow /></button></div>
     </form>
   </section>;
 }

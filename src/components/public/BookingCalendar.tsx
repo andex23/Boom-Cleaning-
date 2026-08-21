@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { availabilityResultSchema, type AvailabilityDay } from "@/lib/validation/availability";
 import styles from "./BookingCalendar.module.css";
 import navStyles from "./CalendarNavigation.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 type BookingCalendarProps = {
   serviceSlug: string;
@@ -73,8 +74,8 @@ export function BookingCalendar({ serviceSlug, selectedDate, selectedTime, onDat
       <div className={styles.calendarHeader}>
         <div><span>Choose a day</span><h3>{monthFormatter.format(grid.month)}</h3></div>
         <div className={navStyles.monthControls}>
-          <button type="button" aria-label="Previous month" disabled={monthOffset === 0} onClick={() => setMonthOffset((value) => Math.max(0, value - 1))}>←</button>
-          <button type="button" aria-label="Next month" disabled={monthOffset === MAX_MONTH_OFFSET} onClick={() => setMonthOffset((value) => Math.min(MAX_MONTH_OFFSET, value + 1))}>→</button>
+          <button type="button" aria-label="Previous month" disabled={monthOffset === 0} onClick={() => setMonthOffset((value) => Math.max(0, value - 1))}><Arrow direction="left" /></button>
+          <button type="button" aria-label="Next month" disabled={monthOffset === MAX_MONTH_OFFSET} onClick={() => setMonthOffset((value) => Math.min(MAX_MONTH_OFFSET, value + 1))}><Arrow /></button>
         </div>
         <div className={styles.legend}><i /> Available</div>
       </div>

@@ -5,6 +5,7 @@ import { formatNaira } from "@/lib/format";
 import { listPublicPricing, type PublicPricingCard, type PublicSpacePrice } from "@/features/pricing/public-pricing";
 import shared from "../home.module.css";
 import pricing from "./pricing.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 export const metadata = {
   title: "Cleaning prices in Abuja | BOOM Cleaning Services",
@@ -43,7 +44,7 @@ function TierCard({ service }: { service: PublicPricingCard }) {
         {bq.priceTiers.map((tier) => <span key={tier.quantity}>{tier.quantity} room{tier.quantity === 1 ? "" : "s"} <strong>{formatNaira(tier.price)}</strong></span>)}
       </div> : null}
     </details>
-    <Link className={pricing.cardCta} href={`/quote?service=${service.slug}`}>Price my space <span aria-hidden="true">→</span></Link>
+    <Link className={pricing.cardCta} href={`/quote?service=${service.slug}`}>Price my space <Arrow /></Link>
   </article>;
 }
 
@@ -60,7 +61,7 @@ export default async function PricingPage() {
       <h1 data-reveal="heading" id="pricing-heading">Straightforward prices for a properly scoped clean.</h1>
       <p>Choose a service to see its published rates, then tell us about your space for the confirmed total.</p>
       <div className={pricing.heroActions} data-reveal>
-        <Link className={shared.primary} href="/quote">Build my quote <span aria-hidden="true">↗</span></Link>
+        <Link className={shared.primary} href="/quote">Build my quote <Arrow direction="up-right" /></Link>
       </div>
     </section>
 
@@ -77,7 +78,7 @@ export default async function PricingPage() {
         <p className={shared.eyebrow}>Post-construction cleaning</p>
         <h2 data-reveal="heading" id="construction-heading">Priced by the spaces in the building.</h2>
         <p>Tell us how many bedrooms, living rooms, storeys and extra areas are in the completed property. Your quote adds only the spaces you select.</p>
-        <Link className={shared.primary} href="/quote?service=post-construction-cleaning">Build this quote <span aria-hidden="true">↗</span></Link>
+        <Link className={shared.primary} href="/quote?service=post-construction-cleaning">Build this quote <Arrow direction="up-right" /></Link>
       </div>
       <div className={pricing.unitCard} data-reveal>
         <div className={pricing.unitCardHead}><span>Space</span><span>Price</span></div>

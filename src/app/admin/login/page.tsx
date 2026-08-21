@@ -4,6 +4,7 @@ import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { LoginForm } from "./LoginForm";
 import styles from "./login.module.css";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { Arrow } from "@/components/brand/Arrow";
 
 export const metadata = { title: "Staff sign in | BOOM", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
       <LoginForm error={error} signedOut={signedOut === "1"} />
 
       <p className={styles.hint}>This workspace is for BOOM staff. Sessions end automatically after 12 hours.</p>
-      <Link href="/" className={styles.back}>← Return to website</Link>
+      <Link href="/" className={styles.back}><Arrow direction="left" /> Return to website</Link>
     </section>
     <aside>
       <div>

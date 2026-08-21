@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./login.module.css";
+import { Arrow } from "@/components/brand/Arrow";
 
 const messages: Record<string, string> = {
   invalid: "That password isn’t right. Please try again.",
@@ -50,7 +51,7 @@ export function LoginForm({ error, signedOut }: { error?: string; signedOut?: bo
       {empty ? <p id="password-error" className={styles.fieldError} role="alert">Enter the admin password to continue.</p> : null}
 
       <button type="submit" disabled={submitting}>
-        {submitting ? "Signing in…" : <>Open operations <span aria-hidden="true">→</span></>}
+        {submitting ? "Signing in…" : <>Open operations <Arrow /></>}
       </button>
     </form>
   </>;
