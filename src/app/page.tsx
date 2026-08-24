@@ -64,8 +64,8 @@ export default async function Home() {
         <Photo
           data-reveal="photo"
           className={styles.heroImage}
-          src="/images/interiors/hero-home.webp"
-          alt="A bright, freshly cleaned home interior"
+          src="/images/interiors/office.webp"
+          alt="A bright, freshly cleaned interior with a city view"
           sizes="(max-width: 900px) 100vw, 52vw"
           fill
           position="50% 50%"

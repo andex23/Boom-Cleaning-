@@ -68,13 +68,15 @@
 /* --- Hero --------------------------------------------------------------------- */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr);
+  /* The photograph runs the full height of the hero and touches the header, as in the
+     mockup, so the vertical padding belongs to the copy rather than the section. */
+  align-items: stretch;
   gap: clamp(32px, 5vw, 72px);
-  padding: clamp(40px, 6vw, 84px) 0 clamp(40px, 6vw, 84px) var(--gutter);
+  padding: 0 0 0 var(--gutter);
   background: linear-gradient(160deg, #ffffff 0%, var(--surface-tint) 60%, #eaf1ff 100%);
 }
-.heroCopy { max-width: 620px; }
+.heroCopy { align-self: center; max-width: 620px; padding: clamp(56px, 7vw, 104px) 0; }
 .hero h1 {
   margin: 22px 0 20px;
   font-size: clamp(34px, 5.6vw, 46px);
@@ -99,12 +101,13 @@
 }
 .heroTrust svg { color: var(--brand); font-size: 20px; }
 
-.heroMedia { position: relative; }
+.heroMedia { position: relative; align-self: stretch; }
 .heroImage {
   position: relative;
-  min-height: clamp(360px, 46vw, 560px);
+  height: 100%;
+  min-height: clamp(420px, 52vw, 640px);
   overflow: clip;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  border-radius: 0 0 0 var(--radius-lg);
 }
 .heroCard {
   position: absolute;
@@ -142,7 +145,7 @@
   gap: clamp(18px, 2.6vw, 40px);
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: clamp(26px, 3.4vw, 38px) clamp(24px, 3vw, 44px);
+  padding: clamp(32px, 4vw, 46px) clamp(28px, 3.4vw, 52px);
   list-style: none;
   border-radius: var(--radius-lg);
   background: var(--brand-deep);
@@ -186,10 +189,13 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 20px 0;
+  padding: 22px 0;
   border-bottom: 1px solid var(--line);
 }
 .reasons li:nth-last-child(-n+2) { border-bottom: 0; }
+/* The vertical rule between the columns, which the horizontal borders alone missed. */
+.reasons li:nth-child(odd) { padding-right: 28px; border-right: 1px solid var(--line); }
+.reasons li:nth-child(even) { padding-left: 8px; }
 .reasons span {
   display: grid;
   place-items: center;
@@ -307,9 +313,10 @@
   .hero {
     grid-template-columns: 1fr;
     padding: clamp(32px, 6vw, 56px) var(--gutter);
+    align-items: center;
   }
-  .heroCopy { max-width: none; }
-  .heroImage { border-radius: var(--radius-lg); min-height: clamp(280px, 58vw, 420px); }
+  .heroCopy { max-width: none; padding: 0; }
+  .heroImage { border-radius: var(--radius-lg); height: auto; min-height: clamp(280px, 58vw, 420px); }
   .process { grid-template-columns: 1fr; }
   .sectionIntro { grid-template-columns: 1fr; align-items: start; }
   .sectionIntro p:not(.pill) { margin-bottom: 12px; }
