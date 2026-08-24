@@ -1,0 +1,125 @@
+/* The header navigation. Below the breakpoint the links collapse into a panel rather than
+   disappearing, which is what happened before: they were hidden on a phone and the only
+   way to reach them was the footer. */
+
+.desktopNav { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 36px); }
+.desktopNav a {
+  position: relative;
+  color: var(--ink-body);
+  font-size: 15px;
+  font-weight: 700;
+  transition: color .16s ease;
+}
+.desktopNav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand);
+  transform: scaleX(0);
+  transition: transform .18s ease;
+}
+.desktopNav a:hover { color: var(--brand); }
+.desktopNav a:hover::after { transform: scaleX(1); }
+
+/* --- Phone menu toggle -------------------------------------------------------- */
+.toggle {
+  display: none;
+  position: relative;
+  z-index: 120;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin: 5px auto;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform .22s ease, opacity .18s ease;
+}
+.barTop { transform: translateY(7px) rotate(45deg); }
+.barMid { opacity: 0; }
+.barBottom { transform: translateY(-7px) rotate(-45deg); }
+
+/* --- Phone panel -------------------------------------------------------------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  border: 0;
+  background: rgba(11, 26, 60, .5);
+  backdrop-filter: blur(2px);
+}
+
+.panel,
+.panelOpen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  width: min(360px, 86vw);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 96px 24px 32px;
+  background: var(--brand-deep);
+  color: #ffffff;
+  transition: transform .26s ease;
+}
+.panel { transform: translateX(101%); }
+.panelOpen { transform: none; }
+
+.panel nav,
+.panelOpen nav { display: grid; }
+.panel nav a,
+.panelOpen nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px 2px;
+  border-bottom: 1px solid var(--line-on-dark);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.panel nav a span,
+.panelOpen nav a span { color: #7ea6ee; }
+
+.panelCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  margin-top: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.panelCall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  margin-top: 12px;
+  color: #c7d7f5;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .desktopNav { display: none; }
+  .toggle { display: block; }
+}

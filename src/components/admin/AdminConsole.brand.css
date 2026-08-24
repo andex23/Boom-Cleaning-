@@ -1,0 +1,124 @@
+[data-admin-theme="boom"] {
+  --ink: #08255f !important;
+  --muted: #5a6d84 !important;
+  --line: #e5eae6 !important;
+  --paper: #ffffff !important;
+  --lime: #55d5f3 !important;
+  --green: #0c55b5 !important;
+  background: #ffffff !important;
+  color: #08255f !important;
+}
+
+[data-admin-theme="boom"] aside {
+  background: linear-gradient(180deg, #08255f 0%, #082c78 100%) !important;
+  color: #ffffff !important;
+}
+
+[data-admin-theme="boom"] aside > div:first-child {
+  gap: 11px !important;
+  letter-spacing: 0 !important;
+}
+
+[data-admin-theme="boom"] aside > div:first-child > img,
+[data-admin-theme="boom"] header img {
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .2);
+}
+
+[data-admin-theme="boom"] aside > div:first-child > span {
+  display: grid;
+  gap: 2px;
+}
+
+[data-admin-theme="boom"] aside > div:first-child strong {
+  font-size:15px;
+  letter-spacing: -.03em;
+}
+
+[data-admin-theme="boom"] aside > div:first-child small {
+  color: #9ee7f8 !important;
+  font-size:13px;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+[data-admin-theme="boom"] aside > p { color: #8ccbe9 !important; }
+[data-admin-theme="boom"] aside nav button { color: #cbdcf0 !important; }
+[data-admin-theme="boom"] aside nav button:hover { background: #123f8e !important; }
+[data-admin-theme="boom"] aside nav button[aria-current="page"],
+[data-admin-theme="boom"] aside nav button[class*="active"] {
+  background: #0c55b5 !important;
+  color: #ffffff !important;
+  box-shadow: inset 3px 0 #55d5f3;
+}
+[data-admin-theme="boom"] aside nav button b { background: #55d5f3 !important; color: #08255f !important; }
+[data-admin-theme="boom"] aside [class*="helpCard"] { background: #123f8e !important; border-color: rgba(85,213,243,.3) !important; color: #ffffff !important; }
+[data-admin-theme="boom"] aside [class*="helpCard"] span,
+[data-admin-theme="boom"] aside [class*="user"] small { color: #a9c7e8 !important; }
+[data-admin-theme="boom"] aside [class*="helpIcon"] { border-color: #76dff6 !important; }
+[data-admin-theme="boom"] aside [class*="user"] { border-color: rgba(139,202,236,.22) !important; }
+
+[data-admin-theme="boom"] header [class*="location"] { color: #5a6d84 !important; }
+[data-admin-theme="boom"] header [class*="pulse"] { background: #39bfe7 !important; box-shadow: 0 0 0 4px #def5fc !important; }
+[data-admin-theme="boom"] header [class*="dot"] { color: #9eb0c8 !important; }
+[data-admin-theme="boom"] header [class*="iconButton"] { color: #5a6d84 !important; }
+[data-admin-theme="boom"] header [class*="newBooking"] { background: #0c55b5 !important; color: #ffffff !important; }
+[data-admin-theme="boom"] header [class*="newBooking"]:hover { background: #123f8e !important; }
+[data-admin-theme="boom"] header [data-sign-out] { border: 1px solid #a9bddb !important; background: #ffffff !important; color: #0c55b5 !important; }
+[data-admin-theme="boom"] header [data-sign-out]:hover { background: #def5fc !important; }
+
+[data-admin-theme="boom"] [class*="intro"] p { color: #5a6d84 !important; }
+[data-admin-theme="boom"] [class*="updated"],
+[data-admin-theme="boom"] [class*="kpi"] > p,
+[data-admin-theme="boom"] [class*="eyebrow"] { color: #7d8da7 !important; }
+[data-admin-theme="boom"] [class*="kpiHead"] [class*="green"] { color: #0c55b5 !important; background: #def5fc !important; }
+[data-admin-theme="boom"] [class*="kpiHead"] [class*="blue"] { color: #0c55b5 !important; background: #def5fc !important; }
+[data-admin-theme="boom"] [class*="card"] h2 b { background: #def5fc !important; color: #0c55b5 !important; }
+[data-admin-theme="boom"] [class*="quietButton"] { background: #def5fc !important; color: #5a6d84 !important; }
+[data-admin-theme="boom"] [class*="chartLegend"] span { color: #0c55b5 !important; background: #def5fc !important; }
+[data-admin-theme="boom"] [class*="chartLegend"] i { background: #39bfe7 !important; }
+[data-admin-theme="boom"] [class*="chartColumn"] > i { background: #cbdcf0 !important; }
+[data-admin-theme="boom"] [class*="chartColumn"] > i[class*="currentBar"] { background: #0c72c5 !important; }
+[data-admin-theme="boom"] [class*="chartTip"] { background: #08255f !important; }
+[data-admin-theme="boom"] [class*="attentionRow"] button,
+[data-admin-theme="boom"] [class*="textButton"] { color: #0c55b5 !important; }
+[data-admin-theme="boom"] [class*="customerAvatar"] { background: #def5fc !important; color: #0c55b5 !important; }
+[data-admin-theme="boom"] [class*="confirmed"] { background: #def5fc !important; color: #0c55b5 !important; }
+[data-admin-theme="boom"] [class*="inProgress"] { background: #def5fc !important; color: #0c55b5 !important; }
+[data-admin-theme="boom"] [class*="leadValue"] { color: #0c55b5 !important; }
+[data-admin-theme="boom"] [class*="BookingNotice"] { background: linear-gradient(90deg, #08255f, #0c55b5) !important; }
+[data-admin-theme="boom"] [class*="BookingNotice"] [class*="icon"],
+[data-admin-theme="boom"] [class*="BookingNotice"] [class*="status"] { background: #55d5f3 !important; color: #08255f !important; }
+[data-admin-theme="boom"] [class*="BookingNotice"] small { color: #9ee7f8 !important; }
+[data-admin-theme="boom"] [class*="BookingNotice"] p { color: #d7e8f8 !important; }
+
+[data-admin-theme="boom"] [class*="integrationCard"] {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e5eae6;
+  border-radius: 12px;
+  padding: 15px 18px;
+  margin-bottom: 18px;
+}
+[data-admin-theme="boom"] [class*="instagramMark"] { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(135deg,#7c3aed,#ec4899,#f59e0b); color: #ffffff; font-size:13px; font-weight:700; }
+[data-admin-theme="boom"] [class*="integrationCard"] > div { display: grid; gap: 3px; }
+[data-admin-theme="boom"] [class*="integrationCard"] h2 { font-family: Georgia,serif; font-size:20px; font-weight:400; margin: 0; }
+[data-admin-theme="boom"] [class*="integrationCard"] small { color: #71829d; font-size:13px; }
+[data-admin-theme="boom"] [class*="integrationCard"] code { font-size:13px; background: #def5fc; color: #5a6d84; border-radius: 6px; padding: 7px 9px; }
+[data-admin-theme="boom"] [class*="integrationStatus"] { font-size:13px; font-weight:700; border-radius: 999px; padding: 6px 9px; }
+[data-admin-theme="boom"] [class*="connected"] { background: #def5fc; color: #0c55b5; }
+[data-admin-theme="boom"] [class*="webhook_ready"] { background: #def5fc; color: #0c55b5; }
+[data-admin-theme="boom"] [class*="not_configured"] { background: #fff1db; color: #a66e18; }
+
+@media (max-width: 760px) {
+  [data-admin-theme="boom"] [class*="integrationCard"] { grid-template-columns: auto 1fr auto; padding: 13px; gap: 10px; }
+  [data-admin-theme="boom"] [class*="integrationCard"] code { display: none; }
+  [data-admin-theme="boom"] aside { box-shadow: 20px 0 50px rgba(4,27,78,.28) !important; }
+  [data-admin-theme="boom"] [class*="backdrop"] { background: rgba(4,25,71,.45) !important; }
+  [data-admin-theme="boom"] [class*="menuButton"] { background: #def5fc !important; }
+  [data-admin-theme="boom"] [class*="menuButton"] span { background: #0c55b5 !important; }
+}
