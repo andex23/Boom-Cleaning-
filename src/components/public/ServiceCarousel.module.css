@@ -18,7 +18,7 @@
 .card:hover{transform:translateY(-4px)}
 .card:focus-visible{outline:3px solid var(--accent-bright);outline-offset:3px}
 
-.media{position:relative;display:block;aspect-ratio:4/3;background:#cbeff7;overflow:hidden}
+.media{position:relative;display:block;aspect-ratio:4/3;background:var(--brand-wash-strong);overflow:hidden}
 .media img{object-fit:cover;transition:transform .5s ease}
 .card:hover .media img{transform:scale(1.025)}
 .body{display:flex;flex-direction:column;gap:8px;padding:20px 20px 22px;flex:1}
@@ -26,7 +26,7 @@
 .tagline{font-size:13px;line-height:1.55;color:var(--ink-soft)}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid rgba(8,37,95,.16)}
 .foot em{font-style:normal;font-size:13px;font-weight:700;color:var(--ink)}
-.go{font-size:13px;font-weight:700;color:#0c55b5;white-space:nowrap}
+.go{font-size:13px;font-weight:700;color:var(--brand);white-space:nowrap}
 
 .hint{margin:12px 0 0;font-size:13px;color:var(--ink-faint)}
 
@@ -40,3 +40,16 @@
 /* On a touch screen the rail already swipes, so the arrows are redundant — and made static
    they pushed a 60px empty block between the section copy and the first card. */
 @media (hover: none) and (pointer: coarse){ .controls{display:none} }
+
+
+/* Redesign: cards pick up the rounded, soft-shadowed treatment the rest of the page uses
+   instead of the square hairline boxes they had. */
+.card {
+  overflow: clip;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface-raised) !important;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+}
+.card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--brand-wash-strong) !important; }

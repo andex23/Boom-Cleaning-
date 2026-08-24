@@ -8,23 +8,20 @@ import { Arrow } from "@/components/brand/Arrow";
 
 const subscribeNever = () => () => {};
 
-const LINKS = [
-  { href: "/services", label: "Services" },
-  { href: "/about", label: "About us" },
-  { href: "/#how-it-works", label: "How it works" },
-];
-
 /**
- * The phone panel has room the header bar does not, so it carries the two pages the
- * desktop nav deliberately leaves out. Without these, Pricing and FAQs are reachable
- * only from the footer.
+ * The mockup's fifth item is "Contact", which is not a page BOOM has — the ways to reach
+ * them are the phone number, WhatsApp and Instagram, all of which sit in the footer. FAQs
+ * takes the slot instead, since it answers what a contact page usually gets asked.
  */
-const MOBILE_ONLY_LINKS = [
+const LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/about", label: "About us" },
   { href: "/faq", label: "FAQs" },
 ];
 
-const MOBILE_LINKS = [...LINKS, ...MOBILE_ONLY_LINKS];
+const MOBILE_LINKS = LINKS;
 
 /**
  * The header navigation. Below the breakpoint the links collapse into a panel rather than

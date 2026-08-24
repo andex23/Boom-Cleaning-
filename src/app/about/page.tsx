@@ -29,10 +29,10 @@ export default function AboutPage() {
   return <main className={styles.page}>
     <SiteHeader priority />
 
-    <section className={about.hero} aria-labelledby="about-heading" style={{ backgroundImage: "url('/images/team/08-cleaner-portrait.webp')" }}>
+    <section className={about.hero} aria-labelledby="about-heading" style={{ backgroundImage: "url('/images/interiors/office.webp')" }}>
       <div className={about.heroShade} />
       <div className={about.heroCopy}>
-        <p className={styles.eyebrow}>About BOOM</p>
+        <p className={styles.pill}>About BOOM</p>
         <h1 data-reveal="heading" id="about-heading">A cleaning company built to show up prepared.</h1>
         <p>BOOM Cleaning Services serves homes, offices and newly completed spaces across Abuja. We built the company around a simple belief: professional cleaning should feel organised before anyone reaches your door.</p>
         <div className={about.heroActions}>
@@ -50,7 +50,7 @@ export default function AboutPage() {
 
     <section className={about.standards} aria-labelledby="standards-heading">
       <div className={about.sectionLead}>
-        <p className={styles.eyebrow}>The BOOM standard</p>
+        <p className={styles.pill}>The BOOM standard</p>
         <h2 data-reveal="heading" id="standards-heading">Care you can see in the process.</h2>
       </div>
       <ol data-reveal-stagger>{standards.map(([title, copy], index) => <li key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></li>)}</ol>
@@ -58,7 +58,7 @@ export default function AboutPage() {
 
     <section className={about.equipment} aria-labelledby="equipment-heading">
       <div className={about.equipmentIntro}>
-        <p className={styles.eyebrow}>Professional equipment</p>
+        <p className={styles.pill}>Professional equipment</p>
         <h2 data-reveal="heading" id="equipment-heading">The right machine changes the result.</h2>
         <p>A thorough clean is not just more effort. It is knowing which method and equipment suit the surface, the material and the condition of the space.</p>
       </div>
@@ -67,22 +67,22 @@ export default function AboutPage() {
 
     <section className={about.people} id="team" aria-labelledby="people-heading">
       <div className={about.peopleIntro}>
-        <p className={styles.eyebrow}>The people behind BOOM</p>
+        <p className={styles.pill}>The people behind BOOM</p>
         <h2 data-reveal="heading" id="people-heading">The uniform matters because accountability matters.</h2>
         <p>The team entering your space represents BOOM from arrival to final check. They know the brief, carry the right setup and work to one company standard.</p>
       </div>
       <div className={about.peopleGrid} data-reveal-stagger>
         <figure>
-          <Photo src="/images/team/05-team-four.webp" alt="Four BOOM cleaning professionals in uniform" sizes="(max-width: 700px) 100vw, 33vw" fill />
+          <Photo src="/images/interiors/living-room.webp" alt="A living room after a BOOM deep clean" sizes="(max-width: 700px) 100vw, 33vw" fill />
         </figure>
         <figure>
-          <Photo src="/images/team/04-team-portrait.webp" alt="A BOOM cleaning professional in uniform" sizes="(max-width: 700px) 100vw, 33vw" fill />
+          <Photo src="/images/interiors/sofa.webp" alt="Upholstery cleaned and reset" sizes="(max-width: 700px) 100vw, 33vw" fill />
         </figure>
       </div>
     </section>
 
     <section className={about.cta}>
-      <p className={styles.eyebrow}>Ready when you are</p>
+      <p className={styles.pill}>Ready when you are</p>
       <h2 data-reveal="heading">Tell us what needs cleaning.</h2>
       <p>Choose a service, describe your space and request a time in one clear flow.</p>
       <Link className={styles.primary} href="/quote">Start your booking <Arrow direction="up-right" /></Link>

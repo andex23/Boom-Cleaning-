@@ -43,7 +43,7 @@ export default function FaqPage() {
   return <main className={shared.page}>
     <SiteHeader priority />
     <section className={faq.hero} aria-labelledby="faq-heading">
-      <p className={shared.eyebrow}>Questions, answered</p>
+      <p className={shared.pill}>Questions, answered</p>
       <h1 data-reveal="heading" id="faq-heading">Everything to know before BOOM arrives.</h1>
       <p>Clear answers about prices, coverage, preparation and the team entering your space.</p>
       <Link className={shared.primary} href="/quote">Book a service <Arrow direction="up-right" /></Link>
@@ -60,7 +60,7 @@ export default function FaqPage() {
     </section>
 
     <section className={faq.contact}>
-      <div><p className={shared.eyebrow}>Still need an answer?</p><h2 data-reveal="heading">Talk to the BOOM team.</h2></div>
+      <div><p className={shared.pill}>Still need an answer?</p><h2 data-reveal="heading">Talk to the BOOM team.</h2></div>
       <div>
         <p>Send the property details and the question you need resolved. We will help you choose the right service before you book.</p>
         {/* Instagram leads: it is where most customers actually reach BOOM. */}

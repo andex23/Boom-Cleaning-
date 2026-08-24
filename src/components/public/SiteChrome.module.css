@@ -1,0 +1,165 @@
+/* Header and footer, previously borrowing classes from home.module.css. They appear on
+   every page, so they get a stylesheet of their own rather than living inside the home
+   page's. */
+
+/* --- Header ------------------------------------------------------------------ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 84px;
+  padding-inline: var(--gutter);
+  background: rgba(255, 255, 255, .88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: inline-flex; align-items: center; gap: 10px; }
+
+.nav { display: flex; align-items: center; gap: clamp(18px, 2.6vw, 38px); }
+.nav a {
+  color: var(--ink-body);
+  font-size: 15px;
+  font-weight: 700;
+  transition: color .16s ease;
+}
+.nav a:hover { color: var(--brand); }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px -8px rgba(29, 78, 216, .6);
+  transition: background .16s ease, transform .16s ease;
+}
+.cta:hover { background: var(--brand-strong); transform: translateY(-1px); }
+
+/* --- Footer ------------------------------------------------------------------ */
+.footer {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.1fr) 2fr;
+  gap: clamp(40px, 7vw, 96px);
+  padding: clamp(56px, 8vw, 96px) var(--gutter) 0;
+  background: var(--brand-deep);
+  color: #ffffff;
+}
+
+.footerTagline {
+  max-width: 340px;
+  margin: 20px 0 0;
+  color: #c7d7f5;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.footerPlace {
+  margin: 18px 0 0;
+  color: #93b0e6;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.socials { display: flex; gap: 10px; margin-top: 24px; }
+.socials a {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line-on-dark);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 15px;
+  transition: background .16s ease, border-color .16s ease;
+}
+.socials a:hover { background: rgba(255, 255, 255, .14); border-color: rgba(255, 255, 255, .4); }
+
+.footerNav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 56px);
+}
+.footerNav h2 {
+  margin: 0 0 18px;
+  color: #93b0e6;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.footerNav a,
+.footerHours {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  color: #dbe6fa;
+  font-size: 15px;
+}
+.footerNav a:hover { color: #ffffff; }
+.footerHours { color: #93b0e6; }
+/* The chevron is a phone affordance; on a wide footer the columns read as lists. */
+.footerNav a > svg { display: none; }
+
+.footerBase {
+  grid-column: 1 / -1;
+  margin-top: clamp(40px, 6vw, 72px);
+  padding: 24px 0 30px;
+  border-top: 1px solid var(--line-on-dark);
+  color: #93b0e6;
+  font-size: 13px;
+}
+
+/* The phone footer leads with the two things someone reaches for. */
+.footerActions { display: none; }
+
+@media (max-width: 900px) {
+  .footer { grid-template-columns: 1fr; gap: 40px; }
+  .footerNav { grid-template-columns: 1fr; gap: 28px; }
+  .footerNav a { border-bottom: 1px solid var(--line-on-dark); }
+  .footerNav a > svg { display: block; color: #93b0e6; font-size: 20px; }
+  .footerActions {
+    display: grid;
+    gap: 12px;
+    grid-column: 1 / -1;
+  }
+  .footerActions a:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 52px;
+    border-radius: var(--radius-pill);
+    background: var(--brand);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .footerActions a:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    color: #dbe6fa;
+    font-size: 15px;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 700px) {
+  .header { height: 72px; }
+  .cta { display: none; }
+}

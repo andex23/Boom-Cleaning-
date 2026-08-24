@@ -31,39 +31,53 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 /* ---------------------------------------------------------------------------
    BOOM design tokens.
-   The palette stays navy + cyan so the logo still belongs. What changes is the
-   ground it sits on: a warm off-white rather than heavy cream, softer corners,
-   and a spacing scale generous enough to let the page breathe.
+
+   The ground is white rather than cream and the accent is a single royal blue
+   rather than navy-plus-cyan: brighter, closer to how a service business is
+   expected to look, and easier to keep legible. Deep blue is kept for the bands
+   and the footer so the palette still has weight at the edges.
+
+   Contrast is checked against --surface (#ffffff) at body size.
    --------------------------------------------------------------------------- */
 :root {
-  --ink: #08255f;
-  --ink-deep: #08255f;
-  --ink-soft: #3c5064;
-  /* Both quiet greys were below 4.5:1 on --surface (4.36:1 and 2.42:1). These are
-     the darkest-but-still-quiet pair that clears WCAG AA for body-size text. */
-  --ink-muted: #5a6d84;
-  /* 4.52:1 on --surface — the lightest grey that still clears AA at body size.
-     Do not lighten: #6b7a90 sits at 4.36:1 and fails. */
-  --ink-faint: #67758d;
+  /* Headings and body. --ink-body is 7.6:1 on white, --ink-muted 4.9:1 — the
+     lightest grey that still clears AA at body size. Do not lighten further. */
+  --ink: #0f2350;
+  --ink-deep: #0b1a3c;
+  --ink-body: #475569;
+  --ink-muted: #64748b;
+  /* Kept as aliases so styles written against the old names keep working. */
+  --ink-soft: var(--ink-body);
+  --ink-faint: var(--ink-muted);
 
-  --accent: #0c55b5;
-  --accent-bright: #55d5f3;
-  --accent-wash: #def5fc;
+  /* One blue, three weights. --brand is 6.4:1 on white, so it is safe for the
+     small print as well as buttons. */
+  --brand: #1d4ed8;
+  --brand-strong: #1e40af;
+  --brand-deep: #1e3a8a;
+  --brand-wash: #eff6ff;
+  --brand-wash-strong: #dbeafe;
+  /* Old names, remapped rather than removed. */
+  --accent: var(--brand);
+  --accent-bright: var(--brand);
+  --accent-wash: var(--brand-wash);
 
-  --surface: #fffefa;
+  --surface: #ffffff;
   --surface-raised: #ffffff;
-  --surface-sunken: #eef1f6;
-  --line: #e5eae6;
-  --line-strong: #d6dfd8;
+  --surface-tint: #f5f8ff;
+  --surface-sunken: #eff4ff;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --line-on-dark: rgba(255, 255, 255, .18);
 
   --radius-sm: 10px;
   --radius: 16px;
   --radius-lg: 22px;
   --radius-pill: 999px;
 
-  --shadow-sm: 0 1px 2px rgba(8, 37, 95, .05);
-  --shadow: 0 6px 24px -8px rgba(8, 37, 95, .13);
-  --shadow-lg: 0 24px 60px -22px rgba(8, 37, 95, .26);
+  --shadow-sm: 0 1px 2px rgba(15, 35, 80, .06);
+  --shadow: 0 8px 28px -10px rgba(15, 35, 80, .16);
+  --shadow-lg: 0 26px 64px -24px rgba(15, 35, 80, .28);
 
   /* A consistent vertical rhythm for marketing sections. */
   --section-y: clamp(64px, 9vw, 132px);
@@ -71,7 +85,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   --page-max: 1180px;
 }
 
-body { background: var(--surface); }
+body { background: var(--surface); color: var(--ink); }
 
 /* ---------------------------------------------------------------------------
    Scroll-driven motion.

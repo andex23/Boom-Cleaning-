@@ -57,7 +57,7 @@ export default async function PricingPage() {
     <SiteHeader priority />
 
     <section className={pricing.hero} aria-labelledby="pricing-heading">
-      <p className={shared.eyebrow}>Clear BOOM pricing</p>
+      <p className={shared.pill}>Clear BOOM pricing</p>
       <h1 data-reveal="heading" id="pricing-heading">Straightforward prices for a properly scoped clean.</h1>
       <p>Choose a service to see its published rates, then tell us about your space for the confirmed total.</p>
       <div className={pricing.heroActions} data-reveal>
@@ -67,7 +67,7 @@ export default async function PricingPage() {
 
     <section className={pricing.priceSection} id="price-list" aria-labelledby="home-prices-heading">
       <div className={pricing.sectionLead}>
-        <div><p className={shared.eyebrow}>Home packages</p><h2 data-reveal="heading" id="home-prices-heading">Choose the clean you need.</h2></div>
+        <div><p className={shared.pill}>Home packages</p><h2 data-reveal="heading" id="home-prices-heading">Choose the clean you need.</h2></div>
         <p>Open a package only when you want to compare its bedroom prices.</p>
       </div>
       <div className={pricing.cardGrid} data-reveal-stagger>{tiered.map((service) => <TierCard key={service.id} service={service} />)}</div>
@@ -75,7 +75,7 @@ export default async function PricingPage() {
 
     {postConstruction ? <section className={pricing.construction} aria-labelledby="construction-heading">
       <div className={pricing.constructionCopy}>
-        <p className={shared.eyebrow}>Post-construction cleaning</p>
+        <p className={shared.pill}>Post-construction cleaning</p>
         <h2 data-reveal="heading" id="construction-heading">Priced by the spaces in the building.</h2>
         <p>Tell us how many bedrooms, living rooms, storeys and extra areas are in the completed property. Your quote adds only the spaces you select.</p>
         <Link className={shared.primary} href="/quote?service=post-construction-cleaning">Build this quote <Arrow direction="up-right" /></Link>
