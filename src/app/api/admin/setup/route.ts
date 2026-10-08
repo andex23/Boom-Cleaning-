@@ -26,7 +26,7 @@ export async function POST(request:Request) {
     if(error || data!==true) return back("invalid");
     const response=NextResponse.redirect(new URL("/admin/login?created=1",request.url),303);
     response.cookies.set(ADMIN_SESSION_COOKIE,"",{...ADMIN_SESSION_COOKIE_OPTIONS,maxAge:0});
-    response.headers.set("Cache-Control","no-store");response.headers.set("Referrer-Policy","no-referrer");
+    response.headers.set("Cache-Control","no-store");response.headers.set("Referrer-Policy","same-origin");
     return response;
   } catch {return back("unavailable");}
 }

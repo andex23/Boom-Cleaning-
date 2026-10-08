@@ -3,7 +3,7 @@ import { ownerSetupAvailable,OWNER_EMAIL } from "@/lib/admin-owner";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import styles from "../login/login.module.css";
 export const dynamic="force-dynamic";
-export const metadata={title:"Owner setup | BOOM",robots:{index:false,follow:false},referrer:"no-referrer"};
+export const metadata={title:"Owner setup | BOOM",robots:{index:false,follow:false},referrer:"same-origin"};
 export default async function OwnerSetup({searchParams}:{searchParams:Promise<{token?:string;error?:string}>}) {
   const {token="",error}=await searchParams;
   const available=await ownerSetupAvailable(token);
