@@ -5,6 +5,7 @@ import { formatNaira, formatSlotTime } from "@/lib/format";
 import type { OperationsOverview as Overview } from "@/features/operations/overview";
 import styles from "./AdminConsole.module.css";
 import panel from "./PricingAdmin.module.css";
+import { RevenueChart } from "./RevenueChart";
 import { adminErrorMessage, adminFetch, SESSION_EXPIRED_MESSAGE } from "./adminFetch";
 
 const statusLabels: Record<string, string> = {
@@ -52,25 +53,13 @@ export function OperationsOverview({ children }: { children?: React.ReactNode })
   if (error) return <AdminError message={error} />;
   if (!data) return <article className={panel.panel}><p className={panel.muted}>Loading today’s figures…</p></article>;
 
-  const peak = Math.max(...data.weeklyRevenue.map((bar) => bar.value), 1);
 
   return <>
     <section className={styles.kpiGrid} aria-label="Daily performance">{data.kpis.map((item) => <article key={item.label} className={styles.kpi}>
-      <div className={styles.kpiHead}><span>{item.label}</span></div><strong>{item.value}</strong><p>{item.note}</p>
+      <div className={styles.kpiHead}><span>{item.label}</span></div><strong>{item.value.replace("₦", "₦\u00a0")}</strong><p>{item.note}</p>
     </article>)}</section>
 
-    <section className={styles.contentGrid}>
-      <article className={`${styles.card} ${styles.revenueCard}`}>
-        <div className={styles.cardHeading}><div><p className={styles.eyebrow}>THIS WEEK</p><h2>Payments received</h2></div></div>
-        <div className={styles.chartLegend}><strong>{formatNaira(data.weeklyRevenueTotal)}</strong><span>{data.weeklyRevenueTotal ? "Verified Flutterwave payments" : "No verified payments this week"}</span></div>
-        <div className={styles.chart} aria-label="Revenue by day">{data.weeklyRevenue.map((bar) => <div key={bar.day} className={styles.chartColumn}>
-          <span className={bar.value > 0 ? styles.chartTip : styles.hiddenTip}>{formatNaira(bar.value)}</span>
-          <i style={{ height: `${(bar.value / peak) * 100}%` }} className={bar.date === data.today ? styles.currentBar : ""} />
-          <small>{bar.day}</small>
-        </div>)}</div>
-      </article>
-
-    </section>
+    <RevenueChart />
 
     <section className={styles.lowerGrid}>
       <article className={styles.card}>

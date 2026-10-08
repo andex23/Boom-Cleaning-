@@ -1,6 +1,7 @@
 "use client";
 import { useEffect,useState } from "react";
 import { adminFetch,adminErrorMessage } from "./adminFetch";
+import { RevenueChart } from "./RevenueChart";
 import { formatNaira } from "@/lib/format";
 import { CollectionSummary,EmptyCollection } from "./AdminCollection";
 import panel from "./PricingAdmin.module.css";
@@ -42,7 +43,7 @@ export function PaymentsPanel() {
   const paid = (row:Row) => row.payments.some(payment => payment.status === "PAID");
   const received=rows.flatMap(row => row.payments).filter(payment => payment.provider === "flutterwave" && payment.status === "PAID" && payment.paid_at).reduce((sum,payment) => sum+Number(payment.amount),0);
   const visible=rows.filter(row => (filter === "All" || (filter === "Paid" ? paid(row) : !paid(row) && row.status === "PENDING")) && (`BOOM-${row.booking_number} ${customerOf(row)?.full_name ?? ""} ${customerOf(row)?.email ?? ""}`).toLowerCase().includes(query.trim().toLowerCase()));
-  return <><CollectionSummary items={[{label:"Received in these records",value:formatNaira(received)},{label:"Paid bookings shown",value:rows.filter(paid).length},{label:"Awaiting payment",value:rows.filter(row => !paid(row) && row.status === "PENDING").length}]} /><article className={panel.panel}>
+  return <><RevenueChart /><CollectionSummary items={[{label:"Received in these records",value:formatNaira(received)},{label:"Paid bookings shown",value:rows.filter(paid).length},{label:"Awaiting payment",value:rows.filter(row => !paid(row) && row.status === "PENDING").length}]} /><article className={panel.panel}>
     <header className={panel.head}><div><h2>Payment ledger</h2><p className={panel.muted}>Latest 50 booking records. Verified receipts, outstanding checkouts and payment references.</p></div></header>
     <div className={styles.toolbar}><div className={styles.filters}>{["All","Paid","Unpaid"].map(value => <button className={styles.filter} aria-pressed={filter===value} key={value} onClick={() => setFilter(value)}>{value}</button>)}</div><label className={styles.search}><span className="sr-only">Search payments</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search booking or customer" /></label></div>
     {error && <p className={styles.alert} role="alert">{error}</p>}
