@@ -1,6 +1,8 @@
 import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
+import { loadAdminOwner } from "./admin-owner";
+import { verifyOwnerPassword } from "./admin-password";
 import { cookies } from "next/headers";
 import { createExpiringAdminSessionToken, isValidExpiringAdminSessionToken } from "./admin-session";
 
@@ -25,10 +27,18 @@ export function validateAdminPassword(password: string) {
   return Boolean(expected && safeEqual(password, expected));
 }
 
-export function createAdminSessionToken() {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret) throw new Error("ADMIN_SESSION_SECRET is not configured");
-  return createExpiringAdminSessionToken(secret);
+async function currentSessionSecret() {
+  const secret=process.env.ADMIN_SESSION_SECRET;
+  if(!secret) throw new Error("ADMIN_SESSION_SECRET is not configured");
+  const owner=await loadAdminOwner();
+  return owner ? createHash("sha256").update(`${secret}:${owner.password_hash}`).digest("hex") : secret;
+}
+export async function validateAdminLogin(email:string,password:string) {
+  const owner=await loadAdminOwner();
+  return owner ? email.trim().toLowerCase() === owner.email && await verifyOwnerPassword(password,owner.password_hash) : validateAdminPassword(password);
+}
+export async function createAdminSessionToken() {
+  return createExpiringAdminSessionToken(await currentSessionSecret());
 }
 
 export function isValidAdminSessionToken(token: string | undefined, now = Date.now()) {
@@ -51,5 +61,6 @@ export function isSameOriginRequest(request: Request) {
 
 export async function isAdminAuthenticated() {
   const actual = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
-  return isValidAdminSessionToken(actual);
+  if(!actual) return false;
+  return isValidExpiringAdminSessionToken(actual,await currentSessionSecret());
 }

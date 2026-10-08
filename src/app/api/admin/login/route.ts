@@ -8,7 +8,7 @@ import {
   createAdminSessionToken,
   isAdminLoginRateLimited,
   isSameOriginRequest,
-  validateAdminPassword,
+  validateAdminLogin,
 } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
@@ -26,18 +26,21 @@ export async function POST(request: Request) {
 
   // A missing ADMIN_PASSWORD would otherwise look identical to a wrong one, and every
   // attempt would fail with no explanation of why.
-  if (!process.env.ADMIN_PASSWORD?.trim() || !process.env.ADMIN_SESSION_SECRET?.trim()) {
-    console.error("Admin sign-in is not configured: ADMIN_PASSWORD or ADMIN_SESSION_SECRET is missing");
+  if (!process.env.ADMIN_SESSION_SECRET?.trim()) {
+    console.error("Admin sign-in is not configured: ADMIN_SESSION_SECRET is missing");
     return back(request, "unconfigured");
   }
 
   const formData = await request.formData().catch(() => null);
   const password = formData?.get("password");
-  if (typeof password !== "string" || !validateAdminPassword(password)) return back(request, "invalid");
+  const email=formData?.get("email");
+  if (typeof password !== "string" || password.length>128) return back(request,"invalid");
+  try {if(!await validateAdminLogin(typeof email === "string" ? email : "",password)) return back(request,"invalid");}
+  catch {return back(request,"unavailable");}
 
   clearAdminLoginAttempts(request);
   const response = NextResponse.redirect(new URL("/admin", request.url), 303);
-  response.cookies.set(ADMIN_SESSION_COOKIE, createAdminSessionToken(), {
+  response.cookies.set(ADMIN_SESSION_COOKIE, await createAdminSessionToken(), {
     ...ADMIN_SESSION_COOKIE_OPTIONS,
     maxAge: ADMIN_SESSION_MAX_AGE,
     priority: "high",

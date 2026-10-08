@@ -96,7 +96,11 @@ Revenue counts PAID Flutterwave NGN payments by the date received in Africa/Lago
 
 Analytics starts with this release; no historical visits were invented. Public Home, Booking, Terms, About, FAQ, Pricing and Services page views are counted once per anonymous session/page/30-minute bucket. Sessions expire after 30 minutes of inactivity and hashes rotate each Lagos day. Analytics shows the last 30 days, popular pages, referring hostnames and device categories. No raw IPs, full user agents, query strings, customer or payment details are stored. Do Not Track and Global Privacy Control are respected. Collection is same-origin, size-bounded and rate-limited, with private service-role-only database access. The daily reconciliation cron deletes visits older than 90 days. Per-instance rate limiting is best-effort; these are browser visit counts, not an audited measure of unique people.
 
-Owner account onboarding is still pending, explicitly paused while the user reviews the dashboard. The requested owner email is boomcleaninfo@gmail.com. The current shared admin-password login remains in use; no owner password or account was created.
+Owner onboarding is prepared for boomcleaninfo@gmail.com. A private one-time setup link lets her choose a password (12–128 characters). Tokens are stored as SHA-256 hashes, expire in 48 hours and are consumed atomically. Passwords use salted scrypt. Account creation disables shared-password login and invalidates all earlier admin sessions; sessions remain limited to 12 hours. Public sign-up is unavailable. The owner must complete setup herself; no owner password has been chosen or submitted by the maintainer. The current shared login remains usable until she completes setup.
+
+Run `node scripts/issue-owner-setup.mjs` from the materialized checkout to issue or replace an unused setup link. It writes `output/handoff/owner-setup.md` with mode 600 in a mode-700 directory. Keep this bearer link private and share it only with the owner; it is excluded from Git and deployments. The script refuses to overwrite an existing owner account. There is no self-service password reset yet: after setup, recovery requires a reviewed maintainer procedure through provider access. Do not delete the owner row to recover access; doing so would re-enable the shared password.
+
+Give the owner `owner-guide.md` for daily operations, and retain this document for technical maintenance. The setup link and private backups must be shared separately from the general guide.
 
 ## Current Flutterwave issue
 

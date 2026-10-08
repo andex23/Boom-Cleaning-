@@ -5,7 +5,8 @@ import styles from "./login.module.css";
 import { Arrow } from "@/components/brand/Arrow";
 
 const messages: Record<string, string> = {
-  invalid: "That password isn’t right. Please try again.",
+  invalid: "Those sign-in details aren’t right. Please try again.",
+  unavailable: "Sign-in is temporarily unavailable. Please try again.",
   throttled: "Too many attempts. Please wait 15 minutes before trying again.",
   unconfigured: "Sign-in isn’t configured on this server yet. Set ADMIN_PASSWORD and ADMIN_SESSION_SECRET, then try again.",
 };
@@ -14,13 +15,14 @@ const messages: Record<string, string> = {
  * Posts as a plain form so sign-in still works without JavaScript; the client parts only
  * add the reveal toggle and a submitting state.
  */
-export function LoginForm({ error, signedOut }: { error?: string; signedOut?: boolean }) {
+export function LoginForm({ error, signedOut, ownerAccount, created }: { error?: string; signedOut?: boolean; ownerAccount?:boolean; created?:boolean }) {
   const [revealed, setRevealed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [empty, setEmpty] = useState(false);
   const message = error ? messages[error] ?? messages.invalid : "";
 
   return <>
+    {created && <p className={styles.notice} role="status">Your owner account is ready. Sign in with your email and new password.</p>}
     {signedOut && !message ? <p className={styles.notice} role="status">You’ve been signed out.</p> : null}
     {message ? <p className={styles.error} role="alert">{message}</p> : null}
 
@@ -35,6 +37,7 @@ export function LoginForm({ error, signedOut }: { error?: string; signedOut?: bo
         setSubmitting(true);
       }}
     >
+      {ownerAccount && <><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="username" required style={{marginBottom:18}} /></>}
       <label htmlFor="password">Admin password</label>
       <div className={styles.passwordField}>
         <input

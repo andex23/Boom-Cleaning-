@@ -11,7 +11,7 @@ url = env["NEXT_PUBLIC_SUPABASE_URL"].rstrip("/")
 if url != "https://igepbyooomglsjetfcgn.supabase.co":
     raise SystemExit("Refusing to export an unexpected database project.")
 headers = {"apikey": env["SUPABASE_SERVICE_ROLE_KEY"], "Authorization": "Bearer " + env["SUPABASE_SERVICE_ROLE_KEY"]}
-tables = "customers customer_identities leads bookings quotes quote_items quote_answers payments automation_outbox email_deliveries jobs job_assignments conversations messages automation_events operation_notes activity_logs audit_logs reviews instagram_dm_sessions staff_profiles services service_questions pricing_rules property_types space_types service_space_prices service_bedroom_tiers service_space_tiers service_areas booking_slots availability_rules availability_blackouts crews testimonials".split()
+tables = "customers customer_identities leads bookings quotes quote_items quote_answers payments automation_outbox email_deliveries jobs job_assignments conversations messages automation_events operation_notes activity_logs audit_logs reviews instagram_dm_sessions staff_profiles services service_questions pricing_rules property_types space_types service_space_prices service_bedroom_tiers service_space_tiers service_areas booking_slots availability_rules availability_blackouts crews testimonials website_visits admin_owner admin_owner_setup".split()
 stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 destination = ROOT / "output" / "backups" / ("handoff-" + stamp)
 destination.mkdir(parents=True, mode=0o700)
