@@ -10,6 +10,8 @@ const money = z.number().finite().nonnegative().max(100_000_000).multipleOf(0.01
  * contract shared with the booking payload, the DM agent and every frozen quote item.
  */
 export const pricingUpdateSchema = z.object({
+  bedroomTiers: z.array(z.object({id:z.uuid(),price:money})).max(200).default([]),
+  spaceTiers: z.array(z.object({id:z.uuid(),price:money})).max(200).default([]),
   services: z.array(z.object({ slug: z.string().trim().max(100), basePrice: money, minimumCharge: money, requiresReview: z.boolean() })).max(100).default([]),
   propertyTypes: z.array(z.object({ slug: z.string().trim().max(100), baseMultiplier: z.number().finite().gt(0).max(10), minimumCharge: money, requiresReview: z.boolean() })).max(100).default([]),
   spacePrices: z.array(z.object({ serviceSlug: z.string().trim().max(100), spaceSlug: z.string().trim().max(100), unitPrice: money, includedCount: z.number().int().min(0).max(100) })).max(600).default([]),
@@ -19,6 +21,8 @@ export const pricingUpdateSchema = z.object({
 export type PricingUpdate = z.infer<typeof pricingUpdateSchema>;
 
 export type PricingAdminData = {
+  bedroomTiers: {id:string;serviceSlug:string;bedrooms:number;price:number}[];
+  spaceTiers: {id:string;serviceSlug:string;spaceSlug:string;quantity:number;price:number}[];
   services: { slug: string; name: string; basePrice: number; minimumCharge: number; requiresReview: boolean }[];
   propertyTypes: { slug: string; name: string; baseMultiplier: number; minimumCharge: number; requiresReview: boolean }[];
   spaceTypes: { slug: string; name: string; requiresReview: boolean }[];
@@ -29,14 +33,16 @@ export type PricingAdminData = {
 
 export async function loadPricingAdminData(): Promise<PricingAdminData> {
   const client = createServiceRoleClient();
-  const [services, propertyTypes, spaceTypes, serviceAreas, spacePrices] = await Promise.all([
+  const [services, propertyTypes, spaceTypes, serviceAreas, spacePrices, bedroomTiers, spaceTiers] = await Promise.all([
     client.from("services").select("id,slug,name,base_price,minimum_charge,requires_review").eq("is_active", true).order("sort_order"),
     client.from("property_types").select("slug,name,base_multiplier,minimum_charge,requires_review").eq("is_active", true).order("sort_order"),
     client.from("space_types").select("id,slug,name,requires_review").eq("is_active", true).order("sort_order"),
     client.from("service_areas").select("slug,name,surcharge,requires_review").eq("is_active", true).order("sort_order"),
     client.from("service_space_prices").select("service_id,space_type_id,unit_price,included_count").eq("is_active", true),
+    client.from("service_bedroom_tiers").select("id,service_id,bedrooms,price").order("bedrooms"),
+    client.from("service_space_tiers").select("id,service_id,space_type_id,quantity,price").order("quantity"),
   ]);
-  for (const result of [services, propertyTypes, spaceTypes, serviceAreas, spacePrices]) {
+  for (const result of [services, propertyTypes, spaceTypes, serviceAreas, spacePrices, bedroomTiers, spaceTiers]) {
     if (result.error) throw new Error(result.error.message);
   }
 
@@ -50,6 +56,8 @@ export async function loadPricingAdminData(): Promise<PricingAdminData> {
   }
 
   return {
+    bedroomTiers: (bedroomTiers.data ?? []).map(row => ({id:row.id,serviceSlug:serviceSlugById.get(row.service_id) ?? "",bedrooms:row.bedrooms,price:Number(row.price)})),
+    spaceTiers: (spaceTiers.data ?? []).map(row => ({id:row.id,serviceSlug:serviceSlugById.get(row.service_id) ?? "",spaceSlug:spaceSlugById.get(row.space_type_id) ?? "",quantity:row.quantity,price:Number(row.price)})),
     services: (services.data as { slug: string; name: string; base_price: number | string; minimum_charge: number | string; requires_review: boolean }[])
       .map((row) => ({ slug: row.slug, name: row.name, basePrice: Number(row.base_price), minimumCharge: Number(row.minimum_charge), requiresReview: row.requires_review })),
     propertyTypes: (propertyTypes.data as { slug: string; name: string; base_multiplier: number | string; minimum_charge: number | string; requires_review: boolean }[])
@@ -67,48 +75,8 @@ export async function loadPricingAdminData(): Promise<PricingAdminData> {
  * quote_items when they were created.
  */
 export async function applyPricingUpdate(update: PricingUpdate) {
-  const client = createServiceRoleClient();
-
-  for (const service of update.services) {
-    const result = await client.from("services")
-      .update({ base_price: service.basePrice, minimum_charge: service.minimumCharge, requires_review: service.requiresReview, updated_at: new Date().toISOString() })
-      .eq("slug", service.slug);
-    if (result.error) throw new Error(result.error.message);
-  }
-  for (const type of update.propertyTypes) {
-    const result = await client.from("property_types")
-      .update({ base_multiplier: type.baseMultiplier, minimum_charge: type.minimumCharge, requires_review: type.requiresReview, updated_at: new Date().toISOString() })
-      .eq("slug", type.slug);
-    if (result.error) throw new Error(result.error.message);
-  }
-  for (const area of update.serviceAreas) {
-    const result = await client.from("service_areas")
-      .update({ surcharge: area.surcharge, requires_review: area.requiresReview, updated_at: new Date().toISOString() })
-      .eq("slug", area.slug);
-    if (result.error) throw new Error(result.error.message);
-  }
-
-  if (update.spacePrices.length) {
-    const [services, spaceTypes] = await Promise.all([
-      client.from("services").select("id,slug"),
-      client.from("space_types").select("id,slug"),
-    ]);
-    if (services.error) throw new Error(services.error.message);
-    if (spaceTypes.error) throw new Error(spaceTypes.error.message);
-    const serviceIdBySlug = new Map((services.data as { id: string; slug: string }[]).map((row) => [row.slug, row.id]));
-    const spaceIdBySlug = new Map((spaceTypes.data as { id: string; slug: string }[]).map((row) => [row.slug, row.id]));
-
-    const rows = update.spacePrices.flatMap((price) => {
-      const serviceId = serviceIdBySlug.get(price.serviceSlug);
-      const spaceTypeId = spaceIdBySlug.get(price.spaceSlug);
-      if (!serviceId || !spaceTypeId) return [];
-      return [{ service_id: serviceId, space_type_id: spaceTypeId, unit_price: price.unitPrice, included_count: price.includedCount, is_active: true, updated_at: new Date().toISOString() }];
-    });
-    if (rows.length) {
-      const result = await client.from("service_space_prices").upsert(rows, { onConflict: "service_id,space_type_id" });
-      if (result.error) throw new Error(result.error.message);
-    }
-  }
+  const {error} = await createServiceRoleClient().rpc("apply_admin_pricing",{request:update});
+  if (error) throw new Error(error.message);
 }
 
 export const bookingPriceSchema = z.object({
@@ -185,6 +153,9 @@ export type BookingBreakdown = {
   reference: string;
   bookingNumber: number;
   customer: string | null;
+  customerEmail: string | null;
+  customerPhone: string | null;
+  address: string;
   serviceName: string;
   propertyType: string | null;
   scheduledStartAt: string;
@@ -197,18 +168,18 @@ export type BookingBreakdown = {
 };
 
 /** Recent bookings with the frozen line items that explain each total. */
-export async function loadRecentBookingBreakdowns(limit = 8): Promise<BookingBreakdown[]> {
+export async function loadRecentBookingBreakdowns(limit = 100): Promise<BookingBreakdown[]> {
   const client = createServiceRoleClient();
   const { data, error } = await client
     .from("bookings")
-    .select("booking_number,status,scheduled_start_at,currency,total,customers(full_name),services(name),crews(name),quotes(requires_review,property_types(name),quote_items(kind,label,amount,sort_order))")
+    .select("booking_number,status,scheduled_start_at,currency,total,address,customers(full_name,email,phone),services(name),crews(name),quotes(requires_review,property_types(name),quote_items(kind,label,amount,sort_order))")
     .order("created_at", { ascending: false })
-    .limit(Math.min(Math.max(limit, 1), 25));
+    .limit(Math.min(Math.max(limit, 1), 200));
   if (error) throw new Error(error.message);
 
   type Row = {
-    booking_number: number; status: string; scheduled_start_at: string; currency: string; total: number | string;
-    customers: { full_name: string | null } | null;
+    booking_number: number; status: string; scheduled_start_at: string; currency: string; total: number | string; address: string;
+    customers: { full_name: string | null; email: string | null; phone: string | null } | null;
     services: { name: string } | null;
     crews: { name: string } | null;
     quotes: { requires_review: boolean; property_types: { name: string } | null; quote_items: { kind: string; label: string; amount: number | string; sort_order: number }[] } | null;
@@ -218,6 +189,9 @@ export async function loadRecentBookingBreakdowns(limit = 8): Promise<BookingBre
     reference: `BOOM-${row.booking_number}`,
     bookingNumber: row.booking_number,
     customer: row.customers?.full_name ?? null,
+    customerEmail: row.customers?.email ?? null,
+    customerPhone: row.customers?.phone ?? null,
+    address: row.address,
     serviceName: row.services?.name ?? "Unknown service",
     propertyType: row.quotes?.property_types?.name ?? null,
     scheduledStartAt: row.scheduled_start_at,

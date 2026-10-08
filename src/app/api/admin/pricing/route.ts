@@ -32,7 +32,7 @@ export async function PATCH(request: Request) {
 
   let body: unknown;
   try {
-    body = await readBoundedJson(request);
+    body = await readBoundedJson(request,128 * 1024);
   } catch (error) {
     const tooLarge = error instanceof Error && error.message === "PAYLOAD_TOO_LARGE";
     return adminError(tooLarge ? "Request body is too large." : "Request body must be valid JSON.", tooLarge ? 413 : 400);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CollectionSummary,EmptyCollection } from "./AdminCollection";
 import { formatNaira } from "@/lib/format";
 import type { CustomerRecord } from "@/features/operations/directory";
 import styles from "./PricingAdmin.module.css";
@@ -50,17 +51,17 @@ export function CustomersPanel() {
 
   const totalValue = customers.reduce((sum, customer) => sum + customer.lifetimeValue, 0);
 
-  return <article className={styles.panel}>
+  return <><CollectionSummary items={[{label:"Customers shown",value:customers.length},{label:"Confirmed booking value",value:formatNaira(totalValue)},{label:"With multiple bookings",value:customers.filter(customer => customer.bookingCount>1).length}]} /><article className={styles.panel}>
     <header className={styles.head}>
-      <div><p className={styles.eyebrow}>CUSTOMERS</p><h2>The people BOOM cleans for</h2>
-      <p className={styles.muted}>{customers.length} customer{customers.length === 1 ? "" : "s"} · {formatNaira(totalValue)} booked in total. Cancelled work is not counted.</p></div>
+      <div><p className={styles.eyebrow}>CUSTOMERS</p><h2>Customer directory</h2>
+      <p className={styles.muted}>Contact details and history for your latest 200 customers.</p></div>
       {customers.length > 0 ? <label className={own.search}>
         <span className="sr-only">Search customers</span>
         <input type="search" value={query} placeholder="Search name, phone, email or area" onChange={(event) => setQuery(event.target.value)} />
       </label> : null}
     </header>
 
-    {customers.length === 0 ? <p className={styles.muted}>No customers yet. Anyone who books through the website appears here automatically.</p>
+    {customers.length === 0 ? <EmptyCollection kind="customers" title="Your customer directory starts here" description="Names, contact details and booking history will appear when customers book a clean." action={{href:"/quote",label:"Create a booking"}} />
       : visible.length === 0 ? <p className={styles.muted}>No customer matches “{query}”.</p>
       : <ul className={own.list}>
         {visible.map((customer) => <li key={customer.id} className={own.row}>
@@ -79,5 +80,5 @@ export function CustomersPanel() {
           <strong className={own.value}>{formatNaira(customer.lifetimeValue)}</strong>
         </li>)}
       </ul>}
-  </article>;
+  </article></>;
 }

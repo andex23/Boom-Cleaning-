@@ -1,5 +1,7 @@
 "use client";
 
+import { CollectionSummary,EmptyCollection } from "./AdminCollection";
+import collection from "./AdminCollection.module.css";
 import { useEffect, useState } from "react";
 import { formatNaira, formatNairaDelta } from "@/lib/format";
 import type { BookingBreakdown } from "@/features/pricing/pricing-admin";
@@ -39,6 +41,8 @@ function AdminError({ message }: { message: string }) {
 }
 
 export function BookingBreakdowns() {
+  const [filter,setFilter] = useState("All");
+  const [query,setQuery] = useState("");
   const [bookings, setBookings] = useState<BookingBreakdown[] | null>(null);
   const [error, setError] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -116,11 +120,13 @@ export function BookingBreakdowns() {
 
   if (error) return <AdminError message={error} />;
   if (!bookings) return <article className={styles.panel}><p className={styles.muted}>Loading bookings…</p></article>;
-  if (!bookings.length) return <article className={styles.panel}><p className={styles.muted}>No bookings yet. New web bookings appear here with their full price breakdown.</p></article>;
 
-  return <article className={styles.panel}>
-    <header className={styles.head}><div><p className={styles.eyebrow}>BOOKINGS</p><h2>Recent bookings and how each price was reached</h2><p className={styles.muted}>Line items are frozen at quote time, so later price changes never rewrite an agreed total.</p></div></header>
-    <ul className={own.list}>{bookings.map((booking) => {
+
+  const visible = bookings.filter(booking => (filter === "All" || booking.status === filter) && [booking.reference,booking.customer,booking.serviceName].some(value => value?.toLowerCase().includes(query.trim().toLowerCase())));
+  return <><CollectionSummary items={[{label:"Bookings shown",value:bookings.length},{label:"Confirmed",value:bookings.filter(booking => booking.status === "CONFIRMED").length},{label:"Awaiting payment",value:bookings.filter(booking => booking.status === "PENDING").length},{label:"Completed",value:bookings.filter(booking => booking.status === "COMPLETED").length}]} /><article className={styles.panel}>
+    <header className={styles.head}><div><p className={styles.eyebrow}>BOOKINGS</p><h2>Booking register</h2><p className={styles.muted}>Your latest 100 appointments. Open a booking for the price breakdown and job actions.</p></div></header>
+    <div className={collection.toolbar}><label className={collection.search}><span className="sr-only">Search bookings</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search reference, customer or service" /></label><select className={collection.select} aria-label="Filter booking status" value={filter} onChange={event => setFilter(event.target.value)}><option value="All">All bookings</option>{Object.entries(STATUS_LABELS).map(([value,label]) => <option value={value} key={value}>{label}</option>)}</select></div>
+    {bookings.length === 0 ? <EmptyCollection kind="bookings" title="No bookings yet" description="Your first appointment will appear here with its service, date, customer and payment status." action={{href:"/quote",label:"Create a booking"}} /> : visible.length === 0 ? <p className={styles.muted}>No bookings match your filters.</p> : <ul className={own.list}>{visible.map((booking) => {
       const isOpen = expanded === booking.reference;
       return <li key={booking.reference} className={own.row}>
         <button className={own.summary} aria-expanded={isOpen} onClick={() => setExpanded(isOpen ? null : booking.reference)}>
@@ -134,6 +140,7 @@ export function BookingBreakdowns() {
           <span aria-hidden="true" className={isOpen ? own.chevronOpen : own.chevron}>⌄</span>
         </button>
         {isOpen ? <div className={own.detail}>
+          <dl className={own.bookingInfo}><div><dt>Service address</dt><dd>{booking.address}</dd></div><div><dt>Customer phone</dt><dd>{booking.customerPhone ? <a href={`tel:${booking.customerPhone}`}>{booking.customerPhone}</a> : "No phone recorded"}</dd></div><div><dt>Customer email</dt><dd>{booking.customerEmail ? <a href={`mailto:${booking.customerEmail}`}>{booking.customerEmail}</a> : "No email recorded"}</dd></div><div><dt>Appointment · Abuja time</dt><dd>{dateFormatter.format(new Date(booking.scheduledStartAt))}</dd></div></dl>
           {booking.items.length ? <ul className={own.items}>{booking.items.map((item, index) => <li key={`${item.kind}-${index}`}><span>{item.label}</span><span>{item.kind === "PROPERTY_MULTIPLIER" || item.kind === "MANUAL_ADJUSTMENT" ? formatNairaDelta(item.amount) : formatNaira(item.amount)}</span></li>)}
             <li className={own.itemsTotal}><span>Total</span><span>{formatNaira(booking.total)}</span></li>
           </ul> : <p className={styles.notice}>This scope needs a person to price it. No line items were generated.</p>}
@@ -172,7 +179,7 @@ export function BookingBreakdowns() {
             {["PENDING", "CONFIRMED"].includes(booking.status) ? <div>
               <p className={own.lifecycleLabel}>Move to another time</p>
               <div className={own.actions}>
-                <input type="datetime-local" value={moveDraft[booking.bookingNumber] ?? ""}
+                <input aria-label={`New appointment for ${booking.reference}`} type="datetime-local" value={moveDraft[booking.bookingNumber] ?? ""}
                   onChange={(event) => setMoveDraft((current) => ({ ...current, [booking.bookingNumber]: event.target.value }))} />
                 <button type="button" disabled={savingFor === booking.bookingNumber || !moveDraft[booking.bookingNumber]}
                   className={own.primary} onClick={() => reschedule(booking.bookingNumber, moveDraft[booking.bookingNumber] ?? "")}>Move booking</button>
@@ -182,6 +189,6 @@ export function BookingBreakdowns() {
           {saveError && savingFor === null ? <p className={styles.error} role="alert">{saveError}</p> : null}
         </div> : null}
       </li>;
-    })}</ul>
-  </article>;
+    })}</ul>}
+  </article></>;
 }

@@ -1,9 +1,9 @@
 .list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .row{border:1px solid #eef1f6;border-radius:10px;overflow:hidden}
-.summary{width:100%;display:grid;grid-template-columns:auto 1fr auto auto auto;align-items:center;gap:14px;padding:12px 14px;background:#ffffff;border:0;cursor:pointer;text-align:left;font:inherit}
-.summary:hover{background:#ffffff}
+.summary{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;align-items:center;gap:14px;padding:20px;background:#ffffff;border:0;cursor:pointer;text-align:left;font:inherit}
+.summary:hover{background:#eef1f6}
 .reference{font-size:13px;font-weight:700;color:#0c55b5;font-variant-numeric:tabular-nums;white-space:nowrap}
-.who strong{display:block;font-size:13px;font-weight:700;color:#08255f}
+.who strong{display:block;font-size:15px;font-weight:700;color:#08255f}
 .who small{display:block;margin-top:2px;font-size:13px;color:#5a6d84}
 .when{font-size:13px;color:#5a6d84;white-space:nowrap}
 .total{font-size:13px;font-weight:700;color:#08255f;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -45,3 +45,4 @@
 .primary:disabled,.destructive:disabled{opacity:.45;cursor:not-allowed}
 .done{font-size:13px;color:#5a6d84}
 @media (max-width:720px){.summary{grid-template-columns:1fr auto}.actions{width:100%}.actions input,.primary,.destructive{flex:1 1 auto}}
+.bookingInfo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0;padding:0 0 20px;border-bottom:1px solid #eef1f6}.bookingInfo dt{font-size:13px;color:#5a6d84;margin-bottom:6px}.bookingInfo dd{font-size:13px;color:#08255f;margin:0;line-height:1.5;overflow-wrap:anywhere}.bookingInfo a{color:#0c55b5}@media(max-width:720px){.bookingInfo{grid-template-columns:1fr}}

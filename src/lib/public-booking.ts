@@ -45,9 +45,9 @@ export function isPublicQuoteRateLimited(request: Request, now = Date.now()) {
 }
 
 /** Reads a JSON body without buffering more than the public request budget. */
-export async function readBoundedJson(request: Request): Promise<unknown> {
+export async function readBoundedJson(request: Request, maxBytes = MAX_PUBLIC_BOOKING_BODY_BYTES): Promise<unknown> {
   const contentLength = request.headers.get("content-length");
-  if (contentLength && Number(contentLength) > MAX_PUBLIC_BOOKING_BODY_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
+  if (contentLength && Number(contentLength) > maxBytes) throw new Error("PAYLOAD_TOO_LARGE");
   const reader = request.body?.getReader();
   if (!reader) throw new Error("INVALID_JSON");
 
@@ -58,7 +58,7 @@ export async function readBoundedJson(request: Request): Promise<unknown> {
     const { done, value } = await reader.read();
     if (done) break;
     bytes += value.byteLength;
-    if (bytes > MAX_PUBLIC_BOOKING_BODY_BYTES) {
+    if (bytes > maxBytes) {
       await reader.cancel();
       throw new Error("PAYLOAD_TOO_LARGE");
     }

@@ -2,19 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { adminAreas, type AdminArea } from "@/data/admin-navigation";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { adminAreas, adminRoutes, adminAreaForPath, type AdminArea } from "@/data/admin-navigation";
 import styles from "./AdminConsole.module.css";
-
-import { BookingBreakdowns } from "./BookingBreakdowns";
-import { PricingAdmin } from "./PricingAdmin";
-import { OperationsOverview } from "./OperationsOverview";
-import { LeadsPanel } from "./LeadsPanel";
-import { CustomersPanel } from "./CustomersPanel";
-import { PaymentsPanel } from "./PaymentsPanel";
-import { AnalyticsPanel } from "./AnalyticsPanel";
-import type { InstagramConnectionStatus } from "@/features/instagram/config";
-import { InstagramStatus } from "./InstagramStatus";
 
 type IconName = "grid" | "calendar" | "users" | "briefcase" | "sparkles" | "card" | "message" | "chart" | "arrow" | "bell" | "more";
 
@@ -51,29 +42,40 @@ function areaIcon(area: AdminArea): IconName {
   return ({ Overview: "grid", Bookings: "calendar", Inbox: "message", Customers: "users", Services: "sparkles", Payments: "card", Analytics: "chart", Integrations: "briefcase" } as const)[area];
 }
 
-export default function AdminConsole({ instagramStatus, logoSrc, logoLightSrc }: { instagramStatus: InstagramConnectionStatus; logoSrc: string; logoLightSrc: string }) {
-  const [activeArea, setActiveArea] = useState<AdminArea>("Overview");
+export default function AdminConsole({ children, logoSrc, logoLightSrc }: { children: React.ReactNode; logoSrc: string; logoLightSrc: string }) {
+  const activeArea = adminAreaForPath(usePathname()) ?? "Overview";
   const [navOpen, setNavOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const navigation = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!navOpen) return;
+    const controls = Array.from(navigation.current?.querySelectorAll<HTMLElement>("a,button") ?? []);
+    controls[0]?.focus();
+    const onKey = (event:KeyboardEvent) => {
+      if (event.key === "Escape") { setNavOpen(false); menuButton.current?.focus(); }
+      if (event.key === "Tab" && controls.length) {
+        const first=controls[0],last=controls[controls.length-1];
+        if (event.shiftKey && document.activeElement===first) {event.preventDefault();last.focus();}
+        else if (!event.shiftKey && document.activeElement===last) {event.preventDefault();first.focus();}
+      }
+    };
+    window.addEventListener("keydown",onKey);
+    return () => window.removeEventListener("keydown",onKey);
+  },[navOpen]);
 
   return <div className={styles.appShell} data-admin-theme="boom">
-    <aside id="admin-navigation" className={`${styles.sidebar} ${navOpen ? styles.sidebarOpen : ""}`} aria-label="Operations navigation">
+    <aside ref={navigation} id="admin-navigation" className={`${styles.sidebar} ${navOpen ? styles.sidebarOpen : ""}`} aria-label="Operations navigation">
       <div className={styles.brand}><Image src={logoSrc} width={148} height={72} alt="BOOM Cleaning Services" priority /></div>
+      <button className={styles.drawerClose} aria-label="Close navigation" onClick={() => {setNavOpen(false);menuButton.current?.focus();}}>Close ×</button>
       <p className={styles.workspaceLabel}>Workspace</p>
-      <nav className={styles.navigation}>{adminAreas.map((area) => <button key={area} aria-current={activeArea === area ? "page" : undefined} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setActiveArea(area); setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span></button>)}</nav>
+      <nav className={styles.navigation}>{adminAreas.map((area) => <Link href={adminRoutes[area]} key={area} aria-current={activeArea === area ? "page" : undefined} className={`${styles.navItem} ${activeArea === area ? styles.active : ""}`} onClick={() => { setNavOpen(false); }}><Icon name={areaIcon(area)} /> <span>{area}</span></Link>)}</nav>
       <div className={styles.sideFooter}><Link className={styles.websiteLink} href="/" target="_blank">View website <Icon name="arrow" size={15} /></Link><div className={styles.user}><span className={styles.avatar}>B</span><span><strong>BOOM admin</strong><small>Abuja, Nigeria</small></span></div></div>
     </aside>
     {navOpen && <button className={styles.backdrop} aria-label="Close navigation" onClick={() => setNavOpen(false)} />}
-    <main className={styles.main}>
-      <header className={styles.topbar}><div className={styles.mobileBrand}><button aria-label={navOpen ? "Close navigation" : "Open navigation"} aria-expanded={navOpen} aria-controls="admin-navigation" className={styles.menuButton} onClick={() => setNavOpen(value => !value)}><span /><span /><span /></button><Image src={logoLightSrc} width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}>BOOM / {activeArea} <span className={styles.dot}>·</span> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><Link className={styles.newBooking} href="/quote" target="_blank" rel="noreferrer">+ New booking</Link><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
+    <main className={styles.main} inert={navOpen}>
+      <header className={styles.topbar}><div className={styles.mobileBrand}><button ref={menuButton} aria-label={navOpen ? "Close navigation" : "Open navigation"} aria-expanded={navOpen} aria-controls="admin-navigation" className={styles.menuButton} onClick={() => setNavOpen(value => !value)}><span /><span /><span /></button><Image src={logoLightSrc} width={36} height={36} alt="BOOM Cleaning Services" /></div><div className={styles.location}>BOOM / {activeArea} <span className={styles.dot}>·</span> {new Intl.DateTimeFormat("en-NG", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(new Date())}</div><div className={styles.topActions}><Link className={styles.newBooking} href="/quote" target="_blank" rel="noreferrer">Book for a customer</Link><form action="/api/admin/logout" method="post"><button className={styles.newBooking} type="submit" data-sign-out>Sign out</button></form></div></header>
       <section className={styles.intro}><div><h1>{activeArea}</h1><p>{descriptions[activeArea]}</p></div></section>
-      {activeArea === "Services" ? <PricingAdmin />
-        : activeArea === "Bookings" ? <BookingBreakdowns />
-        : activeArea === "Inbox" ? <LeadsPanel />
-        : activeArea === "Customers" ? <CustomersPanel />
-        : activeArea === "Payments" ? <PaymentsPanel />
-        : activeArea === "Analytics" ? <AnalyticsPanel />
-        : activeArea === "Integrations" ? <InstagramStatus status={instagramStatus} />
-        : <OperationsOverview />}
+      {children}
     </main>
   </div>;
 }

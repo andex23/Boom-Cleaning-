@@ -90,7 +90,7 @@ The verified private pre-cleanup backup is `output/backups/handoff-20261008T1549
 
 ## Dashboard and analytics
 
-The desktop sidebar has Overview, Inbox, Bookings, Customers, Payments, Analytics, Services and Integrations. Mobile navigation opens from the menu. Unimplemented placeholder sections are removed. Inactive Instagram is grey and does not produce a setup warning. Inbox contains actual customer enquiries, not a connected email mailbox.
+The desktop sidebar has Overview, Inbox, Bookings, Customers, Payments, Analytics, Services and Integrations. Every section has a direct URL under `/admin` (for example `/admin/inbox` and `/admin/services`); unknown sections return 404, and private pages require sign-in. Browser Back and refresh retain the selected section. Mobile navigation opens from the menu, supports Escape, traps focus while open and hides closed navigation from keyboard focus. The “Book for a customer” button opens the regular booking form for phone/message requests; payment still confirms the booking. Unimplemented placeholder sections are removed. Inactive Instagram is grey and does not produce a setup warning. Inbox contains actual customer enquiries, not a connected email mailbox. Inbox, bookings and payments have search/status filters; customers have contact search. Record summaries describe the records shown (up to 100 bookings/enquiries, 200 customers and 50 payment records), not uncapped business totals. Bookings include contact details, address and frozen line items. Services displays actual published bedroom/space packages and item prices; price saves use a single atomic transaction and leave existing quotes unchanged.
 
 Revenue counts PAID Flutterwave NGN payments by the date received in Africa/Lagos. Unpaid bookings and legacy Paystack tests do not count as revenue. Scheduled work excludes pending bookings. Database aggregation avoids the default row limit when computing totals.
 
@@ -104,7 +104,7 @@ The supplied hosted Bank Transfer checkout screenshot says: “Your activity is 
 
 ## Validation and acceptance
 
-Latest completed release validation before handoff preparation: **118 tests across 19 files**, lint, TypeScript and production build passed. Production cancellation-return routing was checked using a cancellation callback URL and restored BOOM-21's saved appointment and amount. This is callback-handler proof, not a fresh paid transaction.
+Latest completed release validation before handoff preparation: **121 tests across 20 files**, lint, TypeScript and production build passed. Production cancellation-return routing was checked using a cancellation callback URL and restored BOOM-21's saved appointment and amount. This is callback-handler proof, not a fresh paid transaction.
 
 Before the business accepts the handoff:
 
