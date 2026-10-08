@@ -131,4 +131,6 @@ For Next.js 16.3, read the relevant guides in `node_modules/next/dist/docs/` bef
 
 ### Final delivery record
 
-Previous production release: `dpl_BYer3JyDN4GyCvs88oN6X1CgC1So`. Dashboard cleanup and analytics release: validation passed 118 tests, lint and TypeScript; database rollback checks proved only verified live payments count as revenue, pending payments are separate, and visit/session totals deduplicate correctly. Final production deployment and rendered proof are recorded after publishing.
+Production source commit: `3f3a939` on `codex/boom-booking-platform`, pushed to GitHub. Vercel deployment `dpl_AN4DANzLaG4DhmMRtYvG3s3cxXXX` is Ready and aliased to https://boomcleaning.site. All 121 tests, lint and TypeScript passed; the production deployment compiled and typechecked successfully.
+
+Rendered canonical checks on 8 October 2026 covered all eight admin routes at desktop 1440×900 and mobile 375×812. Each section loaded its own content and URL with no horizontal page overflow. Browser Back and a direct Services refresh retained the section. Mobile navigation closed after every route selection and on Escape. No browser console errors were recorded. Screenshots are saved privately under `output/admin-pages/`. The visible dashboard has zero bookings/payments/customer/enquiry records after cleanup and one genuine verification visit, not synthetic traffic. Published catalogue editing was checked through database rollback tests; no production prices were changed. The user’s dashboard tab was refreshed to the new release.
