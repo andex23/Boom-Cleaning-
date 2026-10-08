@@ -20,7 +20,7 @@ export function RevenueChart() {
     let active=true;
     void adminFetch(`/api/admin/revenue?unit=${unit}&date=${date}`).then(async response => {
       if(!response.ok) throw new Error("revenue");
-      const body=await response.json();if(active) setResult({key:`${unit}:${date}`,data:body});
+      const body=await response.json();if(active) {setFailure(null);setResult({key:`${unit}:${date}`,data:body});}
     }).catch(reason => {if(active) setFailure({key:`${unit}:${date}`,message:adminErrorMessage(reason,"Unable to load this period. Try another period or refresh.")});});
     return () => {active=false;};
   },[unit,date]);
