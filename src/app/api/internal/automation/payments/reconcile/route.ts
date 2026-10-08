@@ -9,6 +9,8 @@ export async function GET(request: Request) {
   const supplied = request.headers.get("authorization")?.replace(/^Bearer /i, "");
   if (!secret || !supplied || !timingSafeEqual(createHash("sha256").update(secret).digest(), createHash("sha256").update(supplied).digest())) return new Response(null, { status: 401 });
   const db = createServiceRoleClient();
+  const retention = await db.from("website_visits").delete().lt("visited_at",new Date(Date.now()-90*86400000).toISOString());
+  if (retention.error) console.error("Analytics retention failed");
   const { data, error } = await db.from("payments").select("provider_reference").in("provider", ["flutterwave", "paystack_test"]).eq("status", "PENDING").gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()).order("updated_at").limit(10);
   if (error) return new Response(null, { status: 503 });
   let verified = 0;

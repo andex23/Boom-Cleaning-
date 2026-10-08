@@ -1,10 +1,10 @@
 -- Selective production cleanup. REVIEW ONLY by default: the final statement is ROLLBACK.
--- Obtain owner confirmation of the exact booking-number list before changing it to COMMIT.
+-- User confirmed all 16 current bookings are tests on 2026-10-08. Backup retained privately.
 -- Keep a verified private backup first. Never run the development seed on production.
 BEGIN;
 LOCK TABLE public.bookings, public.payments IN SHARE ROW EXCLUSIVE MODE;
 CREATE TEMP TABLE cleanup_requested (booking_number bigint PRIMARY KEY) ON COMMIT DROP;
-INSERT INTO cleanup_requested VALUES (12),(14),(15),(16),(17),(21);
+INSERT INTO cleanup_requested VALUES (5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(21),(22),(23);
 CREATE TEMP TABLE cleanup_bookings ON COMMIT DROP AS
   SELECT b.id,b.booking_number,b.quote_id,b.lead_id,b.customer_id
   FROM public.bookings b JOIN cleanup_requested r USING(booking_number);

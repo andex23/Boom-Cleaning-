@@ -55,31 +55,21 @@ export function OperationsOverview({ children }: { children?: React.ReactNode })
   const peak = Math.max(...data.weeklyRevenue.map((bar) => bar.value), 1);
 
   return <>
-    {children}
     <section className={styles.kpiGrid} aria-label="Daily performance">{data.kpis.map((item) => <article key={item.label} className={styles.kpi}>
       <div className={styles.kpiHead}><span>{item.label}</span></div><strong>{item.value}</strong><p>{item.note}</p>
     </article>)}</section>
 
     <section className={styles.contentGrid}>
       <article className={`${styles.card} ${styles.revenueCard}`}>
-        <div className={styles.cardHeading}><div><p className={styles.eyebrow}>THIS WEEK</p><h2>Revenue pulse</h2></div></div>
-        <div className={styles.chartLegend}><strong>{formatNaira(data.weeklyRevenueTotal)}</strong><span>{data.weeklyRevenueTotal ? "Booked so far this week" : "No bookings this week yet"}</span></div>
+        <div className={styles.cardHeading}><div><p className={styles.eyebrow}>THIS WEEK</p><h2>Payments received</h2></div></div>
+        <div className={styles.chartLegend}><strong>{formatNaira(data.weeklyRevenueTotal)}</strong><span>{data.weeklyRevenueTotal ? "Verified Flutterwave payments" : "No verified payments this week"}</span></div>
         <div className={styles.chart} aria-label="Revenue by day">{data.weeklyRevenue.map((bar) => <div key={bar.day} className={styles.chartColumn}>
           <span className={bar.value > 0 ? styles.chartTip : styles.hiddenTip}>{formatNaira(bar.value)}</span>
-          <i style={{ height: `${Math.max(4, (bar.value / peak) * 100)}%` }} className={bar.date === data.today ? styles.currentBar : ""} />
+          <i style={{ height: `${(bar.value / peak) * 100}%` }} className={bar.date === data.today ? styles.currentBar : ""} />
           <small>{bar.day}</small>
         </div>)}</div>
       </article>
 
-      <article className={`${styles.card} ${styles.attentionCard}`}>
-        <div className={styles.cardHeading}><div><p className={styles.eyebrow}>DO NEXT</p><h2>Needs attention {data.attention.length ? <b>{data.attention.length}</b> : null}</h2></div></div>
-        <div className={styles.attentionList}>{data.attention.length
-          ? data.attention.map((item) => <div className={styles.attentionRow} key={item.id}>
-              <span className={styles.attentionIcon}>{item.kind === "Pricing" ? "₦" : item.kind === "Confirm" ? "✓" : "✦"}</span>
-              <div><strong>{item.title}</strong><small>{item.detail}</small></div>
-            </div>)
-          : <p className={panel.muted}>Nothing needs attention right now.</p>}</div>
-      </article>
     </section>
 
     <section className={styles.lowerGrid}>
@@ -118,5 +108,6 @@ export function OperationsOverview({ children }: { children?: React.ReactNode })
           : <p className={panel.muted}>No enquiries yet.</p>}</div>
       </article>
     </section>
+    {children}
   </>;
 }

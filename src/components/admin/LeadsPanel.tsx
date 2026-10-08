@@ -32,7 +32,7 @@ export function LeadsPanel() {
         if (!response.ok) throw new Error("load");
         if (!cancelled) setLeads(await response.json() as LeadRecord[]);
       } catch (loadFailure) {
-        if (!cancelled) setError(adminErrorMessage(loadFailure, "We couldn’t load your leads."));
+        if (!cancelled) setError(adminErrorMessage(loadFailure, "We couldn’t load your inbox."));
       }
     })();
     return () => { cancelled = true; };
@@ -55,19 +55,20 @@ export function LeadsPanel() {
   };
 
   if (error) return <AdminError message={error} />;
-  if (!leads) return <article className={styles.panel}><p className={styles.muted}>Loading leads…</p></article>;
+  if (!leads) return <article className={styles.panel}><p className={styles.muted}>Loading enquiries…</p></article>;
 
   return <article className={styles.panel}>
     <header className={styles.head}>
-      <div><p className={styles.eyebrow}>LEADS</p><h2>People who asked about BOOM</h2>
-      <p className={styles.muted}>Every enquiry, however it arrived. Change the stage as you work through them.</p></div>
+      <div><p className={styles.eyebrow}>INBOX</p><h2>Customer enquiries</h2>
+      <p className={styles.muted}>Review contact details and keep track of each enquiry.</p></div>
     </header>
 
-    {leads.length === 0 ? <p className={styles.muted}>No enquiries yet. Website bookings and Instagram messages appear here automatically.</p> : <ul className={own.list}>
+    {leads.length === 0 ? <p className={styles.muted}>No enquiries yet. Website enquiries will appear here when customers start booking.</p> : <ul className={own.list}>
       {leads.map((lead) => <li key={lead.id} className={own.row}>
         <div className={own.who}>
           <strong>{lead.customer ?? "Unnamed"}</strong>
           <small>{lead.service ?? "No service chosen"}</small>
+          {lead.notes ? <small>{lead.notes}</small> : null}
         </div>
         <div className={own.contact}>
           {lead.phone ? <a href={`tel:${lead.phone}`}>{lead.phone}</a> : <span className={own.dim}>No phone</span>}

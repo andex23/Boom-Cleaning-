@@ -48,7 +48,7 @@ export function appointmentDate(value: string) {
     day: new Intl.DateTimeFormat("en-GB", { ...options, day: "numeric" }).format(date),
     month: new Intl.DateTimeFormat("en-GB", { ...options, month: "short", year: "numeric" }).format(date),
     weekday: new Intl.DateTimeFormat("en-GB", { ...options, weekday: "long" }).format(date),
-    time: new Intl.DateTimeFormat("en-GB", { ...options, hour: "numeric", minute: "2-digit", hour12: true }).format(date),
+    time: new Intl.DateTimeFormat("en-GB", { ...options, hour: "numeric", minute: "2-digit", hourCycle: "h12" }).format(date),
     full: new Intl.DateTimeFormat("en-GB", { ...options, dateStyle: "long" }).format(date),
   };
 }

@@ -36,7 +36,7 @@ export function PaymentsPanel() {
     } catch(e) { setError(adminErrorMessage(e, e instanceof Error ? e.message : "Payment action failed.")); }
     finally { setBusy(null); }
   }
-  return <section className={styles.panel}><h2>Booking payments</h2><p>Flutterwave live payments. Previous Paystack test payments are labelled separately. Verified full payment confirms a pending booking automatically.</p>{error && <p role="alert" className={styles.error}>{error}</p>}{rows.length === 0 && !error && <p>No booking payments yet.</p>}{rows.map(row => {
+  return <section className={styles.panel}><h2>Booking payments</h2><p>Review payments received and unpaid checkouts.</p>{error && <p role="alert" className={styles.error}>{error}</p>}{rows.length === 0 && !error && <p>No booking payments yet.</p>}{rows.map(row => {
     const customer = Array.isArray(row.customers) ? row.customers[0] : row.customers;
     const quote = Array.isArray(row.quotes) ? row.quotes[0] : row.quotes;
     const paid = row.payments.some(p => p.status === "PAID");

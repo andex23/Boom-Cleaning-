@@ -89,7 +89,7 @@ export async function loadCustomers(limit = 100): Promise<CustomerRecord[]> {
 
   return ((customers.data ?? []) as { id: string; full_name: string | null; phone: string | null; email: string | null; location: string | null; created_at: string }[]).map((customer) => {
     const theirs = bookingRows.filter((row) => row.customer_id === customer.id);
-    const billable = theirs.filter((row) => ["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED"].includes(row.status));
+    const billable = theirs.filter((row) => ["CONFIRMED", "IN_PROGRESS", "COMPLETED"].includes(row.status));
     const last = theirs.map((row) => row.scheduled_start_at).sort().at(-1) ?? null;
     return {
       id: customer.id,

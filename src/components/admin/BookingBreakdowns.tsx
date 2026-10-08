@@ -19,7 +19,7 @@ const ACTION_LABELS: Record<string, string> = {
   CANCELLED: "Cancel", NO_SHOW: "No show",
 };
 const STATUS_LABELS: Record<string, string> = {
-  PENDING: "Awaiting confirmation", CONFIRMED: "Confirmed", IN_PROGRESS: "In progress",
+  PENDING: "Awaiting payment", CONFIRMED: "Confirmed", IN_PROGRESS: "In progress",
   COMPLETED: "Completed", CANCELLED: "Cancelled", NO_SHOW: "No show",
 };
 

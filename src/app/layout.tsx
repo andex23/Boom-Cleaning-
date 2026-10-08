@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { VisitTracker } from "@/components/analytics/VisitTracker";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { resolveLogoSrc } from "@/components/brand/BrandLogo";
@@ -27,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
+        <Suspense fallback={null}><VisitTracker /></Suspense>
         <SiteBootLoader logoSrc={resolveLogoSrc("onLight")} />
         {children}
       </body>
