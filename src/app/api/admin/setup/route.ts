@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { NextResponse } from "next/server";
 import { isSameOriginRequest,isAdminLoginRateLimited,ADMIN_SESSION_COOKIE,ADMIN_SESSION_COOKIE_OPTIONS } from "@/lib/admin-auth";
 import { hashOwnerPassword } from "@/lib/admin-password";
@@ -16,13 +17,15 @@ export async function POST(request:Request) {
   while(true) {const {done,value}=await reader.read();if(done) break;bytes+=value.length;if(bytes>8192) {await reader.cancel();return new NextResponse("Too large",{status:413});}chunks.push(value);}
   const form=new URLSearchParams(Buffer.concat(chunks).toString("utf8"));
   const token=form?.get("token"),password=form?.get("password"),confirm=form?.get("confirm");
+  const email=z.string().trim().toLowerCase().max(254).pipe(z.email()).safeParse(form.get("email"));
   if(typeof token!=="string" || !/^[a-f0-9]{64}$/.test(token)) return new NextResponse("Invalid setup link",{status:400});
   const back=(error:string)=>NextResponse.redirect(new URL(`/admin/setup?token=${token}&error=${error}`,request.url),303);
-  if(typeof password!=="string" || password.length<12 || password.length>128 || password!==confirm) return back("password");
+  if(!email.success) return back("email");
+  if(typeof password!=="string" || password.length<8 || password.length>128 || password!==confirm) return back("password");
   try {
     if(!await ownerSetupAvailable(token)) return back("invalid");
     const hash=await hashOwnerPassword(password);
-    const {data,error}=await createServiceRoleClient().rpc("claim_admin_owner",{token_value:setupTokenHash(token),password_value:hash});
+    const {data,error}=await createServiceRoleClient().rpc("claim_admin_owner",{token_value:setupTokenHash(token),password_value:hash,email_value:email.data});
     if(error || data!==true) return back("invalid");
     const response=NextResponse.redirect(new URL("/admin/login?created=1",request.url),303);
     response.cookies.set(ADMIN_SESSION_COOKIE,"",{...ADMIN_SESSION_COOKIE_OPTIONS,maxAge:0});
