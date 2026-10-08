@@ -11,10 +11,10 @@ import { SiteFooter } from "@/components/public/SiteFooter";
 import styles from "./home.module.css";
 
 const promises: [IconName, string, string][] = [
-  ["shieldCheck", "Trusted professionals", "Vetted, trained and uniformed cleaners."],
-  ["calendar", "Easy booking", "Choose your clean and your time online."],
+  ["shieldCheck", "Trusted professionals", "Vetted, trained cleaners."],
+  ["calendar", "Easy booking", "Choose your clean and time online."],
   ["sparkle", "Quality guarantee", "A final check before the team leaves."],
-  ["headset", "Support", "Reach us on the phone, WhatsApp or Instagram."],
+  ["headset", "Support", "Phone, WhatsApp or Instagram."],
 ];
 
 const reasons: [IconName, string, string][] = [
@@ -46,8 +46,8 @@ export default async function Home() {
         <p className={styles.pill}><Icon name="sparkle" /> Professional cleaning services</p>
         <h1 id="hero-heading">Spotless spaces,<br /><em>happier faces</em></h1>
         <p className={styles.heroLead}>
-          Professional cleaning for your home or workplace. Choose your service, see the
-          price and book a time — no endless back-and-forth.
+          Professional cleaning for homes and workplaces in Abuja. Choose your service,
+          see your price and book in minutes.
         </p>
         <div className={styles.heroActions}>
           <Link className={styles.primary} href="/quote"><Icon name="calendar" /> Book a cleaning</Link>
@@ -64,11 +64,11 @@ export default async function Home() {
         <Photo
           data-reveal="photo"
           className={styles.heroImage}
-          src="/images/interiors/office.webp"
-          alt="A bright, freshly cleaned interior with a city view"
+          src="/images/interiors/hero-living-room.webp"
+          alt="A bright, freshly prepared living room with navy accents and a city view"
           sizes="(max-width: 900px) 100vw, 52vw"
           fill
-          position="50% 50%"
+          position="48% 54%"
           priority
         />
         <div className={styles.heroCard}>
@@ -93,7 +93,7 @@ export default async function Home() {
     <section className={styles.why} aria-labelledby="why-heading">
       <div className={styles.whyLead}>
         <p className={styles.pill}>Why choose us</p>
-        <h2 data-reveal="heading" id="why-heading">We go beyond<br /><em>just cleaning</em></h2>
+        <h2 id="why-heading">We go beyond<br /><em>just cleaning</em></h2>
         <p>
           BOOM brings trained people, the right equipment and a properly scoped service to
           your door. You choose what you need and when you need it; we handle the rest.
@@ -101,7 +101,7 @@ export default async function Home() {
         <Link className={styles.textLink} href="/about">Meet the people behind BOOM <Arrow /></Link>
       </div>
 
-      <ul className={styles.reasons} data-reveal-stagger>
+      <ul className={styles.reasons}>
         {reasons.map(([icon, title, body]) => <li key={title}>
           <span><Icon name={icon} /></span>
           <div><strong>{title}</strong><small>{body}</small></div>
@@ -109,8 +109,8 @@ export default async function Home() {
       </ul>
 
       <aside className={styles.bookCard}>
-        <h3>Book your cleaning</h3>
-        <p>Tell us about your space and see your price before you commit.</p>
+        <h3>Book Your Cleaning</h3>
+        <p>It only takes 60 seconds</p>
         <Link className={styles.primary} href="/quote"><Icon name="calendar" /> Book now</Link>
         <a className={styles.bookCall} href="tel:+2349029799205"><Icon name="phone" /> Call: 0902 979 9205</a>
       </aside>

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createBookingRpcRequest, isPublicBookingRateLimited, isPublicQuoteRateLimited, resetPublicBookingRateLimitForTests } from "../src/lib/public-booking";
-import { publicBookingPayloadSchema } from "../src/lib/validation/public-booking";
+import { publicBookingPayloadSchema, publicCheckoutPayloadSchema } from "../src/lib/validation/public-booking";
 
 const validBooking = {
   serviceSlug: "deep-cleaning",
@@ -19,6 +19,12 @@ const validBooking = {
 afterEach(resetPublicBookingRateLimitForTests);
 
 describe("public booking validation", () => {
+  it("requires explicit terms acceptance for checkout", () => {
+    expect(publicCheckoutPayloadSchema.safeParse(validBooking).success).toBe(false);
+    expect(publicCheckoutPayloadSchema.safeParse({ ...validBooking, termsAccepted: false }).success).toBe(false);
+    expect(publicCheckoutPayloadSchema.safeParse({ ...validBooking, termsAccepted: "true" }).success).toBe(false);
+    expect(publicCheckoutPayloadSchema.safeParse({ ...validBooking, termsAccepted: true }).success).toBe(true);
+  });
   it("maps the public contract to the database RPC request in Africa/Lagos", () => {
     const payload = publicBookingPayloadSchema.parse(validBooking);
     const request = createBookingRpcRequest(payload, "booking-20260820-abcdef");

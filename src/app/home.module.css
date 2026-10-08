@@ -20,7 +20,7 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  padding: 8px 15px;
+  padding: 6px 13px;
   border-radius: var(--radius-pill);
   background: var(--brand-wash);
   color: var(--brand);
@@ -35,7 +35,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 52px;
+  min-height: 48px;
   padding: 0 26px;
   border-radius: var(--radius-sm);
   font-size: 15px;
@@ -72,13 +72,13 @@
   /* The photograph runs the full height of the hero and touches the header, as in the
      mockup, so the vertical padding belongs to the copy rather than the section. */
   align-items: stretch;
-  gap: clamp(32px, 5vw, 72px);
+  gap: clamp(28px, 4vw, 56px);
   padding: 0 0 0 var(--gutter);
   background: linear-gradient(160deg, #ffffff 0%, var(--surface-tint) 60%, #eaf1ff 100%);
 }
-.heroCopy { align-self: center; max-width: 620px; padding: clamp(56px, 7vw, 104px) 0; }
+.heroCopy { align-self: start; max-width: 620px; padding: 24px 0; }
 .hero h1 {
-  margin: 22px 0 20px;
+  margin: 14px 0 12px;
   font-size: clamp(34px, 5.6vw, 46px);
   line-height: 1.06;
 }
@@ -87,14 +87,14 @@
   margin: 0;
   color: var(--ink-body);
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.6;
 }
-.heroActions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+.heroActions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; }
 .heroTrust {
   display: flex;
   align-items: center;
   gap: 9px;
-  margin: 28px 0 0;
+  margin: 18px 0 0;
   color: var(--ink-muted);
   font-size: 13px;
   font-weight: 700;
@@ -105,7 +105,7 @@
 .heroImage {
   position: relative;
   height: 100%;
-  min-height: clamp(420px, 52vw, 640px);
+  min-height: clamp(400px, 39vw, 520px);
   overflow: clip;
   border-radius: 0 0 0 var(--radius-lg);
 }
@@ -138,14 +138,14 @@
 .heroCard small { display: block; margin-top: 3px; color: var(--ink-muted); font-size: 13px; line-height: 1.5; }
 
 /* --- Promise band ------------------------------------------------------------- */
-.promises { padding: 0 var(--gutter); margin-top: clamp(-40px, -4vw, -24px); position: relative; z-index: 2; }
+.promises { padding: 0 var(--gutter); margin-top: -70px; position: relative; z-index: 2; }
 .promises ul {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(18px, 2.6vw, 40px);
+  gap: clamp(18px, 2vw, 30px);
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: clamp(32px, 4vw, 46px) clamp(28px, 3.4vw, 52px);
+  padding: 14px clamp(24px, 3vw, 42px);
   list-style: none;
   border-radius: var(--radius-lg);
   background: var(--brand-deep);
@@ -162,7 +162,7 @@
   background: rgba(255, 255, 255, .14);
   font-size: 20px;
 }
-.promises strong { display: block; font-size: 15px; }
+.promises strong { display: block; font-size: 13px; }
 .promises small { display: block; margin-top: 4px; color: #c7d7f5; font-size: 13px; line-height: 1.55; }
 
 /* --- Why choose us ------------------------------------------------------------ */
@@ -172,9 +172,9 @@
   gap: clamp(28px, 4vw, 64px);
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: var(--section-y) var(--gutter);
+  padding: clamp(10px, 1.5vw, 20px) var(--gutter) var(--section-y);
 }
-.whyLead h2 { margin: 20px 0 18px; font-size: clamp(26px, 3.4vw, 46px); line-height: 1.1; }
+.whyLead h2 { margin: 18px 0 16px; font-size: clamp(26px, 3vw, 34px); line-height: 1.1; }
 .whyLead > p { margin: 0 0 22px; color: var(--ink-body); font-size: 15px; line-height: 1.75; }
 
 .reasons {
@@ -189,7 +189,7 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 22px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--line);
 }
 .reasons li:nth-last-child(-n+2) { border-bottom: 0; }
@@ -214,13 +214,15 @@
   align-self: start;
   display: grid;
   gap: 14px;
-  padding: clamp(26px, 3vw, 36px);
-  border-radius: var(--radius-lg);
-  background: var(--brand-wash);
+  padding: clamp(24px, 3vw, 34px);
+  border: 1px solid #dce8fb;
+  border-radius: var(--radius);
+  background: #edf4ff;
   text-align: center;
 }
-.bookCard h3 { margin: 0; font-size: clamp(20px, 2.4vw, 26px); }
-.bookCard > p { margin: -4px 0 6px; color: var(--ink-body); font-size: 13px; line-height: 1.6; }
+.bookCard h3 { margin: 0; font-weight: 400; font-size: clamp(20px, 2.4vw, 26px); }
+.bookCard > p { margin: -4px 0 6px; color: var(--ink-body); font-size: 13px; line-height: 1.5; }
+.bookCard .primary { width: 100%; border-radius: var(--radius-sm); }
 .bookCall {
   display: inline-flex;
   align-items: center;
@@ -303,11 +305,14 @@
 .finalCta .heroActions { justify-content: center; }
 
 /* --- Responsive ---------------------------------------------------------------- */
-@media (max-width: 1080px) {
+/* These used to fire at 1080px, which is the width the design was drawn at — the band
+   dropped to two columns and the why-row to two exactly when it should still have looked
+   like the mockup. The four-up band holds until there is genuinely no room for it. */
+@media (max-width: 1000px) {
   .why { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .bookCard { grid-column: 1 / -1; }
-  .promises ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
 
 @media (max-width: 900px) {
   .hero {
@@ -320,6 +325,10 @@
   .process { grid-template-columns: 1fr; }
   .sectionIntro { grid-template-columns: 1fr; align-items: start; }
   .sectionIntro p:not(.pill) { margin-bottom: 12px; }
+}
+
+@media (max-width: 880px) {
+  .promises ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 700px) {

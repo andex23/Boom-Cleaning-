@@ -5,20 +5,16 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import styles from "./SiteNav.module.css";
 import { Arrow } from "@/components/brand/Arrow";
+import { Icon } from "@/components/brand/Icon";
 
 const subscribeNever = () => () => {};
 
-/**
- * The mockup's fifth item is "Contact", which is not a page BOOM has — the ways to reach
- * them are the phone number, WhatsApp and Instagram, all of which sit in the footer. FAQs
- * takes the slot instead, since it answers what a contact page usually gets asked.
- */
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About us" },
-  { href: "/faq", label: "FAQs" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 const MOBILE_LINKS = LINKS;
@@ -89,6 +85,9 @@ export function SiteNav() {
       <>
         {open ? <button className={styles.scrim} aria-label="Close menu" onClick={() => setOpen(false)} /> : null}
         <div id="site-menu" ref={panelRef} className={open ? styles.panelOpen : styles.panel} hidden={!open} aria-label="Site menu">
+          <button className={styles.panelClose} type="button" aria-label="Close menu" onClick={() => setOpen(false)}>
+            <Icon name="x" />
+          </button>
           <nav aria-label="Primary, mobile">
             {MOBILE_LINKS.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>

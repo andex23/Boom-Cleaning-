@@ -11,6 +11,7 @@ import { PricingAdmin } from "./PricingAdmin";
 import { OperationsOverview } from "./OperationsOverview";
 import { LeadsPanel } from "./LeadsPanel";
 import { CustomersPanel } from "./CustomersPanel";
+import { PaymentsPanel } from "./PaymentsPanel";
 import { ComingSoonPanel } from "./ComingSoonPanel";
 import type { InstagramConnectionStatus } from "@/features/instagram/config";
 import { InstagramStatus } from "./InstagramStatus";
@@ -73,6 +74,7 @@ export default function AdminConsole({ instagramStatus, logoSrc, logoLightSrc }:
         : activeArea === "Bookings" ? <BookingBreakdowns />
         : activeArea === "Leads" ? <LeadsPanel />
         : activeArea === "Customers" ? <CustomersPanel />
+        : activeArea === "Payments" ? <PaymentsPanel />
         : activeArea === "Overview" ? <OperationsOverview><InstagramStatus status={instagramStatus} /></OperationsOverview>
         : <ComingSoonPanel area={activeArea} />}
     </main>

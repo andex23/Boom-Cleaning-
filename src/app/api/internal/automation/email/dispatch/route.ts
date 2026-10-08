@@ -1,3 +1,4 @@
+import { processPaymentConfirmationEmails } from "@/features/email/payment-confirmation-worker";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { processBookingConfirmationEmails } from "@/features/email/booking-confirmation-worker";
 
@@ -16,5 +17,8 @@ function hasWorkerAuthorization(request: Request) {
 export async function POST(request: Request) {
   if (!hasWorkerAuthorization(request)) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const result = await processBookingConfirmationEmails();
-  return Response.json(result, { headers: { "Cache-Control": "no-store" } });
+  const receipts = await processPaymentConfirmationEmails();
+  return Response.json({ ...result, receipts }, { headers: { "Cache-Control": "no-store" } });
 }
+
+export const GET = POST;

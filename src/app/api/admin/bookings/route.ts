@@ -45,6 +45,7 @@ export async function PATCH(request: Request) {
     if (action === "status") {
       const parsed = bookingStatusSchema.safeParse(body);
       if (!parsed.success) return invalid(parsed.error);
+      if (parsed.data.status === "CONFIRMED") return NextResponse.json({ error: "Payment automatically confirms the booking." }, { status: 422, headers: noStore });
       await setBookingStatus(parsed.data);
     } else if (action === "reschedule") {
       const parsed = rescheduleSchema.safeParse(body);

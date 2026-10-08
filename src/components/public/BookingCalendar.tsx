@@ -114,7 +114,7 @@ export function BookingCalendar({ serviceSlug, selectedDate, selectedTime, onDat
         <small>{slot.available ? slot.label : slot.reason === "Booked" ? "Already booked" : slot.reason === "Closed" ? "Closed" : slot.reason === "Past" ? "Passed" : "Unavailable"}</small>
       </button>)}</div> : <p>{status === "loading" ? "Checking availability…" : "Pick an available date to see appointment times."}</p>}
 
-      <div className={styles.capacityNote}><span>i</span><p><strong>Live availability</strong>Times reflect our working hours and existing bookings. Your slot is reserved when the booking is created.</p></div>
+      <div className={styles.capacityNote}><span>i</span><p><strong>Live availability</strong>Times reflect our working hours and existing bookings. Your booking is confirmed after full payment is verified.</p></div>
     </div>
   </div>;
 }

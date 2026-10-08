@@ -14,16 +14,16 @@ const groups = [
   {
     label: "Booking and coverage",
     questions: [
-      ["Where does BOOM operate?", "BOOM serves homes, offices and newly completed spaces across Abuja. Choose your service area in the booking flow. A location outside the standard coverage can still be submitted, but the team will review it before confirming."],
-      ["How do I book a cleaning service?", "Choose a service, describe the property and rooms, select an available date and time, then add your contact details. You will see a quote or a clear review notice before the request is submitted."],
-      ["Can I request a preferred date and time?", "Yes. The booking flow shows the time slots currently available for the selected date. Your request is recorded with that slot so the BOOM team can confirm the visit."],
+      ["Where does BOOM operate?", "BOOM serves homes, offices and newly completed spaces across Abuja. Choose your service area in the booking flow. Bookings are available within the listed service areas."],
+      ["How do I book a cleaning service?", "Choose a service, describe the property and rooms, select an available date and time, then add your contact details. Review your final price, then pay securely through Flutterwave. Verified full payment confirms your booking automatically."],
+      ["Can I request a preferred date and time?", "Yes. The booking flow shows the time slots currently available for the selected date. Your booking is confirmed automatically once Flutterwave verifies full payment."],
     ],
   },
   {
     label: "Prices and quotes",
     questions: [
       ["Are the prices on the website real?", "Yes. Published bedroom tiers and per-space prices are read from the same BOOM price tables used to calculate a booking quote. The amount changes only when the scope, location or selected service changes."],
-      ["Why does a service sometimes say it needs review?", "Large compounds, unusual access, specialist areas or a space without a standard published price need a person to check the brief. BOOM records the request first and confirms the final amount after reviewing the scope."],
+      ["When is my booking confirmed?", "Your booking is confirmed automatically after Flutterwave verifies payment of the full published price."],
       ["How is post-construction cleaning priced?", "It is priced by the rooms and areas selected: bedrooms, living rooms, storeys, BQ rooms, penthouse and other rooms. Compound sweeping has a fixed starting price; washing a normal 500sqm compound is typically ₦70,000–₦100,000 and is confirmed from the scope."],
       ["How is fumigation priced?", "Fumigation has published prices from one to eight bedrooms. A one-room BQ is ₦30,000 and a two-room BQ is ₦50,000 when added to the property scope."],
     ],
@@ -65,7 +65,7 @@ export default function FaqPage() {
         <p>Send the property details and the question you need resolved. We will help you choose the right service before you book.</p>
         {/* Instagram leads: it is where most customers actually reach BOOM. */}
         <div className={faq.contactActions} data-reveal>
-          <a href="https://instagram.com/boomcleaningservices" target="_blank" rel="noreferrer">Message on Instagram <Arrow /></a>
+          <a href="https://www.instagram.com/boom_cleaning_services/" target="_blank" rel="noreferrer">Message on Instagram <Arrow /></a>
           <a className={faq.contactSecondary} href="https://wa.me/2349029799205" target="_blank" rel="noreferrer">Ask on WhatsApp <Arrow /></a>
         </div>
       </div>

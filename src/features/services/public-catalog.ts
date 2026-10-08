@@ -1,4 +1,5 @@
 import "server-only";
+import { serviceDescriptions } from "@/data/service-descriptions";
 
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { formatNaira } from "@/lib/format";
@@ -55,20 +56,27 @@ async function lowestTierPrices(client: ReturnType<typeof createServiceRoleClien
  */
 export async function listBookableServices(): Promise<PublicServiceView[]> {
   const client = createServiceRoleClient();
-  const [{ data, error }, tierPrices] = await Promise.all([
+  const [{ data, error }, tierPrices, itemResult] = await Promise.all([
     client
       .from("services")
       .select("id,slug,name,description,base_price,requires_review")
       .eq("is_active", true)
       .order("sort_order"),
     lowestTierPrices(client),
+    client.from("service_space_prices").select("service_id,unit_price").eq("is_active", true).gt("unit_price", 0),
   ]);
   if (error) throw new Error(error.message);
+  if (itemResult.error) throw new Error(itemResult.error.message);
+  const itemPrices = new Map<string, number>();
+  for (const item of itemResult.data) {
+    const price = Number(item.unit_price);
+    itemPrices.set(item.service_id, Math.min(itemPrices.get(item.service_id) ?? Infinity, price));
+  }
 
   return (data as { id: string; slug: string; name: string; description: string | null; base_price: number | string; requires_review: boolean }[]).map((row) => {
     const presentation = servicePresentation[row.slug] ?? fallbackPresentation;
     const basePrice = Number(row.base_price);
-    const published = tierPrices.get(row.id) ?? (basePrice > 0 ? basePrice : null);
+    const published = tierPrices.get(row.id) ?? (row.slug === "upholstery-cleaning" && basePrice === 0 ? itemPrices.get(row.id) ?? null : basePrice > 0 ? basePrice : null);
     const priceFrom = row.requires_review ? null : published;
     return {
       id: row.id,
@@ -79,7 +87,7 @@ export async function listBookableServices(): Promise<PublicServiceView[]> {
       // A service with no published price that still prices itself automatically charges
       // per room, so say that rather than implying someone has to get back to you.
       priceLabel: priceFrom !== null ? `From ${formatNaira(priceFrom)}` : row.requires_review ? "Quoted for you" : "Priced per room",
-      summary: row.description ?? presentation.summary,
+      summary: serviceDescriptions[row.slug] ?? row.description ?? presentation.summary,
       duration: presentation.duration,
       category: presentation.category,
       icon: presentation.icon,

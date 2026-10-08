@@ -25,6 +25,10 @@ export const publicBookingPayloadSchema = z.object({
   notes: z.string().trim().max(1000),
 });
 
+export const publicCheckoutPayloadSchema = publicBookingPayloadSchema.extend({
+  termsAccepted: z.literal(true, { error: "Please agree to the terms and conditions before payment." }),
+});
+
 export type PublicBookingPayload = z.infer<typeof publicBookingPayloadSchema>;
 
 export const publicBookingResponseSchema = z.object({
@@ -35,6 +39,7 @@ export const publicBookingResponseSchema = z.object({
     amount: money.nullable(),
     items: z.array(quoteItemSchema).max(60).default([]),
   }),
+  payment: z.object({ url: z.url().nullable(), reference: z.string().optional(), error: z.string().optional() }).optional(),
   email: z.object({ status: z.enum(["queued", "not_configured"]) }),
 });
 

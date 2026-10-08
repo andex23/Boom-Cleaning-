@@ -1,10 +1,13 @@
+import { processBookingConfirmationEmails } from "@/features/email/booking-confirmation-worker";
+import { calculateQuote } from "@/features/pricing/quote-service";
+import { requestPayment } from "@/features/payments/provider";
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isSameOriginRequest } from "@/lib/admin-auth";
 import { createBookingRpcRequest, isPublicBookingRateLimited, readBoundedJson } from "@/lib/public-booking";
 import { createServiceRoleClient } from "@/lib/supabase/service";
-import { publicBookingPayloadSchema, publicBookingResponseSchema } from "@/lib/validation/public-booking";
+import { publicCheckoutPayloadSchema, publicBookingResponseSchema } from "@/lib/validation/public-booking";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,7 +38,7 @@ export async function POST(request: Request) {
     return publicError(tooLarge ? "Request body is too large." : "Request body must be valid JSON.", tooLarge ? 413 : 400);
   }
 
-  const booking = publicBookingPayloadSchema.safeParse(body);
+  const booking = publicCheckoutPayloadSchema.safeParse(body);
   if (!booking.success) return NextResponse.json({ error: "Invalid booking request.", issues: z.flattenError(booking.error) }, { status: 422, headers: { "Cache-Control": "no-store" } });
 
   const suppliedKey = request.headers.get("idempotency-key");
@@ -53,6 +56,11 @@ export async function POST(request: Request) {
   // The service, property type, area and every amount are resolved and priced inside the
   // RPC, so nothing about the total can be influenced from here or from the browser.
   const serviceClient = createServiceRoleClient();
+
+  try {
+    const quote = await calculateQuote(serviceClient, booking.data);
+    if (quote.requiresReview || quote.total === null || quote.total <= 0) return publicError("This selection has no published checkout price. Choose a priced service and quantity.", 422);
+  } catch { return publicError("Unable to calculate the final price. Please try again.", 502); }
 
   // Slot times are configurable data, so an arbitrary time is rejected here rather than
   // being pinned by the payload schema.
@@ -81,8 +89,19 @@ export async function POST(request: Request) {
 
   const bookingReference = `BOOM-${result.data.bookingNumber}`;
   const emailStatus = process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim() ? "queued" : "not_configured";
+  let payment: { url: string | null; reference?: string; error?: string } = { url: null };
+  if (!result.data.requiresReview) {
+    try {
+      const checkout = await requestPayment(result.data.bookingNumber, new URL(request.url).origin);
+      payment = { url: checkout.provider_payload.authorization_url, reference: checkout.provider_reference };
+    } catch { payment = { url: null, error: "Your request is saved, but checkout could not start. Contact BOOM with your booking reference." }; }
+  }
+  if (payment.url) {
+    try { await processBookingConfirmationEmails(1, result.data.bookingId); } catch { console.error("Booking email remains queued for retry."); }
+  }
   return NextResponse.json(
     publicBookingResponseSchema.parse({
+      payment,
       booking: {
         id: bookingReference,
         createdAt: new Date().toISOString(),

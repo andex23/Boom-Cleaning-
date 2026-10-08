@@ -1,0 +1,2 @@
+.content{max-width:800px;margin:0 auto;padding:80px 24px;color:var(--ink-body);line-height:1.8}.content h1{font-family:Georgia,serif;font-size:46px;line-height:1.15;color:var(--ink)}.content h2{margin-top:32px;font-size:20px;color:var(--ink)}.content a{color:var(--brand);text-underline-offset:3px}
+@media(max-width:720px){.content{padding:48px 24px}.content h1{font-size:34px}}

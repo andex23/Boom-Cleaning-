@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import { SiteHeader } from "@/components/public/SiteHeader";
 import { formatNaira } from "@/lib/format";
+import { compoundWashLabel } from "@/features/pricing/compound-washing";
 import { listPublicPricing, type PublicPricingCard, type PublicSpacePrice } from "@/features/pricing/public-pricing";
 import shared from "../home.module.css";
 import pricing from "./pricing.module.css";
@@ -14,6 +15,7 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 const TIERED_SLUGS = [
+  "move-in-apartment-cleaning",
   "deep-cleaning",
   "deep-cleaning-upholstery",
   "deep-cleaning-fumigation",
@@ -22,7 +24,8 @@ const TIERED_SLUGS = [
 ];
 
 function priceForSpace(space: PublicSpacePrice) {
-  if (space.slug === "compound-wash") return `${formatNaira(70000)}–${formatNaira(100000)}`;
+  if (space.slug === "compound-pressure-wash") return space.priceTiers.map((tier) => `${compoundWashLabel(tier.quantity)}: ${formatNaira(tier.price)}`).join(" · ");
+  if (space.slug === "storey") return "First storey included; ₦50,000 per additional storey";
   return space.unitPrice === null ? "Scope required" : formatNaira(space.unitPrice);
 }
 
@@ -52,6 +55,7 @@ export default async function PricingPage() {
   const services = await listPublicPricing();
   const tiered = TIERED_SLUGS.map((slug) => services.find((service) => service.slug === slug)).filter((service): service is PublicPricingCard => Boolean(service));
   const postConstruction = services.find((service) => service.slug === "post-construction-cleaning");
+  const upholstery = services.find((service) => service.slug === "upholstery-cleaning");
 
   return <main className={shared.page}>
     <SiteHeader priority />
@@ -73,9 +77,22 @@ export default async function PricingPage() {
       <div className={pricing.cardGrid} data-reveal-stagger>{tiered.map((service) => <TierCard key={service.id} service={service} />)}</div>
     </section>
 
+    {upholstery ? <section className={pricing.construction} aria-labelledby="upholstery-heading">
+      <div className={pricing.constructionCopy}>
+        <p className={shared.pill}>Upholstery (chair cleaning)</p>
+        <h2 id="upholstery-heading">Choose the furniture you need cleaned.</h2>
+        <p>Prices are per item or full set. Choose a seven-seater set or its individual pieces, not both. Bed-frame cleaning does not include the mattress.</p>
+        <Link className={shared.primary} href="/quote?service=upholstery-cleaning">Price my furniture <Arrow direction="up-right" /></Link>
+      </div>
+      <div className={pricing.unitCard}>
+        <div className={pricing.unitCardHead}><span>Furniture</span><span>Price</span></div>
+        <ul>{upholstery.spacePrices.map((space) => <li key={space.slug}><span><strong>{space.name}</strong></span><b>{priceForSpace(space)}</b></li>)}</ul>
+      </div>
+    </section> : null}
+
     {postConstruction ? <section className={pricing.construction} aria-labelledby="construction-heading">
       <div className={pricing.constructionCopy}>
-        <p className={shared.pill}>Post-construction cleaning</p>
+        <p className={shared.pill}>Post-construction & post-renovation cleaning</p>
         <h2 data-reveal="heading" id="construction-heading">Priced by the spaces in the building.</h2>
         <p>Tell us how many bedrooms, living rooms, storeys and extra areas are in the completed property. Your quote adds only the spaces you select.</p>
         <Link className={shared.primary} href="/quote?service=post-construction-cleaning">Build this quote <Arrow direction="up-right" /></Link>
@@ -83,8 +100,8 @@ export default async function PricingPage() {
       <div className={pricing.unitCard} data-reveal>
         <div className={pricing.unitCardHead}><span>Space</span><span>Price</span></div>
         <ul>{postConstruction.spacePrices.map((space) => <li key={space.slug}>
-          <span><strong>{space.name}</strong><small>{space.slug === "compound-wash" ? "Normal 500sqm compound; final amount confirmed by scope." : space.description}</small></span>
-          <b>{priceForSpace(space)}{space.slug !== "compound-wash" ? " each" : ""}</b>
+          <span><strong>{space.name}</strong><small>{space.description}</small></span>
+          <b>{priceForSpace(space)}{space.slug !== "compound-pressure-wash" && space.slug !== "storey" ? " each" : ""}</b>
         </li>)}</ul>
       </div>
     </section> : null}

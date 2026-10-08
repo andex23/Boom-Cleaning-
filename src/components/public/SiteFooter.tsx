@@ -8,7 +8,13 @@ const QUICK_LINKS = [
   ["/services", "Services"],
   ["/pricing", "Pricing"],
   ["/about", "About us"],
-  ["/faq", "FAQs"],
+] as const;
+
+const SERVICE_LINKS = [
+  ["/quote?service=deep-cleaning", "Deep cleaning"],
+  ["/quote?service=post-construction-cleaning", "Post-construction"],
+  ["/quote?service=fumigation", "Fumigation"],
+  ["/quote?service=office-cleaning", "Office cleaning"],
 ] as const;
 
 /**
@@ -21,7 +27,7 @@ const QUICK_LINKS = [
  */
 export function SiteFooter() {
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} id="contact">
       <div>
         <BrandLogo size={72} tone="onDark" />
         <p className={styles.footerTagline}>
@@ -29,7 +35,7 @@ export function SiteFooter() {
         </p>
         <p className={styles.footerPlace}>Abuja, FCT &middot; Nigeria</p>
         <div className={styles.socials}>
-          <a href="https://instagram.com/boomcleaningservices" target="_blank" rel="noreferrer" aria-label="BOOM on Instagram"><Icon name="instagram" /></a>
+          <a href="https://www.instagram.com/boom_cleaning_services/" target="_blank" rel="noreferrer" aria-label="BOOM on Instagram"><Icon name="instagram" /></a>
           <a href="https://wa.me/2349029799205" target="_blank" rel="noreferrer" aria-label="BOOM on WhatsApp"><Icon name="whatsapp" /></a>
           <a href="tel:+2349029799205" aria-label="Call BOOM"><Icon name="phone" /></a>
         </div>
@@ -44,18 +50,37 @@ export function SiteFooter() {
         </div>
         <div>
           <h2>Services</h2>
-          <Link href="/quote?service=deep-cleaning">Deep cleaning<Icon name="chevronRight" /></Link>
-          <Link href="/quote?service=post-construction-cleaning">Post-construction<Icon name="chevronRight" /></Link>
-          <Link href="/quote?service=fumigation">Fumigation<Icon name="chevronRight" /></Link>
-          <Link href="/quote?service=office-cleaning">Office cleaning<Icon name="chevronRight" /></Link>
+          {SERVICE_LINKS.map(([href, label]) => (
+            <Link key={href} href={href}>{label}<Icon name="chevronRight" /></Link>
+          ))}
         </div>
         <div>
-          <h2>Talk to us</h2>
+          <h2>Contact</h2>
           <a href="tel:+2349029799205">0902 979 9205<Icon name="chevronRight" /></a>
           <a href="https://wa.me/2349029799205" target="_blank" rel="noreferrer">WhatsApp<Icon name="chevronRight" /></a>
-          <a href="https://instagram.com/boomcleaningservices" target="_blank" rel="noreferrer">Instagram<Icon name="chevronRight" /></a>
+          <a href="https://www.instagram.com/boom_cleaning_services/" target="_blank" rel="noreferrer">Instagram<Icon name="chevronRight" /></a>
+          <span className={styles.footerHours}>Abuja, FCT &middot; Nigeria</span>
           <span className={styles.footerHours}>Mon&ndash;Sat, 8am&ndash;6pm</span>
         </div>
+      </nav>
+
+      <nav className={styles.footerAccordions} aria-label="Footer, mobile">
+        <details className={styles.footerDisclosure} open>
+          <summary>Quick links <Icon name="chevronRight" /></summary>
+          <div>
+            {QUICK_LINKS.map(([href, label]) => <Link key={href} href={href}>{label}<Icon name="chevronRight" /></Link>)}
+          </div>
+        </details>
+        <details className={styles.footerDisclosure}>
+          <summary>Contact <Icon name="chevronRight" /></summary>
+          <div className={styles.footerContact}>
+            <a href="tel:+2349029799205"><span><Icon name="phone" /> Call</span><strong>0902 979 9205</strong></a>
+            <a href="https://wa.me/2349029799205" target="_blank" rel="noreferrer"><span><Icon name="whatsapp" /> WhatsApp</span><Icon name="chevronRight" /></a>
+            <a href="https://www.instagram.com/boom_cleaning_services/" target="_blank" rel="noreferrer"><span><Icon name="instagram" /> Instagram</span><Icon name="chevronRight" /></a>
+            <p><span>Location</span><strong>Abuja, FCT &middot; Nigeria</strong></p>
+            <p><span>Hours</span><strong>Mon&ndash;Sat, 8am&ndash;6pm</strong></p>
+          </div>
+        </details>
       </nav>
 
       <div className={styles.footerActions}>

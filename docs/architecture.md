@@ -2,9 +2,9 @@
 
 BOOM is one backend-led business system. Public web, staff tools and future messaging channels are adapters around the same PostgreSQL data and server-side services.
 
-## Current demonstration boundary
+## Current production boundary
 
-The application establishes Next.js, strict TypeScript, Supabase client boundaries, environment validation, an operations-ready database schema, RLS and seed data. It includes a fully interactive local quote experience, a data-rich operations dashboard and a secure Instagram webhook adapter. The live Instagram account, publishing, DM processing, payments and AI remain explicit integration boundaries and are not connected.
+The production site runs Next.js 16.3, Supabase pricing and booking transactions, an authenticated admin dashboard, Flutterwave Standard live checkout and branded Resend email workers. Full verified NGN payment confirms a booking automatically; staff do not approve paid bookings. Instagram adapters exist, but live messaging and publishing are not part of the verified release. See `handoff.md` for deployment, access, validation and operational limitations.
 
 ## Layers
 
@@ -40,7 +40,7 @@ Three rules keep the number trustworthy:
 - **`/api/quote` and the booking write call the same function**, so the estimate a customer
   sees is the amount they are charged.
 - **An unpriced space is never free.** Selecting a space the service has no active price for
-  routes the whole quote to manual review rather than adding a zero-cost line.
+  makes that selection unavailable for checkout rather than adding a zero-cost line.
 
 Line items are frozen into `quote_items` when a quote is created, so staff can edit prices
 without rewriting quotes that customers have already agreed to.

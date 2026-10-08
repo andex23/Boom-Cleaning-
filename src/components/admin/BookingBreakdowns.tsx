@@ -8,7 +8,7 @@ import own from "./BookingBreakdowns.module.css";
 import { adminErrorMessage, adminFetch, SESSION_EXPIRED_MESSAGE } from "./adminFetch";
 
 const NEXT_STATUSES: Record<string, readonly string[]> = {
-  PENDING: ["CONFIRMED", "CANCELLED", "NO_SHOW"],
+  PENDING: ["CANCELLED"],
   CONFIRMED: ["IN_PROGRESS", "CANCELLED", "NO_SHOW"],
   IN_PROGRESS: ["COMPLETED", "CANCELLED"],
   COMPLETED: [], CANCELLED: [], NO_SHOW: [],

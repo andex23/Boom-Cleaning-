@@ -1,0 +1,93 @@
+.shell { min-height: 100svh; background: var(--surface); padding: 0 32px 48px; }
+.header { max-width: 1120px; margin: 0 auto; height: 112px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.header img { display: block; width: auto; height: 44px; }
+.header > a:last-child { font-size: 15px; color: var(--ink-body); }
+.header span { color: var(--brand); font-weight: 700; margin-left: 6px; }
+.confirmation { max-width: 1120px; margin: 20px auto 0; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.welcome { position: sticky; top: 32px; padding: 48px 40px; border-radius: 28px; background: var(--ink-deep); color: var(--surface); overflow: hidden; }
+.successMark { width: 56px; height: 56px; display: grid; place-items: center; font-size: 34px; border-radius: 50%; background: #55d5f3; color: var(--ink-deep); margin-bottom: 30px; }
+.confirmedLabel { margin: 0 0 14px; font-size: 15px; color: #55d5f3; }
+.welcome h1 { font-size: 46px; font-weight: 700; line-height: 1.08; letter-spacing: -.045em; margin: 0 0 24px; }
+.introduction { max-width: 30ch; font-size: 15px; color: var(--surface); line-height: 1.8; margin: 0 0 28px; }
+.testNote { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.65; color: var(--surface); padding-top: 20px; margin: 0; border-top: 1px solid var(--line-on-dark); }
+.testNote svg { margin-top: 4px; font-size: 15px; }
+.heroSignature { color: #55d5f3; font-family: var(--font-display); font-size: 20px; line-height: 1.5; margin-top: 72px; }
+.details { min-width: 0; padding-top: 8px; }
+.sectionHeading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+.sectionHeading h2, .nextSteps h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.025em; }
+.sectionHeading > span { font-size: 13px; color: var(--ink-muted); }
+.appointmentIntro { display: flex; gap: 24px; align-items: center; margin-bottom: 28px; }
+.dateTile { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 108px; min-height: 132px; flex-shrink: 0; border: 1px solid var(--brand-wash-strong); border-radius: 18px; background: var(--brand-wash); color: var(--brand-deep); padding: 16px 8px; }
+.dateTile span { font-size: 13px; }
+.dateTile strong { font-family: var(--font-display); font-size: 46px; line-height: 1.1; font-weight: 400; margin: 4px 0 8px; }
+.detailLabel { font-size: 13px; color: var(--ink-muted); margin: 0 0 8px; }
+.appointmentIntro h3 { margin: 0 0 14px; font-size: 26px; line-height: 1.25; letter-spacing: -.025em; font-weight: 700; }
+.arrival { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; font-size: 15px; line-height: 1.5; }
+.arrival svg { color: var(--brand); }
+.arrival span { width: 100%; font-size: 13px; color: var(--ink-muted); padding-left: 21px; }
+.address { padding: 0 0 24px; }
+.address > p:last-child { margin: 0; font-size: 15px; line-height: 1.75; overflow-wrap: anywhere; }
+.primaryButton, .secondaryButton { display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 50px; padding: 14px 22px; border: 1px solid var(--brand); border-radius: var(--radius-sm); background: var(--brand); color: var(--surface); font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; }
+.primaryButton { width: 100%; }
+.primaryButton:hover { background: var(--brand-strong); }
+.primaryButton:disabled { opacity: .6; cursor: wait; }
+.primaryButton svg { font-size: 20px; }
+.secondaryButton { color: var(--brand); background: var(--surface); }
+.receipt { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 28px; }
+.paidLabel { display: flex; align-items: center; gap: 5px; color: var(--brand) !important; }
+.receiptTotal { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
+.receiptTotal strong { font-size: 26px; font-weight: 700; letter-spacing: -.03em; }
+.receiptTotal > svg { font-size: 34px; color: var(--brand); }
+.receiptRows { margin: 0; }
+.receiptRows > div { display: flex; justify-content: space-between; gap: 24px; margin-top: 12px; font-size: 13px; line-height: 1.5; }
+.receiptRows dt { color: var(--ink-muted); }
+.receiptRows dd { margin: 0; text-align: right; }
+.emailNotice { font-size: 13px; line-height: 1.7; color: var(--ink-body); margin: 24px 0 12px; overflow-wrap: anywhere; }
+.receiptButton { padding: 0; border: 0; background: none; color: var(--brand); font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.nextSteps { border-top: 1px solid var(--line); padding-top: 28px; margin-top: 28px; }
+.nextSteps p { font-size: 15px; color: var(--ink-body); line-height: 1.8; margin: 14px 0 0; }
+.nextSteps a { font-weight: 700; color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 32px; font-size: 13px; color: var(--ink-muted); }
+.footer a { color: var(--brand); }
+.statusPage { max-width: 540px; margin: 80px auto; text-align: center; }
+.statusIcon { width: 72px; height: 72px; display: grid; place-items: center; border-radius: 50%; background: var(--brand-wash); color: var(--brand); font-size: 34px; margin: 0 auto 30px; }
+.statusPage h1 { font-size: 34px; letter-spacing: -.04em; line-height: 1.15; margin: 0 0 20px; }
+.statusPage > p { font-size: 15px; line-height: 1.8; color: var(--ink-body); }
+.statusActions { display: grid; gap: 14px; margin-top: 32px; }
+.statusActions > a:last-child { font-size: 13px; color: var(--ink-muted); margin-top: 8px; }
+
+@media (max-width: 760px) {
+  .shell { padding: 0 20px 32px; }
+  .header { height: 88px; }
+  .header > a:last-child { font-size: 13px; }
+  .header span { display: block; text-align: right; margin: 2px 0 0; }
+  .confirmation { margin-top: 8px; grid-template-columns: 1fr; gap: 28px; }
+  .welcome { position: relative; top: auto; padding: 28px; border-radius: 22px; }
+  .successMark { width: 44px; height: 44px; margin-bottom: 18px; font-size: 26px; }
+  .confirmedLabel { margin-bottom: 10px; font-size: 13px; }
+  .welcome h1 { font-size: 34px; margin-bottom: 16px; }
+  .introduction { max-width: 38ch; margin-bottom: 20px; }
+  .heroSignature { display: none; }
+  .testNote { padding-top: 16px; }
+  .details { padding: 0 4px; }
+  .appointmentIntro { gap: 18px; }
+  .appointmentIntro h3 { font-size: 20px; }
+  .dateTile { width: 96px; min-height: 124px; }
+  .sectionHeading { margin-bottom: 22px; }
+  .statusPage { margin: 48px auto; }
+}
+
+@media print {
+  .shell { padding: 0; }
+  .header { height: 80px; }
+  .header > a:last-child, .primaryButton, .secondaryButton, .receiptButton, .nextSteps, .footer { display: none; }
+  .confirmation { display: block; margin: 0; }
+  .welcome { position: static; padding: 24px 0; background: white; color: var(--ink); border-radius: 0; }
+  .successMark, .heroSignature { display: none; }
+  .confirmedLabel, .introduction, .testNote { color: var(--ink); }
+  .welcome h1 { font-size: 34px; }
+  .welcome h1 br { display: none; }
+  .introduction { max-width: none; }
+  .details { padding: 16px 0; }
+  .appointment, .receipt { break-inside: avoid; }
+}

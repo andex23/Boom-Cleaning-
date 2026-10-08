@@ -69,14 +69,16 @@ export async function loadPricingCatalog(client: SupabaseClient, serviceSlug: st
     propertyTypes: (propertyTypes.data as PropertyTypeRow[]).map((row) => ({ slug: row.slug, name: row.name, description: row.description, requiresReview: row.requires_review })),
     serviceAreas: (serviceAreas.data as ServiceAreaRow[]).map((row) => ({ slug: row.slug, name: row.name, requiresReview: row.requires_review })),
     spaceTypes: (spaceTypes.data as SpaceTypeRow[]).filter((row) => {
-      if (usesBedroomTiers) return row.slug === "bedroom" || tiersBySpaceType.has(row.id);
+      // A bedroom tier can still have separately priced extras. Deep cleaning, for
+      // example, uses the bedroom table for the home and a fixed line for the compound.
+      if (usesBedroomTiers) return row.slug === "bedroom" || priceBySpaceType.has(row.id) || tiersBySpaceType.has(row.id);
       if (hasPricedSpaces) return priceBySpaceType.has(row.id) || tiersBySpaceType.has(row.id);
       return true;
     }).map((row) => {
       const price = priceBySpaceType.get(row.id);
       const priceTiers = tiersBySpaceType.get(row.id) ?? [];
       return {
-        slug: row.slug, name: row.name, description: row.description, maxCount: row.max_count,
+        slug: row.slug, name: row.name, description: row.description, maxCount: usesBedroomTiers && row.slug === "bedroom" ? Math.max(...tierRows.map(t => t.bedrooms)) : priceTiers.length ? Math.max(...priceTiers.map(t => t.quantity)) : row.max_count,
         // A space with no price for this service always needs a person to quote it.
         requiresReview: row.requires_review || (!(usesBedroomTiers && row.slug === "bedroom") && !price && priceTiers.length === 0),
         unitPrice: price ? Number(price.unit_price) : null,
