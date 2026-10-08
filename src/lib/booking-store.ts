@@ -29,7 +29,11 @@ export function readStoredBookings(): StoredBooking[] {
 
 export function saveStoredBooking(booking: StoredBooking) {
   const bookings = readStoredBookings();
-  window.localStorage.setItem(BOOKING_STORAGE_KEY, JSON.stringify([booking, ...bookings].slice(0, 25)));
+  // Browser storage is optional: a blocked or full store must not stop checkout
+  // after the server has already created the booking.
+  try {
+    window.localStorage.setItem(BOOKING_STORAGE_KEY, JSON.stringify([booking, ...bookings].slice(0, 25)));
+  } catch { /* The current page still keeps the booking in React state. */ }
   window.dispatchEvent(new CustomEvent("boom:booking-created", { detail: booking }));
 }
 
