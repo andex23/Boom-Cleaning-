@@ -91,13 +91,12 @@ export function BookingCalendar({ serviceSlug, selectedDate, selectedTime, onDat
         const open = day.inMonth && (info?.openCount ?? 0) > 0;
         return <button
           type="button" key={day.iso} disabled={!open}
-          aria-label={open ? `Select ${dateFormatter.format(day.date)}, ${info?.openCount} slots available` : undefined}
+          aria-label={open ? `Select ${dateFormatter.format(day.date)}` : undefined}
           aria-pressed={selectedDate === day.iso}
           className={`${!day.inMonth ? styles.outside : ""} ${selectedDate === day.iso ? styles.selected : ""}`}
           onClick={() => { onDateChange(day.iso); onTimeChange(""); }}
         >
           <span>{day.date.getDate()}</span>
-          {open ? <small>{info!.openCount === 1 ? "1 slot" : `${info!.openCount} slots`}</small> : null}
         </button>;
       })}</div>
     </div>
