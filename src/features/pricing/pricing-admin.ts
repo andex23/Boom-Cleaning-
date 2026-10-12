@@ -168,13 +168,15 @@ export type BookingBreakdown = {
 };
 
 /** Recent bookings with the frozen line items that explain each total. */
-export async function loadRecentBookingBreakdowns(limit = 100): Promise<BookingBreakdown[]> {
+export async function loadRecentBookingBreakdowns(limit = 100, status?: string): Promise<BookingBreakdown[]> {
   const client = createServiceRoleClient();
-  const { data, error } = await client
+  let query = client
     .from("bookings")
     .select("booking_number,status,scheduled_start_at,currency,total,address,customers(full_name,email,phone),services(name),crews(name),quotes(requires_review,property_types(name),quote_items(kind,label,amount,sort_order))")
     .order("created_at", { ascending: false })
     .limit(Math.min(Math.max(limit, 1), 200));
+  if (status) query=query.eq("status",status);
+  const {data,error}=await query;
   if (error) throw new Error(error.message);
 
   type Row = {

@@ -1,5 +1,6 @@
 "use client";
 
+import { bookingFollowUpLinks } from "@/features/operations/booking-follow-up";
 import { CollectionSummary,EmptyCollection } from "./AdminCollection";
 import collection from "./AdminCollection.module.css";
 import { useEffect, useState } from "react";
@@ -40,8 +41,8 @@ function AdminError({ message }: { message: string }) {
   </article>;
 }
 
-export function BookingBreakdowns() {
-  const [filter,setFilter] = useState("All");
+export function BookingBreakdowns({initialFilter}:{initialFilter?:string}) {
+  const [filter,setFilter] = useState(initialFilter && Object.hasOwn(STATUS_LABELS, initialFilter) ? initialFilter : "All");
   const [query,setQuery] = useState("");
   const [bookings, setBookings] = useState<BookingBreakdown[] | null>(null);
   const [error, setError] = useState("");
@@ -52,11 +53,13 @@ export function BookingBreakdowns() {
   const [moveDraft, setMoveDraft] = useState<Record<number, string>>({});
   const [saveError, setSaveError] = useState("");
 
+  const bookingsUrl = filter === "All" ? "/api/admin/bookings" : `/api/admin/bookings?status=${encodeURIComponent(filter)}`;
+
   const runAction = async (bookingNumber: number, payload: Record<string, unknown>, failure: string) => {
     setSavingFor(bookingNumber);
     setSaveError("");
     try {
-      const response = await adminFetch("/api/admin/bookings", {
+      const response = await adminFetch(bookingsUrl, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bookingNumber, ...payload }),
       });
@@ -87,7 +90,7 @@ export function BookingBreakdowns() {
     setSavingFor(bookingNumber);
     setSaveError("");
     try {
-      const response = await adminFetch("/api/admin/bookings", {
+      const response = await adminFetch(bookingsUrl, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bookingNumber, amount, note: noteDraft[bookingNumber]?.trim() || undefined }),
@@ -108,7 +111,7 @@ export function BookingBreakdowns() {
     let cancelled = false;
     (async () => {
       try {
-        const response = await adminFetch("/api/admin/bookings");
+        const response = await adminFetch(bookingsUrl);
         if (!response.ok) throw new Error("load");
         if (!cancelled) setBookings(await response.json() as BookingBreakdown[]);
       } catch (loadFailure) {
@@ -116,18 +119,19 @@ export function BookingBreakdowns() {
       }
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [bookingsUrl]);
 
   if (error) return <AdminError message={error} />;
   if (!bookings) return <article className={styles.panel}><p className={styles.muted}>Loading bookings…</p></article>;
 
 
-  const visible = bookings.filter(booking => (filter === "All" || booking.status === filter) && [booking.reference,booking.customer,booking.serviceName].some(value => value?.toLowerCase().includes(query.trim().toLowerCase())));
+  const visible = bookings.filter(booking => (filter === "All" || booking.status === filter) && [booking.reference,booking.customer,booking.serviceName,booking.customerPhone,booking.customerEmail].some(value => value?.toLowerCase().includes(query.trim().toLowerCase())));
   return <><CollectionSummary items={[{label:"Bookings shown",value:bookings.length},{label:"Confirmed",value:bookings.filter(booking => booking.status === "CONFIRMED").length},{label:"Awaiting payment",value:bookings.filter(booking => booking.status === "PENDING").length},{label:"Completed",value:bookings.filter(booking => booking.status === "COMPLETED").length}]} /><article className={styles.panel}>
-    <header className={styles.head}><div><p className={styles.eyebrow}>BOOKINGS</p><h2>Booking register</h2><p className={styles.muted}>Your latest 100 appointments. Open a booking for the price breakdown and job actions.</p></div></header>
-    <div className={collection.toolbar}><label className={collection.search}><span className="sr-only">Search bookings</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search reference, customer or service" /></label><select className={collection.select} aria-label="Filter booking status" value={filter} onChange={event => setFilter(event.target.value)}><option value="All">All bookings</option>{Object.entries(STATUS_LABELS).map(([value,label]) => <option value={value} key={value}>{label}</option>)}</select></div>
-    {bookings.length === 0 ? <EmptyCollection kind="bookings" title="No bookings yet" description="Your first appointment will appear here with its service, date, customer and payment status." action={{href:"/quote",label:"Create a booking"}} /> : visible.length === 0 ? <p className={styles.muted}>No bookings match your filters.</p> : <ul className={own.list}>{visible.map((booking) => {
+    <header className={styles.head}><div><p className={styles.eyebrow}>BOOKINGS</p><h2>{filter === "PENDING" ? "Awaiting payment" : "Booking register"}</h2><p className={styles.muted}>{filter === "PENDING" ? "The latest 100 bookings awaiting payment confirmation. Follow up using the customer contact details below." : "Your latest 100 appointments. Open a booking for the price breakdown and job actions."}</p></div></header>
+    <div className={collection.toolbar}><label className={collection.search}><span className="sr-only">Search bookings</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search name, phone, email or reference" /></label><select className={collection.select} aria-label="Filter booking status" value={filter} onChange={event => setFilter(event.target.value)}><option value="All">All bookings</option>{Object.entries(STATUS_LABELS).map(([value,label]) => <option value={value} key={value}>{label}</option>)}</select></div>
+    {bookings.length === 0 ? <EmptyCollection kind="bookings" title={filter === "PENDING" ? "No customers awaiting payment" : filter === "All" ? "No bookings yet" : "No bookings with this status"} description={filter === "PENDING" ? "Customers with unpaid bookings will appear here with their contact details." : "Bookings will appear here with their service, date, customer and payment status."} /> : visible.length === 0 ? <p className={styles.muted}>No bookings match your filters.</p> : <ul className={own.list}>{visible.map((booking) => {
       const isOpen = expanded === booking.reference;
+      const contacts=bookingFollowUpLinks(booking);
       return <li key={booking.reference} className={own.row}>
         <button className={own.summary} aria-expanded={isOpen} onClick={() => setExpanded(isOpen ? null : booking.reference)}>
           <span className={own.reference}>{booking.reference}</span>
@@ -139,6 +143,14 @@ export function BookingBreakdowns() {
           <span className={own.statusChip} data-status={booking.status}>{STATUS_LABELS[booking.status] ?? booking.status}</span>
           <span aria-hidden="true" className={isOpen ? own.chevronOpen : own.chevron}>⌄</span>
         </button>
+        {booking.status === "PENDING" && <div className={own.followUp}>
+          <div className={own.contactDetails}><span>{booking.customerPhone || "No phone recorded"}</span><span>{booking.customerEmail || "No email recorded"}</span></div>
+          <div className={own.contactActions}>
+            {contacts.call && <a href={contacts.call} aria-label={`Call ${booking.customer ?? booking.reference}`}>Call</a>}
+            {contacts.whatsapp && <a href={contacts.whatsapp} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp ${booking.customer ?? booking.reference}`}>WhatsApp ↗</a>}
+            {contacts.email && <a href={contacts.email} aria-label={`Email ${booking.customer ?? booking.reference}`}>Email</a>}
+          </div>
+        </div>}
         {isOpen ? <div className={own.detail}>
           <dl className={own.bookingInfo}><div><dt>Service address</dt><dd>{booking.address}</dd></div><div><dt>Customer phone</dt><dd>{booking.customerPhone ? <a href={`tel:${booking.customerPhone}`}>{booking.customerPhone}</a> : "No phone recorded"}</dd></div><div><dt>Customer email</dt><dd>{booking.customerEmail ? <a href={`mailto:${booking.customerEmail}`}>{booking.customerEmail}</a> : "No email recorded"}</dd></div><div><dt>Appointment · Abuja time</dt><dd>{dateFormatter.format(new Date(booking.scheduledStartAt))}</dd></div></dl>
           {booking.items.length ? <ul className={own.items}>{booking.items.map((item, index) => <li key={`${item.kind}-${index}`}><span>{item.label}</span><span>{item.kind === "PROPERTY_MULTIPLIER" || item.kind === "MANUAL_ADJUSTMENT" ? formatNairaDelta(item.amount) : formatNaira(item.amount)}</span></li>)}

@@ -12,7 +12,9 @@ export async function GET(request: Request) {
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
 
   try {
-    return NextResponse.json(await loadRecentBookingBreakdowns(), { headers: { "Cache-Control": "no-store" } });
+    const status=new URL(request.url).searchParams.get("status");
+    if(status && !["PENDING","CONFIRMED","IN_PROGRESS","COMPLETED","CANCELLED","NO_SHOW"].includes(status)) return NextResponse.json({error:"Invalid booking status."},{status:422});
+    return NextResponse.json(await loadRecentBookingBreakdowns(100,status ?? undefined), { headers: { "Cache-Control": "no-store" } });
   } catch {
     console.error("Admin booking breakdown load failed");
     return NextResponse.json({ error: "Unable to load bookings." }, { status: 502, headers: { "Cache-Control": "no-store" } });
@@ -26,6 +28,9 @@ export async function PATCH(request: Request) {
   if (!isSameOriginRequest(request)) return NextResponse.json({ error: "Forbidden" }, { status: 403, headers: noStore });
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: noStore });
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) return NextResponse.json({ error: "Content-Type must be application/json." }, { status: 415, headers: noStore });
+
+  const status = new URL(request.url).searchParams.get("status");
+  if (status && !["PENDING", "CONFIRMED", "IN_PROGRESS", "COMPLETED", "CANCELLED", "NO_SHOW"].includes(status)) return NextResponse.json({ error: "Invalid booking status." }, { status: 422, headers: noStore });
 
   let body: unknown;
   try {
@@ -56,7 +61,7 @@ export async function PATCH(request: Request) {
       if (!parsed.success) return invalid(parsed.error);
       await setBookingPrice(parsed.data);
     }
-    return NextResponse.json({ bookings: await loadRecentBookingBreakdowns() }, { headers: noStore });
+    return NextResponse.json({ bookings: await loadRecentBookingBreakdowns(100, status ?? undefined) }, { headers: noStore });
   } catch (error) {
     if (error instanceof BookingPriceError) return NextResponse.json({ error: error.message }, { status: 422, headers: noStore });
     console.error("Admin booking update failed", { action });

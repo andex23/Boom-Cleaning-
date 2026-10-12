@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatNaira, formatSlotTime } from "@/lib/format";
 import type { OperationsOverview as Overview } from "@/features/operations/overview";
@@ -57,6 +58,7 @@ export function OperationsOverview({ children }: { children?: React.ReactNode })
   return <>
     <section className={styles.kpiGrid} aria-label="Daily performance">{data.kpis.map((item) => <article key={item.label} className={styles.kpi}>
       <div className={styles.kpiHead}><span>{item.label}</span></div><strong>{item.value.replace("₦", "₦\u00a0")}</strong><p>{item.note}</p>
+      {item.label === "Unpaid bookings" && <Link className={styles.followUpLink} href="/admin/bookings?status=PENDING">View customers →</Link>}
     </article>)}</section>
 
     <RevenueChart />
