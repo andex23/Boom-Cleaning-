@@ -1,10 +1,11 @@
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { SiteHeader } from "@/components/public/SiteHeader";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import shared from "../home.module.css";
 import styles from "./terms.module.css";
 
-export const metadata = { title: "Booking terms and conditions | BOOM", description: "Terms for booking BOOM Cleaning Services." };
+export const metadata = pageMetadata("/terms");
 
 export default function TermsPage() {
   return <main className={shared.page}><SiteHeader /><article className={styles.content}>

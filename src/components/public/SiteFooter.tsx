@@ -8,6 +8,7 @@ const QUICK_LINKS = [
   ["/services", "Services"],
   ["/pricing", "Pricing"],
   ["/about", "About us"],
+  ["/faq", "FAQs"],
 ] as const;
 
 const SERVICE_LINKS = [

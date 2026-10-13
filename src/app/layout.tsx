@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/seo";
 import { Suspense } from "react";
 import { VisitTracker } from "@/components/analytics/VisitTracker";
 import type { Metadata } from "next";
@@ -17,6 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  applicationName: "BOOM Cleaning Services",
   title: "BOOM Cleaning Services | Professional Cleaning in Abuja",
   description: "Book trained, professional home and office cleaners in Abuja. Choose your service, see your price and request an available time online.",
 };
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
+      lang="en-NG"
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >

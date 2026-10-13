@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import { SiteHeader } from "@/components/public/SiteHeader";
@@ -5,10 +6,7 @@ import shared from "../home.module.css";
 import faq from "./faq.module.css";
 import { Arrow } from "@/components/brand/Arrow";
 
-export const metadata = {
-  title: "Cleaning FAQs | BOOM Cleaning Services Abuja",
-  description: "Answers about BOOM Cleaning Services pricing, coverage, teams, equipment and booking in Abuja.",
-};
+export const metadata = pageMetadata("/faq");
 
 const groups = [
   {

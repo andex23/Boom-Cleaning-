@@ -2,7 +2,7 @@ import { QuoteFlow } from "@/components/public/QuoteFlow";
 import { listBookableServices } from "@/features/services/public-catalog";
 import { resolveLogoSrc } from "@/components/brand/BrandLogo";
 
-export const metadata = { title: "Get a quote | BOOM", description: "Tell BOOM about your space and get a cleaning estimate." };
+export const metadata = { title: "Get a quote | BOOM", description: "Tell BOOM about your space and get a cleaning estimate.", robots: { index: false, follow: true }, alternates: { canonical: "https://boomcleaning.site/quote" } };
 export const dynamic = "force-dynamic";
 
 export default async function QuotePage({ searchParams }: { searchParams: Promise<{ service?: string | string[]; resume?: string | string[] }> }) {

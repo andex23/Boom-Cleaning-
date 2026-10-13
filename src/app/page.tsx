@@ -1,3 +1,5 @@
+import { businessStructuredData, pageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/seo/StructuredData";
 import Link from "next/link";
 import { Photo } from "@/components/public/Photo";
 import { Arrow } from "@/components/brand/Arrow";
@@ -30,6 +32,8 @@ const steps = [
   ["03", "Come home to clean", "A prepared BOOM team arrives, gets it done and keeps you updated."],
 ] as const;
 
+export const metadata = pageMetadata("/");
+
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
@@ -39,6 +43,7 @@ export default async function Home() {
   ]);
 
   return <main className={styles.page}>
+    <StructuredData data={businessStructuredData} />
     <SiteHeader priority />
 
     <section className={styles.hero} aria-labelledby="hero-heading">

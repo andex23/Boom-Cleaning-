@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { Photo } from "@/components/public/Photo";
 import { SiteHeader } from "@/components/public/SiteHeader";
@@ -6,10 +7,7 @@ import styles from "../home.module.css";
 import about from "./about.module.css";
 import { Arrow } from "@/components/brand/Arrow";
 
-export const metadata = {
-  title: "About BOOM Cleaning Services | Abuja",
-  description: "Meet the Abuja cleaning company built around prepared teams, clear service scopes and professional equipment.",
-};
+export const metadata = pageMetadata("/about");
 
 const standards = [
   ["Before arrival", "A clear scope", "We ask about every room, surface and extra before the day, so the team understands the space and the price reflects the actual work."],

@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import { SiteHeader } from "@/components/public/SiteHeader";
@@ -8,10 +9,7 @@ import shared from "../home.module.css";
 import pricing from "./pricing.module.css";
 import { Arrow } from "@/components/brand/Arrow";
 
-export const metadata = {
-  title: "Cleaning prices in Abuja | BOOM Cleaning Services",
-  description: "See BOOM's published deep-cleaning, fumigation and post-construction cleaning prices, then build a confirmed quote for your space.",
-};
+export const metadata = pageMetadata("/pricing");
 export const dynamic = "force-dynamic";
 
 const TIERED_SLUGS = [
