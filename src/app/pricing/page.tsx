@@ -45,7 +45,7 @@ function TierCard({ service }: { service: PublicPricingCard }) {
 export default async function PricingPage() {
   const services = await listPublicPricing();
   const tiered = services.filter(service => service.bedroomTiers.length > 0);
-  const otherServices = services.filter(service => !service.bedroomTiers.length && !["post-construction-cleaning", "upholstery-cleaning"].includes(service.slug));
+  const otherServices = services.filter(service => !service.requiresReview && !service.bedroomTiers.length && !["post-construction-cleaning", "upholstery-cleaning"].includes(service.slug));
   const postConstruction = services.find((service) => service.slug === "post-construction-cleaning");
   const upholstery = services.find((service) => service.slug === "upholstery-cleaning");
 
