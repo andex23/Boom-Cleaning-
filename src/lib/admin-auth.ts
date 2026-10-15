@@ -1,3 +1,4 @@
+import { TEMPORARY_ADMIN_COOKIE, isTemporaryAdminAuthenticated } from "./admin-temporary-access";
 import "server-only";
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -60,7 +61,8 @@ export function isSameOriginRequest(request: Request) {
 }
 
 export async function isAdminAuthenticated() {
-  const actual = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
-  if(!actual) return false;
-  return isValidExpiringAdminSessionToken(actual,await currentSessionSecret());
+  const jar = await cookies();
+  const actual = jar.get(ADMIN_SESSION_COOKIE)?.value;
+  if(actual && isValidExpiringAdminSessionToken(actual,await currentSessionSecret())) return true;
+  return isTemporaryAdminAuthenticated(jar.get(TEMPORARY_ADMIN_COOKIE)?.value);
 }
