@@ -1,7 +1,7 @@
 export const adminRoutes = {
   Overview: "/admin", Inbox: "/admin/inbox", Bookings: "/admin/bookings",
   Customers: "/admin/customers", Payments: "/admin/payments", Analytics: "/admin/analytics",
-  Services: "/admin/services", Integrations: "/admin/integrations",
+  Services: "/admin/services", Schedule: "/admin/schedule", Integrations: "/admin/integrations",
 } as const;
 export type AdminArea = keyof typeof adminRoutes;
 export const adminAreas = Object.keys(adminRoutes) as AdminArea[];

@@ -1,3 +1,4 @@
+import { ScheduleAdmin } from "@/components/admin/ScheduleAdmin";
 import { notFound,redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { adminAreaForPath } from "@/data/admin-navigation";
@@ -22,6 +23,7 @@ export default async function SectionPage({params,searchParams}:Props) {
     case "Customers": return <CustomersPanel />;
     case "Payments": return <PaymentsPanel />;
     case "Analytics": return <AnalyticsPanel />;
+    case "Schedule": return <ScheduleAdmin />;
     case "Services": return <PricingAdmin />;
     case "Integrations": return <IntegrationsPanel />;
     default: notFound();

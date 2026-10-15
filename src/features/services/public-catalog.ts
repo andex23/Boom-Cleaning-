@@ -59,7 +59,7 @@ export async function listBookableServices(): Promise<PublicServiceView[]> {
   const [{ data, error }, tierPrices, itemResult] = await Promise.all([
     client
       .from("services")
-      .select("id,slug,name,description,base_price,requires_review")
+      .select("id,slug,name,description,base_price,requires_review,duration_minutes")
       .eq("is_active", true)
       .order("sort_order"),
     lowestTierPrices(client),
@@ -73,7 +73,7 @@ export async function listBookableServices(): Promise<PublicServiceView[]> {
     itemPrices.set(item.service_id, Math.min(itemPrices.get(item.service_id) ?? Infinity, price));
   }
 
-  return (data as { id: string; slug: string; name: string; description: string | null; base_price: number | string; requires_review: boolean }[]).map((row) => {
+  return (data as { id: string; slug: string; name: string; description: string | null; base_price: number | string; requires_review: boolean; duration_minutes: number }[]).map((row) => {
     const presentation = servicePresentation[row.slug] ?? fallbackPresentation;
     const basePrice = Number(row.base_price);
     const published = tierPrices.get(row.id) ?? (row.slug === "upholstery-cleaning" && basePrice === 0 ? itemPrices.get(row.id) ?? null : basePrice > 0 ? basePrice : null);
@@ -87,8 +87,8 @@ export async function listBookableServices(): Promise<PublicServiceView[]> {
       // A service with no published price that still prices itself automatically charges
       // per room, so say that rather than implying someone has to get back to you.
       priceLabel: priceFrom !== null ? `From ${formatNaira(priceFrom)}` : row.requires_review ? "Quoted for you" : "Priced per room",
-      summary: serviceDescriptions[row.slug] ?? row.description ?? presentation.summary,
-      duration: presentation.duration,
+      summary: row.description || serviceDescriptions[row.slug] || presentation.summary,
+      duration: `${Math.floor(row.duration_minutes / 60)}h${row.duration_minutes % 60 ? ` ${row.duration_minutes % 60}m` : ""} estimated`,
       category: presentation.category,
       icon: presentation.icon,
       tagline: presentation.tagline,

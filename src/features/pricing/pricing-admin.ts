@@ -12,7 +12,7 @@ const money = z.number().finite().nonnegative().max(100_000_000).multipleOf(0.01
 export const pricingUpdateSchema = z.object({
   bedroomTiers: z.array(z.object({id:z.uuid(),price:money})).max(200).default([]),
   spaceTiers: z.array(z.object({id:z.uuid(),price:money})).max(200).default([]),
-  services: z.array(z.object({ slug: z.string().trim().max(100), basePrice: money, minimumCharge: money, requiresReview: z.boolean() })).max(100).default([]),
+  services: z.array(z.object({ slug: z.string().trim().max(100), name: z.string().trim().min(2).max(120).optional(), description: z.string().trim().max(3000).optional(), isActive: z.boolean().optional(), durationMinutes: z.number().int().min(30).max(1440).optional(), basePrice: money, minimumCharge: money, requiresReview: z.boolean() })).max(100).default([]),
   propertyTypes: z.array(z.object({ slug: z.string().trim().max(100), baseMultiplier: z.number().finite().gt(0).max(10), minimumCharge: money, requiresReview: z.boolean() })).max(100).default([]),
   spacePrices: z.array(z.object({ serviceSlug: z.string().trim().max(100), spaceSlug: z.string().trim().max(100), unitPrice: money, includedCount: z.number().int().min(0).max(100) })).max(600).default([]),
   serviceAreas: z.array(z.object({ slug: z.string().trim().max(100), surcharge: money, requiresReview: z.boolean() })).max(100).default([]),
@@ -23,7 +23,7 @@ export type PricingUpdate = z.infer<typeof pricingUpdateSchema>;
 export type PricingAdminData = {
   bedroomTiers: {id:string;serviceSlug:string;bedrooms:number;price:number}[];
   spaceTiers: {id:string;serviceSlug:string;spaceSlug:string;quantity:number;price:number}[];
-  services: { slug: string; name: string; basePrice: number; minimumCharge: number; requiresReview: boolean }[];
+  services: { slug: string; name: string; description: string; isActive: boolean; durationMinutes: number; basePrice: number; minimumCharge: number; requiresReview: boolean }[];
   propertyTypes: { slug: string; name: string; baseMultiplier: number; minimumCharge: number; requiresReview: boolean }[];
   spaceTypes: { slug: string; name: string; requiresReview: boolean }[];
   serviceAreas: { slug: string; name: string; surcharge: number; requiresReview: boolean }[];
@@ -34,7 +34,7 @@ export type PricingAdminData = {
 export async function loadPricingAdminData(): Promise<PricingAdminData> {
   const client = createServiceRoleClient();
   const [services, propertyTypes, spaceTypes, serviceAreas, spacePrices, bedroomTiers, spaceTiers] = await Promise.all([
-    client.from("services").select("id,slug,name,base_price,minimum_charge,requires_review").eq("is_active", true).order("sort_order"),
+    client.from("services").select("id,slug,name,description,is_active,duration_minutes,base_price,minimum_charge,requires_review").order("sort_order"),
     client.from("property_types").select("slug,name,base_multiplier,minimum_charge,requires_review").eq("is_active", true).order("sort_order"),
     client.from("space_types").select("id,slug,name,requires_review").eq("is_active", true).order("sort_order"),
     client.from("service_areas").select("slug,name,surcharge,requires_review").eq("is_active", true).order("sort_order"),
@@ -58,8 +58,8 @@ export async function loadPricingAdminData(): Promise<PricingAdminData> {
   return {
     bedroomTiers: (bedroomTiers.data ?? []).map(row => ({id:row.id,serviceSlug:serviceSlugById.get(row.service_id) ?? "",bedrooms:row.bedrooms,price:Number(row.price)})),
     spaceTiers: (spaceTiers.data ?? []).map(row => ({id:row.id,serviceSlug:serviceSlugById.get(row.service_id) ?? "",spaceSlug:spaceSlugById.get(row.space_type_id) ?? "",quantity:row.quantity,price:Number(row.price)})),
-    services: (services.data as { slug: string; name: string; base_price: number | string; minimum_charge: number | string; requires_review: boolean }[])
-      .map((row) => ({ slug: row.slug, name: row.name, basePrice: Number(row.base_price), minimumCharge: Number(row.minimum_charge), requiresReview: row.requires_review })),
+    services: (services.data as { slug: string; name: string; description: string|null; is_active: boolean; duration_minutes: number; base_price: number | string; minimum_charge: number | string; requires_review: boolean }[])
+      .map((row) => ({ slug: row.slug, name: row.name, description: row.description ?? "", isActive: row.is_active, durationMinutes: row.duration_minutes, basePrice: Number(row.base_price), minimumCharge: Number(row.minimum_charge), requiresReview: row.requires_review })),
     propertyTypes: (propertyTypes.data as { slug: string; name: string; base_multiplier: number | string; minimum_charge: number | string; requires_review: boolean }[])
       .map((row) => ({ slug: row.slug, name: row.name, baseMultiplier: Number(row.base_multiplier), minimumCharge: Number(row.minimum_charge), requiresReview: row.requires_review })),
     spaceTypes: (spaceTypes.data as { slug: string; name: string; requires_review: boolean }[])

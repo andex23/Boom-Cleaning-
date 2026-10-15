@@ -12,14 +12,7 @@ import { Arrow } from "@/components/brand/Arrow";
 export const metadata = pageMetadata("/pricing");
 export const dynamic = "force-dynamic";
 
-const TIERED_SLUGS = [
-  "move-in-apartment-cleaning",
-  "deep-cleaning",
-  "deep-cleaning-upholstery",
-  "deep-cleaning-fumigation",
-  "deep-cleaning-upholstery-fumigation",
-  "fumigation",
-];
+
 
 function priceForSpace(space: PublicSpacePrice) {
   if (space.slug === "compound-pressure-wash") return space.priceTiers.map((tier) => `${compoundWashLabel(tier.quantity)}: ${formatNaira(tier.price)}`).join(" · ");
@@ -51,7 +44,8 @@ function TierCard({ service }: { service: PublicPricingCard }) {
 
 export default async function PricingPage() {
   const services = await listPublicPricing();
-  const tiered = TIERED_SLUGS.map((slug) => services.find((service) => service.slug === slug)).filter((service): service is PublicPricingCard => Boolean(service));
+  const tiered = services.filter(service => service.bedroomTiers.length > 0);
+  const otherServices = services.filter(service => !service.bedroomTiers.length && !["post-construction-cleaning", "upholstery-cleaning"].includes(service.slug));
   const postConstruction = services.find((service) => service.slug === "post-construction-cleaning");
   const upholstery = services.find((service) => service.slug === "upholstery-cleaning");
 
@@ -77,7 +71,7 @@ export default async function PricingPage() {
 
     {upholstery ? <section className={pricing.construction} aria-labelledby="upholstery-heading">
       <div className={pricing.constructionCopy}>
-        <p className={shared.pill}>Upholstery (chair cleaning)</p>
+        <p className={shared.pill}>{upholstery.name}</p>
         <h2 id="upholstery-heading">Choose the furniture you need cleaned.</h2>
         <p>Prices are per item or full set. Choose a seven-seater set or its individual pieces, not both. Bed-frame cleaning does not include the mattress.</p>
         <Link className={shared.primary} href="/quote?service=upholstery-cleaning">Price my furniture <Arrow direction="up-right" /></Link>
@@ -90,7 +84,7 @@ export default async function PricingPage() {
 
     {postConstruction ? <section className={pricing.construction} aria-labelledby="construction-heading">
       <div className={pricing.constructionCopy}>
-        <p className={shared.pill}>Post-construction & post-renovation cleaning</p>
+        <p className={shared.pill}>{postConstruction.name}</p>
         <h2 data-reveal="heading" id="construction-heading">Priced by the spaces in the building.</h2>
         <p>Tell us how many bedrooms, living rooms, storeys and extra areas are in the completed property. Your quote adds only the spaces you select.</p>
         <Link className={shared.primary} href="/quote?service=post-construction-cleaning">Build this quote <Arrow direction="up-right" /></Link>
@@ -104,6 +98,7 @@ export default async function PricingPage() {
       </div>
     </section> : null}
 
+    {otherServices.length > 0 && <section className={pricing.priceSection} aria-labelledby="other-services-heading"><div className={pricing.sectionLead}><div><p className={shared.pill}>More services</p><h2 id="other-services-heading">Explore the full catalogue.</h2></div><p>Published services and their current rates.</p></div><div className={pricing.cardGrid}>{otherServices.map(service => <article className={pricing.priceCard} key={service.id}><div className={pricing.cardHead}><h3>{service.name}</h3><span>{service.priceLabel}</span></div><p className={pricing.cardSummary}>{service.summary}</p>{service.spacePrices.length>0 && <details className={pricing.tierDisclosure}><summary>View item prices <span aria-hidden="true">+</span></summary><ul className={pricing.tierList}>{service.spacePrices.map(space=><li key={space.slug}><span>{space.name}</span><strong>{priceForSpace(space)}</strong></li>)}</ul></details>}<Link className={pricing.cardCta} href={`/quote?service=${service.slug}`}>Price my space <Arrow /></Link></article>)}</div></section>}
     <SiteFooter />
   </main>;
 }

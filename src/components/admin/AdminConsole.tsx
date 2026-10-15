@@ -36,10 +36,11 @@ const descriptions: Record<AdminArea, string> = {
   Payments: "Payment records and verification.",
   Analytics: "See how people find and use your website.",
   Services: "Manage your services and published prices.",
+  Schedule: "Opening days, arrival windows and blocked dates.",
   Integrations: "Connections to other platforms.",
 };
 function areaIcon(area: AdminArea): IconName {
-  return ({ Overview: "grid", Bookings: "calendar", Inbox: "message", Customers: "users", Services: "sparkles", Payments: "card", Analytics: "chart", Integrations: "briefcase" } as const)[area];
+  return ({ Overview: "grid", Bookings: "calendar", Inbox: "message", Customers: "users", Services: "sparkles", Schedule: "calendar", Payments: "card", Analytics: "chart", Integrations: "briefcase" } as const)[area];
 }
 
 export default function AdminConsole({ children, logoSrc, logoLightSrc }: { children: React.ReactNode; logoSrc: string; logoLightSrc: string }) {

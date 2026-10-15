@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminAuthenticated, isSameOriginRequest } from "@/lib/admin-auth";
 import { readBoundedJson } from "@/lib/public-booking";
+import { createAdminService, createServiceSchema } from "@/features/operations/catalogue-admin";
 import { applyPricingUpdate, loadPricingAdminData, pricingUpdateSchema } from "@/features/pricing/pricing-admin";
 
 export const runtime = "nodejs";
@@ -48,4 +49,16 @@ export async function PATCH(request: Request) {
     console.error("Pricing admin update failed");
     return adminError("Unable to save pricing.", 502);
   }
+}
+
+export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) return adminError("Forbidden", 403);
+  if (!(await isAdminAuthenticated())) return adminError("Unauthorized", 401);
+  if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) return adminError("Content-Type must be application/json.", 415);
+  let body: unknown;
+  try { body = await readBoundedJson(request, 16 * 1024); } catch { return adminError("Invalid request body.", 400); }
+  const parsed = createServiceSchema.safeParse(body);
+  if (!parsed.success) return adminError("Enter a name, description, unique service link and starting service.", 422);
+  try { const slug = await createAdminService(parsed.data); return NextResponse.json({ slug, data: await loadPricingAdminData() }, { status: 201, headers: noStore }); }
+  catch (error) { return adminError(error instanceof Error && error.message === "DUPLICATE_SERVICE" ? "That service link already exists. Choose another." : "Unable to create service. Check the starting service and try again.", 422); }
 }
