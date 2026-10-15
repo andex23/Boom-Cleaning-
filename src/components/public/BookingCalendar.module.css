@@ -3,3 +3,17 @@
 .calendarMessage p{margin:0}
 .calendarMessage button{background:#c0392b;color:#ffffff;border:0;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}
 .calendarMessage button:hover{background:#95251a}
+
+/* A date picker needs the form's width, not the viewport's width. */
+.bookingPicker{min-width:0;grid-template-columns:minmax(0,1fr)}
+.calendarPanel,.timePanel{min-width:0}
+.calendarHeader{gap:12px;flex-wrap:wrap}
+.calendarHeader>div:first-child{min-width:0}
+.calendarPanel .calendarHeader button{width:44px;height:44px;min-width:44px;min-height:44px}
+.timePanel{border-left:0;border-top:1px solid var(--line-strong);min-height:300px}
+.timeSlots button{gap:12px;min-height:48px}
+.timeSlots small{min-width:0;text-align:right;overflow-wrap:anywhere}
+@container quote-form(min-width:680px){
+  .bookingPicker{grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr)}
+  .timePanel{border-left:1px solid var(--line-strong);border-top:0;min-height:0}
+}

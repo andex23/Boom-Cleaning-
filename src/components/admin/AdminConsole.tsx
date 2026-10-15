@@ -49,7 +49,15 @@ export default function AdminConsole({ children, logoSrc, logoLightSrc }: { chil
   const menuButton = useRef<HTMLButtonElement>(null);
   const navigation = useRef<HTMLElement>(null);
   useEffect(() => {
+    const desktop=window.matchMedia("(min-width:1025px)");
+    const closeOnDesktop=()=>{if(desktop.matches)setNavOpen(false);};
+    desktop.addEventListener("change",closeOnDesktop);
+    return()=>desktop.removeEventListener("change",closeOnDesktop);
+  },[]);
+  useEffect(() => {
     if (!navOpen) return;
+    const previousOverflow=document.body.style.overflow;
+    document.body.style.overflow="hidden";
     const controls = Array.from(navigation.current?.querySelectorAll<HTMLElement>("a,button") ?? []);
     controls[0]?.focus();
     const onKey = (event:KeyboardEvent) => {
@@ -61,7 +69,7 @@ export default function AdminConsole({ children, logoSrc, logoLightSrc }: { chil
       }
     };
     window.addEventListener("keydown",onKey);
-    return () => window.removeEventListener("keydown",onKey);
+    return () => {window.removeEventListener("keydown",onKey);document.body.style.overflow=previousOverflow;};
   },[navOpen]);
 
   return <div className={styles.appShell} data-admin-theme="boom">

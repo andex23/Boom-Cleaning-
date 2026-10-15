@@ -72,3 +72,21 @@
   .unitCard li { grid-template-columns: 1fr; gap: 8px; }
   .unitCard b { text-align: left; }
 }
+
+.priceCard,.cardHead>div,.constructionCopy,.unitCard{min-width:0}
+.cardHead{flex-wrap:wrap;gap:12px}
+.cardHead>div{flex:1 1 140px}
+.cardHead>span{max-width:100%;overflow-wrap:anywhere}
+.cardHead h3,.constructionCopy h2{overflow-wrap:anywhere}
+.tierList li{flex-wrap:wrap}
+.tierList li>span,.tierList strong{min-width:0;overflow-wrap:anywhere}
+.unitCard{container-type:inline-size}
+.unitCard li{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.unitCard li>span,.unitCard b{min-width:0;overflow-wrap:anywhere}
+@container(max-width:520px){
+  .unitCard li{grid-template-columns:minmax(0,1fr);gap:8px}
+  .unitCard b{text-align:left}
+}
+@media(max-width:1000px){
+  .construction{grid-template-columns:minmax(0,1fr)}
+}

@@ -186,3 +186,23 @@
   .extraCards{grid-template-columns:1fr}
   .extraCard,.extraCardActive{min-height:0}
 }
+
+/* The desktop aside can leave a phone-sized form on a tablet-sized screen. */
+.form{min-width:0;container-type:inline-size;container-name:quote-form}
+.formTop{gap:16px}
+.serviceOption,.serviceOption>span:last-child,.spaceLabel{min-width:0}
+.serviceOption strong,.spaceLabel,.extrasTitle{overflow-wrap:anywhere}
+.extras>summary{flex-wrap:wrap}
+.primaryButton,.secondaryButton{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;min-width:0;text-align:center}
+.primaryButton span{margin-left:0;flex:0 0 auto}
+@container quote-form(max-width:500px){
+  .extraCards{grid-template-columns:minmax(0,1fr)}
+  .extraCard,.extraCardActive{min-height:0}
+}
+@container quote-form(max-width:420px){
+  .serviceGrid,.split{grid-template-columns:minmax(0,1fr)}
+}
+@container quote-form(max-width:360px){
+  .liveEstimate{grid-template-columns:minmax(0,1fr);gap:10px}
+  .liveEstimate strong{justify-self:start;text-align:left}
+}

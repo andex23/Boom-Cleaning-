@@ -1,50 +1,63 @@
-.list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.row{border:1px solid #eef1f6;border-radius:10px;overflow:hidden}
-.summary{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;align-items:center;gap:14px;padding:20px;background:#ffffff;border:0;cursor:pointer;text-align:left;font:inherit}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:12px;min-width:0}
+.row{border:1px solid #eef1f6;border-radius:10px;overflow:hidden;min-width:0}
+.summary{width:100%;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;grid-template-areas:"reference who when total status chevron";align-items:center;gap:14px;padding:20px;background:#ffffff;border:0;cursor:pointer;text-align:left;font:inherit}
 .summary:hover{background:#eef1f6}
-.reference{font-size:13px;font-weight:700;color:#0c55b5;font-variant-numeric:tabular-nums;white-space:nowrap}
-.who strong{display:block;font-size:15px;font-weight:700;color:#08255f}
-.who small{display:block;margin-top:2px;font-size:13px;color:#5a6d84}
-.when{font-size:13px;color:#5a6d84;white-space:nowrap}
-.total{font-size:13px;font-weight:700;color:#08255f;font-variant-numeric:tabular-nums;white-space:nowrap}
-.chevron,.chevronOpen{color:#9aa8ba;font-size:13px;transition:transform .18s ease}
+.summary:focus-visible{outline:2px solid #0c55b5;outline-offset:-3px}
+.reference{grid-area:reference;font-size:13px;font-weight:700;color:#0c55b5;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.who{grid-area:who;min-width:0}
+.who strong{display:block;font-size:15px;font-weight:700;color:#08255f;overflow-wrap:anywhere}
+.who small{display:block;margin-top:2px;font-size:13px;color:#5a6d84;overflow-wrap:anywhere}
+.when{grid-area:when;font-size:13px;color:#5a6d84}
+.summary>:nth-child(4){grid-area:total}
+.total{font-size:13px;font-weight:700;color:#08255f;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.chevron,.chevronOpen{grid-area:chevron;justify-self:end;color:#9aa8ba;font-size:13px;transition:transform .18s ease}
 .chevronOpen{transform:rotate(180deg)}
-.detail{padding:4px 14px 14px;background:#ffffff;border-top:1px solid #eef1f6}
+.detail{min-width:0;padding:4px 20px 20px;background:#ffffff;border-top:1px solid #eef1f6}
 .items{list-style:none;margin:0;padding:0;font-size:13px}
-.items li{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid #eef1f6;color:#3c5064}
-.items li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.items li{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;padding:7px 0;border-bottom:1px solid #eef1f6;color:#3c5064;overflow-wrap:anywhere}
+.items li span:last-child{font-variant-numeric:tabular-nums}
 .itemsTotal{font-weight:700;color:#08255f!important;border-bottom:0!important;padding-top:10px!important;font-size:13px}
-@media (max-width:720px){.summary{grid-template-columns:1fr auto;row-gap:6px}.when{display:none}}
-.priceForm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6}
-.priceForm label{display:grid;gap:5px;font-size:13px;font-weight:700;color:#5a6d84}
+.priceForm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6;min-width:0}
+.priceForm label{display:grid;gap:5px;min-width:0;max-width:100%;font-size:13px;font-weight:700;color:#5a6d84}
 .priceForm label span{font-weight:400;color:#9aa8ba}
-.priceForm label:first-child{flex:0 0 auto}
-.priceForm label:nth-child(2){flex:1 1 220px}
-.priceForm input{border:1px solid #cbdcf0;border-radius:7px;padding:8px 10px;font-size:13px;color:#08255f;width:100%}
-.priceForm label:first-child input{width:150px;font-variant-numeric:tabular-nums}
+.priceForm label:first-child{flex:1 1 150px}
+.priceForm label:nth-child(2){flex:2 1 220px}
+.priceForm input{min-width:0;min-height:44px;border:1px solid #cbdcf0;border-radius:7px;padding:8px 10px;font-size:15px;color:#08255f;width:100%}
+.priceForm label:first-child input{font-variant-numeric:tabular-nums}
 .priceForm input:focus{outline:2px solid #55d5f3;outline-offset:-1px;border-color:#0c55b5}
-.priceForm button{background:#0c55b5;color:#ffffff;border:0;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.priceForm button{min-height:44px;max-width:100%;background:#0c55b5;color:#ffffff;border:0;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer}
 .priceForm button:hover:not(:disabled){background:#08255f}
 .priceForm button:disabled{opacity:.45;cursor:not-allowed}
-.priceHint{margin:8px 0 0;font-size:13px;color:#8b9ab0;line-height:1.5}
-.statusChip{display:inline-block;padding:4px 9px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;background:#eef1f6;color:#5a6d84}
+.priceHint{margin:8px 0 0;font-size:13px;color:#8b9ab0;line-height:1.5;overflow-wrap:anywhere}
+.statusChip{grid-area:status;justify-self:start;display:inline-block;max-width:100%;padding:4px 9px;border-radius:999px;font-size:13px;font-weight:700;overflow-wrap:anywhere;background:#eef1f6;color:#5a6d84}
 .statusChip[data-status="CONFIRMED"]{background:#eef1f6;color:#0f7b4f}
 .statusChip[data-status="IN_PROGRESS"]{background:#def5fc;color:#0c55b5}
 .statusChip[data-status="COMPLETED"]{background:#def5fc;color:#3c5064}
 .statusChip[data-status="CANCELLED"],.statusChip[data-status="NO_SHOW"]{background:#fdeeec;color:#b4232a}
-.lifecycle{display:grid;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6}
-.lifecycleLabel{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;color:#5a6d84;text-transform:uppercase}
-.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.actions input[type="datetime-local"]{border:1px solid #cbdcf0;border-radius:7px;padding:8px 10px;font-size:13px;color:#08255f}
-.actions input:focus-visible{outline:3px solid #55d5f3;outline-offset:-1px}
-.primary,.destructive{border:0;border-radius:7px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.lifecycle{display:grid;gap:16px;min-width:0;margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6}
+.lifecycle>div{min-width:0}
+.lifecycleLabel{margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;color:#5a6d84;text-transform:uppercase;overflow-wrap:anywhere}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+.actions input[type="datetime-local"]{min-width:0;max-width:100%;min-height:44px;border:1px solid #cbdcf0;border-radius:7px;padding:8px 10px;font-size:15px;color:#08255f}
+.actions input:focus-visible,.primary:focus-visible,.destructive:focus-visible,.priceForm button:focus-visible{outline:2px solid #0c55b5;outline-offset:2px}
+.primary,.destructive{min-height:44px;max-width:100%;border:0;border-radius:7px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer}
 .primary{background:#0c55b5;color:#ffffff}
 .primary:hover:not(:disabled){background:#08255f}
 .destructive{background:#ffffff;color:#b4232a;border:1px solid #f0c4c0}
 .destructive:hover:not(:disabled){background:#fdeeec}
 .primary:disabled,.destructive:disabled{opacity:.45;cursor:not-allowed}
-.done{font-size:13px;color:#5a6d84}
-@media (max-width:720px){.summary{grid-template-columns:1fr auto}.actions{width:100%}.actions input,.primary,.destructive{flex:1 1 auto}}
-.bookingInfo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0;padding:0 0 20px;border-bottom:1px solid #eef1f6}.bookingInfo dt{font-size:13px;color:#5a6d84;margin-bottom:6px}.bookingInfo dd{font-size:13px;color:#08255f;margin:0;line-height:1.5;overflow-wrap:anywhere}.bookingInfo a{color:#0c55b5}@media(max-width:720px){.bookingInfo{grid-template-columns:1fr}}
-
-.followUp{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:16px 20px;background:#f5f8fc;border-top:1px solid #e5eaf1}.contactDetails{display:grid;gap:5px;min-width:0;font-size:13px;color:#3c5064;overflow-wrap:anywhere}.contactActions{display:flex;flex-wrap:wrap;gap:8px}.contactActions a{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid #cbdcf0;border-radius:8px;background:#ffffff;color:#0c55b5;font-size:13px;font-weight:700;text-decoration:none}.contactActions a:hover{background:#def5fc}.contactActions a:focus-visible{outline:2px solid #0c55b5;outline-offset:3px}@media(max-width:720px){.followUp{padding:14px}.contactActions{width:100%}.contactActions a{flex:1}}
+.done{font-size:13px;color:#5a6d84;overflow-wrap:anywhere}
+.bookingInfo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:18px;margin:20px 0;padding:0 0 20px;border-bottom:1px solid #eef1f6;min-width:0}
+.bookingInfo>div{min-width:0}
+.bookingInfo dt{font-size:13px;color:#5a6d84;margin-bottom:6px}
+.bookingInfo dd{font-size:13px;color:#08255f;margin:0;line-height:1.5;overflow-wrap:anywhere}
+.bookingInfo a{display:inline-flex;align-items:center;min-height:44px;max-width:100%;color:#0c55b5;overflow-wrap:anywhere}
+.followUp{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:16px 20px;background:#f5f8fc;border-top:1px solid #e5eaf1;min-width:0}
+.contactDetails{display:grid;gap:5px;min-width:0;max-width:100%;font-size:13px;color:#3c5064;overflow-wrap:anywhere}
+.contactActions{display:flex;flex-wrap:wrap;gap:8px;min-width:0;max-width:100%}
+.contactActions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;max-width:100%;padding:10px 14px;border:1px solid #cbdcf0;border-radius:8px;background:#ffffff;color:#0c55b5;font-size:13px;font-weight:700;text-decoration:none}
+.contactActions a:hover{background:#def5fc}
+.contactActions a:focus-visible{outline:2px solid #0c55b5;outline-offset:3px}
+@media(max-width:1200px){.summary{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"reference status chevron" "who who total" "when when when";row-gap:10px}}
+@media(max-width:720px){.summary{padding:16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"reference chevron" "who who" "when when" "total status";gap:10px}.statusChip{justify-self:end}.detail{padding:4px 16px 16px}.bookingInfo{grid-template-columns:minmax(0,1fr)}.actions{width:100%}.actions input,.primary,.destructive{flex:1 1 auto}.actions input[type="datetime-local"]{width:100%}.priceForm button{width:100%}.followUp{padding:16px}.contactActions{width:100%}.contactActions a{flex:1 1 auto}}
+@media(max-width:380px){.summary{grid-template-areas:"reference chevron" "who who" "when when" "total total" "status status"}.statusChip{justify-self:start}}
