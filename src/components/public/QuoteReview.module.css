@@ -6,7 +6,7 @@
 .reviewHeading{gap:18px}
 .reviewHeading h3,.review dd,.confirmationCard dd{overflow-wrap:anywhere}
 .reviewHeading>strong{flex:0 0 auto}
-@container quote-form(max-width:520px){
+@container quote-form (max-width:520px){
   .reviewHeading{display:grid;gap:12px;padding:20px}
   .review dl{padding-inline:20px}
   .review dl>div{grid-template-columns:minmax(0,1fr);gap:5px}
