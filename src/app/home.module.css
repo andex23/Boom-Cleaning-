@@ -355,7 +355,7 @@
 }
 .productPhoto { position: relative; width: min(100%, 420px); justify-self: center; }
 .productPhoto img { object-fit: contain; }
-.product h2 { margin: 0; font-size: clamp(32px, 4vw, 54px); line-height: 1.05; }
+.product h2 { margin: 0; font-size: clamp(34px, 4vw, 46px); line-height: 1.05; }
 .product p { margin: 14px 0 24px; color: var(--ink-body); line-height: 1.6; }
 .bundles { border-top: 1px solid var(--line-strong); }
 .bundles a {
