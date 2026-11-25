@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { PublicServiceView } from "@/features/services/public-catalog";
+import { bundles, formatPrice } from "@/app/shop/catalog";
 import styles from "./ServiceCarousel.module.css";
 import { Arrow } from "@/components/brand/Arrow";
 
@@ -37,6 +38,22 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
     return () => { observer.disconnect(); window.removeEventListener("resize", measure); };
   }, [measure, services.length]);
 
+  const cards = [
+    {
+      href: "/shop",
+      name: "Boom Cleaning Paste",
+      image: "/images/boom-cleaning-paste.jpg",
+      tagline: "Hard stain removal",
+      priceLabel: `From ${formatPrice(bundles[0].price)}`,
+      action: "Shop",
+    },
+    ...services.map((service) => ({
+      ...service,
+      href: `/quote?service=${service.slug}`,
+      action: "Book",
+    })),
+  ];
+
   const page = (direction: 1 | -1) => {
     const track = trackRef.current;
     if (!track) return;
@@ -48,27 +65,27 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
   };
 
   return (
-    <div className={styles.rail} role="region" aria-label="BOOM services" aria-roledescription="carousel">
+    <div className={styles.rail} role="region" aria-label="BOOM services and products" aria-roledescription="carousel">
       {overflows ? (
         <div className={styles.controls}>
-          <button type="button" onClick={() => page(-1)} disabled={atStart} aria-label="Previous services"><Arrow direction="left" /></button>
-          <button type="button" onClick={() => page(1)} disabled={atEnd} aria-label="More services"><Arrow /></button>
+          <button type="button" onClick={() => page(-1)} disabled={atStart} aria-label="Previous card"><Arrow direction="left" /></button>
+          <button type="button" onClick={() => page(1)} disabled={atEnd} aria-label="Next card"><Arrow /></button>
         </div>
       ) : null}
 
-      <ul className={styles.track} ref={trackRef} onScroll={measure} tabIndex={0} aria-label="Services, scroll for more">
-        {services.map((service) => (
-          <li key={service.id} className={styles.slide}>
-            <Link href={`/quote?service=${service.slug}`} className={styles.card} aria-label={`Book ${service.name}`}>
+      <ul className={styles.track} ref={trackRef} onScroll={measure} tabIndex={0} aria-label="Services and products, scroll for more">
+        {cards.map((card) => (
+          <li key={card.href} className={styles.slide}>
+            <Link href={card.href} className={styles.card} aria-label={`${card.action} ${card.name}`}>
               <span className={styles.media}>
-                <Image src={service.image} alt="" fill sizes="(max-width: 700px) 80vw, 340px" />
+                <Image src={card.image} alt="" fill style={card.href === "/shop" ? { objectFit: "contain", background: "white" } : undefined} sizes="(max-width: 700px) 80vw, 340px" />
               </span>
               <span className={styles.body}>
-                <strong>{service.name}</strong>
-                <span className={styles.tagline}>{service.tagline}</span>
+                <strong>{card.name}</strong>
+                <span className={styles.tagline}>{card.tagline}</span>
                 <span className={styles.foot}>
-                  <em>{service.priceLabel}</em>
-                  <span className={styles.go}>Book <Arrow /></span>
+                  <em>{card.priceLabel}</em>
+                  <span className={styles.go}>{card.action} <Arrow /></span>
                 </span>
               </span>
             </Link>
@@ -76,7 +93,7 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
         ))}
       </ul>
 
-      {overflows ? <p className={styles.hint}>Swipe or use the arrows to see every service.</p> : null}
+      {overflows ? <p className={styles.hint}>Swipe or use the arrows to see more.</p> : null}
     </div>
   );
 }
