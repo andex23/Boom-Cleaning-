@@ -9,7 +9,7 @@ function flutterwaveSecret() {
  if (!key?.startsWith("FLWSECK-") || key.includes("TEST")) throw new Error("Flutterwave live payments are not configured.");
  return key;
 }
-async function flutterwave(path: string, body?: unknown) {
+export async function flutterwave(path: string, body?: unknown) {
  const response = await fetch(`https://api.flutterwave.com/v3${path}`, { method: body ? "POST" : "GET", headers: { Authorization: `Bearer ${flutterwaveSecret()}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), cache: "no-store", signal: AbortSignal.timeout(20000) });
  const result = await response.json();
  if (!response.ok || result.status !== "success") throw new Error("Flutterwave could not complete the request. Please retry.");

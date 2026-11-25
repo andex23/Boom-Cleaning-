@@ -26,9 +26,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             </label>)}
           </fieldset>
           <label className={styles.email}>Receipt email<input type="email" name="email" required autoComplete="email" /></label>
-          <p className={styles.note}>Preview checkout uses Paystack test payments.</p>
+          <p className={styles.note}>Flutterwave processes payments in naira.</p>
           {error && <p role="alert">Checkout could not start. Check your selection and email, then try again.</p>}
-          <button type="submit">Continue to payment</button>
+          <button type="submit">Pay with Flutterwave</button>
         </form>
       </section>
     </main>

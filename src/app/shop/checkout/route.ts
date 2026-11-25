@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { paystack } from "@/features/payments/paystack";
+import { flutterwave } from "@/features/payments/flutterwave";
+import { validFlutterwaveCheckout } from "@/features/payments/flutterwave-validation";
 import { bundles } from "../catalog";
 
 export async function POST(request: Request) {
@@ -14,14 +15,14 @@ export async function POST(request: Request) {
     const bundle = bundles.find(({ quantity }) => String(quantity) === form.get("quantity"));
     if (!bundle) return failure;
     const reference = `BOOM-paste-${bundle.quantity}-${randomUUID()}`;
-    const session = await paystack("/transaction/initialize", {
-      email, reference, amount: bundle.price * 100, currency: "NGN",
-      callback_url: new URL("/shop/receipt", origin).href,
-      metadata: { product: "Boom Cleaning Paste", quantity: bundle.quantity },
+    const session = await flutterwave("/payments", {
+      tx_ref: reference, amount: bundle.price, currency: "NGN", customer: { email },
+      redirect_url: new URL("/shop/receipt", origin).href,
+      customizations: { title: "Boom Cleaning Paste", description: `${bundle.quantity} tub(s)` },
+      meta: { product: "Boom Cleaning Paste", quantity: bundle.quantity },
     });
-    const checkout = new URL(session.authorization_url);
-    if (session.reference !== reference || checkout.origin !== "https://checkout.paystack.com") return failure;
-    return NextResponse.redirect(checkout, 303);
+    if (!validFlutterwaveCheckout(session.link)) return failure;
+    return NextResponse.redirect(session.link, 303);
   } catch {
     return failure;
   }
