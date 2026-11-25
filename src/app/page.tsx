@@ -12,6 +12,12 @@ import { SiteHeader } from "@/components/public/SiteHeader";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import styles from "./home.module.css";
 
+const pasteBundles = [
+  { quantity: "1 tub", total: "₦10,000" },
+  { quantity: "2 tubs", total: "₦18,000" },
+  { quantity: "3 tubs", total: "₦26,000" },
+];
+
 const promises: [IconName, string, string][] = [
   ["shieldCheck", "Trusted professionals", "Vetted, trained cleaners."],
   ["calendar", "Easy booking", "Choose your clean and time online."],
@@ -93,6 +99,24 @@ export default async function Home() {
           <div><strong>{title}</strong><small>{body}</small></div>
         </li>)}
       </ul>
+    </section>
+
+    <section id="cleaning-paste" className={styles.product} aria-labelledby="paste-heading">
+      <Photo src="/images/boom-cleaning-paste.jpg" alt="Blue and white tub of Boom Cleaning Paste"
+        sizes="(max-width: 680px) 85vw, 420px" className={styles.productPhoto} />
+      <div>
+        <h2 id="paste-heading">Boom Cleaning Paste</h2>
+        <p>For hard stain removal. Choose a bundle to order on WhatsApp.</p>
+        <div className={styles.bundles}>
+          {pasteBundles.map(({ quantity, total }) => {
+            const message = `Hello BOOM! I'd like to order ${quantity} of Boom Cleaning Paste for ${total}. Please confirm availability and delivery details.`;
+            return <a key={quantity} href={`https://wa.me/2349029799205?text=${encodeURIComponent(message)}`}
+              aria-label={`Order ${quantity} for ${total} on WhatsApp`} target="_blank" rel="noreferrer">
+              <span>{quantity}</span><strong>{total}</strong><Arrow />
+            </a>;
+          })}
+        </div>
+      </div>
     </section>
 
     <section className={styles.why} aria-labelledby="why-heading">

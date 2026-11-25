@@ -342,3 +342,33 @@
   .primary, .secondary { width: 100%; }
   .heroActions { gap: 10px; }
 }
+
+.product {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1fr);
+  gap: clamp(24px, 6vw, 92px);
+  align-items: center;
+  max-width: var(--page-max);
+  margin: auto;
+  padding: var(--section-y) var(--gutter);
+  scroll-margin-top: 80px;
+}
+.productPhoto { position: relative; width: min(100%, 420px); justify-self: center; }
+.productPhoto img { object-fit: contain; }
+.product h2 { margin: 0; font-size: clamp(32px, 4vw, 54px); line-height: 1.05; }
+.product p { margin: 14px 0 24px; color: var(--ink-body); line-height: 1.6; }
+.bundles { border-top: 1px solid var(--line-strong); }
+.bundles a {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 8px;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--brand);
+}
+.bundles a:hover, .bundles a:focus-visible { background: var(--brand-wash); }
+@media (max-width: 680px) {
+  .product { grid-template-columns: 1fr; }
+  .productPhoto { max-width: 300px; }
+}
