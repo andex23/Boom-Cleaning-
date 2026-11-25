@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/public/SiteHeader";
 import { SiteFooter } from "@/components/public/SiteFooter";
-import { bundles, formatPrice } from "../catalog";
+import { bundles, deliveryPaymentNote, formatPrice } from "../catalog";
 import styles from "../shop.module.css";
 import { DeliveryForm } from "./DeliveryForm";
 
@@ -19,6 +19,7 @@ export default async function DeliveryPage({ searchParams }: { searchParams: Pro
       <Link href="/shop">← Change bundle</Link>
       <h1>Delivery details</h1>
       <p>Boom Cleaning Paste · {bundle.quantity} {bundle.quantity === 1 ? "tub" : "tubs"} · <strong>{formatPrice(bundle.price)}</strong></p>
+      <p>{deliveryPaymentNote}</p>
       <DeliveryForm quantity={bundle.quantity} price={formatPrice(bundle.price)} />
     </main>
     <SiteFooter />

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { SiteHeader } from "@/components/public/SiteHeader";
 import { SiteFooter } from "@/components/public/SiteFooter";
-import { bundles, formatPrice } from "./catalog";
+import { bundles, deliveryPaymentNote, formatPrice } from "./catalog";
 import styles from "./shop.module.css";
 
 export const metadata = { title: "Boom Cleaning Paste | BOOM Shop" };
@@ -24,6 +24,7 @@ export default function ShopPage() {
               <span>{quantity} {quantity === 1 ? "tub" : "tubs"}</span><strong>{formatPrice(price)}</strong>
             </label>)}
           </fieldset>
+          <p>{deliveryPaymentNote}</p>
           <button type="submit">Buy</button>
         </form>
       </section>
