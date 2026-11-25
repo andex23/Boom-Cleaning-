@@ -39,6 +39,11 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
   }, [measure, services.length]);
 
   const cards = [
+    ...services.map((service) => ({
+      ...service,
+      href: `/quote?service=${service.slug}`,
+      action: "Book",
+    })),
     {
       href: "/shop",
       name: "Boom Cleaning Paste",
@@ -47,11 +52,6 @@ export function ServiceCarousel({ services }: { services: PublicServiceView[] })
       priceLabel: `From ${formatPrice(bundles[0].price)}`,
       action: "Shop",
     },
-    ...services.map((service) => ({
-      ...service,
-      href: `/quote?service=${service.slug}`,
-      action: "Book",
-    })),
   ];
 
   const page = (direction: 1 | -1) => {
