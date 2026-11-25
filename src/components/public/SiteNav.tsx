@@ -12,6 +12,7 @@ const subscribeNever = () => () => {};
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
+  { href: "/shop", label: "Shop" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About us" },
   { href: "/#contact", label: "Contact" },

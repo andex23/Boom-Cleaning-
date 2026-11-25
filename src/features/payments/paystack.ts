@@ -9,7 +9,7 @@ export function paystackSecret() {
   if (!secret?.startsWith("sk_test_")) throw new Error("Paystack test mode is not configured.");
   return secret;
 }
-async function paystack(path: string, body?: unknown) {
+export async function paystack(path: string, body?: unknown) {
   const response = await fetch(`https://api.paystack.co${path}`, {
     method: body ? "POST" : "GET", headers: { Authorization: `Bearer ${paystackSecret()}`, "Content-Type": "application/json" },
     ...(body ? { body: JSON.stringify(body) } : {}), cache: "no-store", signal: AbortSignal.timeout(20000),
