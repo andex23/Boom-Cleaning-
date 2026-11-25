@@ -33,6 +33,6 @@ export function DeliveryForm({ quantity, price }: { quantity: number; price: str
     <label>State or FCT<input name="state" autoComplete="address-level1" required maxLength={100} /></label>
     <label>Delivery instructions (optional)<textarea name="instructions" placeholder="Landmark or directions for the rider" rows={2} maxLength={300} /></label>
     {error && <p role="alert">{error}</p>}
-    <button type="submit" disabled={busy}>{busy ? "Opening Flutterwave…" : `Pay ${price} with Flutterwave`}</button>
+    <button type="submit" disabled={busy}>{busy ? "Opening payment page…" : `Pay ${price}`}</button>
   </form>;
 }
