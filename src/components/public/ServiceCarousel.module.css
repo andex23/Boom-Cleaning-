@@ -3,7 +3,7 @@
    of the rail scrolling inside it. */
 .rail{position:relative;margin-top:46px;min-width:0;max-width:100%}
 .controls{position:absolute;top:-62px;right:0;display:flex;gap:8px}
-.controls button{width:44px;height:44px;border-radius:var(--radius-pill);border:1px solid rgba(8,37,95,.3);background:transparent;color:var(--ink);font-size:15px;cursor:pointer;transition:border-color .18s ease,background .18s ease,opacity .18s ease}
+.controls button{display:inline-flex;align-items:center;justify-content:center;padding:0;width:44px;height:44px;border-radius:var(--radius-pill);border:1px solid rgba(8,37,95,.3);background:transparent;color:var(--ink);font-size:15px;cursor:pointer;transition:border-color .18s ease,background .18s ease,opacity .18s ease}
 .controls button:hover:not(:disabled){border-color:var(--ink);background:#ffffff}
 .controls button:disabled{opacity:.32;cursor:not-allowed}
 .controls button:focus-visible{outline:3px solid var(--accent-bright);outline-offset:3px}
